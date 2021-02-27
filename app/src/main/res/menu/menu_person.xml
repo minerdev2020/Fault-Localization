@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/popup_person_log"
+        android:title="查看登录记录" />
+    <item
+        android:id="@+id/popup_person_call"
+        android:title="通话" />
+    <item
+        android:id="@+id/popup_person_modify"
+        android:title="修改" />
+    <item
+        android:id="@+id/popup_person_delete"
+        android:title="删除" />
+</menu>

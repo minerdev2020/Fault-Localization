@@ -1,0 +1,119 @@
+package com.minerdev.faultlocalization.view.activity
+
+import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.SearchView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.minerdev.faultlocalization.R
+import com.minerdev.faultlocalization.custom.SectionPageAdapter
+import com.minerdev.faultlocalization.databinding.ActivityMainBinding
+import com.minerdev.faultlocalization.view.fragment.EquipFragment
+import com.minerdev.faultlocalization.view.fragment.MessageFragment
+import com.minerdev.faultlocalization.view.fragment.PersonFragment
+import com.minerdev.faultlocalization.view.fragment.SettingsFragment
+import com.minerdev.greformanager.utils.Constants.FINISH_INTERVAL_TIME
+
+class MainActivity : AppCompatActivity() {
+    private var backPressedTime: Long = 0
+
+    private val adapter = SectionPageAdapter(supportFragmentManager)
+    private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(binding.root)
+
+        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
+        supportActionBar!!.setTitle(adapter.getPageTitle(0))
+
+        setViewPager()
+
+        setBottomNavigationView()
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val menuInflater = menuInflater
+        menuInflater.inflate(R.menu.menu_toolbar, menu)
+        adapter.getItem(binding.viewPager.currentItem).onCreateOptionsMenu(menu, menuInflater)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        adapter.getItem(binding.viewPager.currentItem).onOptionsItemSelected(item)
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onBackPressed() {
+        val searchView = findViewById<SearchView>(R.id.searchView)
+        if (searchView.hasFocus()) {
+            searchView.onActionViewCollapsed()
+            return
+        }
+
+        val tempTime = System.currentTimeMillis()
+        val intervalTime = tempTime - backPressedTime
+
+        if (intervalTime in 0..FINISH_INTERVAL_TIME) {
+            finish()
+
+        } else {
+            backPressedTime = tempTime
+            Toast.makeText(this, "再输入一遍会退出程序。", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun setViewPager() {
+        binding.viewPager.addOnPageChangeListener(object : OnPageChangeListener {
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+            }
+
+            override fun onPageSelected(position: Int) {
+                binding.bottomNav.menu.getItem(position).isChecked = true
+                supportActionBar!!.setTitle(adapter.getPageTitle(position))
+                invalidateOptionsMenu()
+                val searchView = findViewById<SearchView>(R.id.searchView)
+                searchView.onActionViewCollapsed()
+                networkThread.stopRepeat()
+                if (position < 3) {
+                    networkThread = NetworkThread(
+                        this@MainActivity,
+                        handler,
+                        adapter.getNetworkSetting(viewPager.getCurrentItem())
+                    )
+                    networkThread.start()
+                }
+            }
+
+            override fun onPageScrollStateChanged(state: Int) {}
+        })
+        adapter.addFragment(PersonFragment(), "人员管理")
+        adapter.addFragment(EquipFragment(), "设备管理")
+        adapter.addFragment(MessageFragment(), "通知管理")
+        adapter.addFragment(SettingsFragment(), "设置")
+        binding.viewPager.adapter = adapter
+    }
+
+    private fun setBottomNavigationView() {
+        binding.bottomNav.setOnNavigationItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.tab_person -> binding.viewPager.currentItem = 0
+                R.id.tab_equip -> binding.viewPager.currentItem = 1
+                R.id.tab_message -> binding.viewPager.currentItem = 2
+                R.id.tab_settings -> binding.viewPager.currentItem = 3
+                else -> {
+                }
+            }
+            true
+        })
+    }
+}
