@@ -1,38 +1,17 @@
 package com.minerdev.faultlocalization.model
 
-class Equipment {
-    var uid = 0
-        private set
-    var name: String?
-    var number: String?
-    var state: State
-    var type: String?
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
-    constructor(serializedData: SerializedData) {
-        uid = serializedData.uid
-        name = serializedData.name
-        number = serializedData.number
-        state = State.values()[serializedData.state]
-        type = serializedData.type
-    }
-
-    constructor(name: String?, number: String?, state: State, type: String?) {
-        this.name = name
-        this.number = number
-        this.state = state
-        this.type = type
-    }
-
-    enum class State(override val name: String) {
-        NORMAL("正常"), REPAIR("维修中"), STOP("停用");
-
-    }
-
-    inner class SerializedData {
-        var uid = 0
-        var name: String? = null
-        var number: String? = null
-        var state = 0
-        var type: String? = null
-    }
-}
+@Parcelize
+@Serializable
+data class Equipment(
+    override var id: Int = 0,
+    override var createdAt: String = "",
+    override var updatedAt: String = "",
+    override var type: Int = 0,
+    override var state: Int = 0,
+    var name: String = "",
+    var number: String = ""
+) : Item, Parcelable

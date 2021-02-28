@@ -1,83 +1,127 @@
-package com.minerdev.greformanager.http.retrofit
+package com.minerdev.faultlocalization.retrofit
 
-import com.minerdev.greformanager.model.House
-import com.minerdev.greformanager.utils.Constants.API_HOUSE
-import com.minerdev.greformanager.utils.Constants.API_IMAGE
-import com.minerdev.greformanager.utils.Constants.API_NAVER_MAP
-import com.minerdev.greformanager.utils.Constants.NAVER_API_KEY_HEADER
-import com.minerdev.greformanager.utils.Constants.NAVER_API_KEY_ID_HEADER
+import com.minerdev.faultlocalization.model.Equipment
+import com.minerdev.faultlocalization.model.Message
+import com.minerdev.faultlocalization.model.Person
+import com.minerdev.faultlocalization.utils.Constants.API_AUTH
+import com.minerdev.faultlocalization.utils.Constants.API_EQUIP
+import com.minerdev.faultlocalization.utils.Constants.API_MESSAGE
+import com.minerdev.faultlocalization.utils.Constants.API_PERSON
 import kotlinx.serialization.json.JsonObject
-import okhttp3.MultipartBody
 import retrofit2.Call
 import retrofit2.http.*
 
 interface IRetrofit {
-    // 네이버 지도 서비스
-    @GET(API_NAVER_MAP)
-    fun getQueryResponseFromNaver(
-            @Header(NAVER_API_KEY_ID_HEADER) clientId: String,
-            @Header(NAVER_API_KEY_HEADER) clientSecret: String,
-            @Query("query") address: String
+    @GET(API_AUTH)
+    fun login(): Call<JsonObject>
+
+    @GET(API_AUTH)
+    fun logout(): Call<JsonObject>
+
+    @GET(API_AUTH)
+    fun register(): Call<JsonObject>
+
+
+    @GET(API_PERSON)
+    fun getAllPerson(): Call<JsonObject>
+
+    @GET("$API_PERSON/{id}")
+    fun getPerson(
+        @Path("id") id: Int
     ): Call<JsonObject>
 
-    // 매물 정보
-    @GET(API_HOUSE)
-    fun getAllHouse(@Query("state") state: Byte = 0): Call<JsonObject>
-
-    @GET("$API_HOUSE/{id}")
-    fun getHouse(@Path("id") id: Int): Call<JsonObject>
-
-    @POST(API_HOUSE)
-    fun createHouse(@Body house: House): Call<JsonObject>
-
-    @PUT("$API_HOUSE/{id}")
-    fun updateHouse(
-            @Path("id") id: Int,
-            @Body house: House
+    @POST(API_PERSON)
+    fun createPerson(
+        @Body person: Person
     ): Call<JsonObject>
 
-    @PATCH("$API_HOUSE/{id}")
-    fun updateHouse(
-            @Path("id") id: Int,
-            @Query("state") state: Byte
+    @PUT("$API_PERSON/{id}")
+    fun updatePerson(
+        @Path("id") id: Int,
+        @Body person: Person
     ): Call<JsonObject>
 
-    @DELETE("$API_HOUSE/{id}")
-    fun deleteHouse(@Path("id") id: Int): Call<JsonObject>
+    @PATCH("$API_PERSON/{id}")
+    fun updatePerson(
+        @Path("id") id: Int,
+        @Query("state") state: Byte
+    ): Call<JsonObject>
 
-    @DELETE(API_HOUSE)
-    fun deleteAllHouse(): Call<JsonObject>
+    @DELETE("$API_PERSON/{id}")
+    fun deletePerson(
+        @Path("id") id: Int
+    ): Call<JsonObject>
+
+    @DELETE(API_PERSON)
+    fun deleteAllPerson(): Call<JsonObject>
 
 
-    // 매물 이미지 정보
-    @GET("$API_HOUSE/{house_id}/images")
-    fun getAllImage(@Path("house_id") houseId: Int): Call<JsonObject>
+    @GET(API_EQUIP)
+    fun getAllEquipment(): Call<JsonObject>
 
-    @GET("$API_HOUSE/{house_id}/images/{position}")
-    fun getImage(
-            @Path("house_id") houseId: Int,
-            @Path("position") position: Int
+    @GET("$API_EQUIP/{id}")
+    fun getEquipment(
+        @Path("id") id: Int
     ): Call<JsonObject>
 
     @Multipart
-    @POST("$API_HOUSE/{house_id}/images")
-    fun createImage(
-            @Path("house_id") houseId: Int,
-            @Query("position") position: Byte,
-            @Query("thumbnail") thumbnail: Byte,
-            @Part imageFile: MultipartBody.Part
+    @POST(API_EQUIP)
+    fun createEquipment(
+        @Body equipment: Equipment
     ): Call<JsonObject>
 
-    @PATCH("$API_IMAGE/{id}")
-    fun updateImage(
-            @Path("id") id: Int,
-            @Query("position") position: Byte,
-            @Query("thumbnail") thumbnail: Byte
+    @PATCH("$API_EQUIP/{id}")
+    fun updateEquipment(
+        @Path("id") id: Int,
+        @Body equipment: Equipment
     ): Call<JsonObject>
 
-    @DELETE("$API_IMAGE/{id}")
-    fun deleteImage(@Path("id") id: Int): Call<JsonObject>
+    @PATCH("$API_EQUIP/{id}")
+    fun updateEquipment(
+        @Path("id") id: Int,
+        @Query("state") state: Byte
+    ): Call<JsonObject>
 
-    @DELETE("$API_HOUSE/{house_id}/images")
-    fun deleteAllImage(@Path("house_id") houseId: Int): Call<JsonObject>
+    @DELETE("$API_EQUIP/{id}")
+    fun deleteEquipment(
+        @Path("id") id: Int
+    ): Call<JsonObject>
+
+    @DELETE(API_EQUIP)
+    fun deleteAllEquipment(): Call<JsonObject>
+
+
+    @GET(API_MESSAGE)
+    fun getAllMessage(): Call<JsonObject>
+
+    @GET("$API_MESSAGE/{id}")
+    fun getMessage(
+        @Path("id") id: Int
+    ): Call<JsonObject>
+
+    @Multipart
+    @POST(API_MESSAGE)
+    fun createMessage(
+        @Body message: Message
+    ): Call<JsonObject>
+
+    @PATCH("$API_MESSAGE/{id}")
+    fun updateMessage(
+        @Path("id") id: Int,
+        @Body message: Message
+    ): Call<JsonObject>
+
+    @PATCH("$API_MESSAGE/{id}")
+    fun updateMessage(
+        @Path("id") id: Int,
+        @Query("state") state: Byte
+    ): Call<JsonObject>
+
+    @DELETE("$API_MESSAGE/{id}")
+    fun deleteMessage(
+        @Path("id") id: Int
+    ): Call<JsonObject>
+
+    @DELETE(API_MESSAGE)
+    fun deleteAllMessage(): Call<JsonObject>
 }

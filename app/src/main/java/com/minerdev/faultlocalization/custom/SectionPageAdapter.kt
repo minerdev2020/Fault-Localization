@@ -5,17 +5,16 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import java.util.*
 
-class SectionPageAdapter(fm: FragmentManager?) : FragmentStatePagerAdapter(
-    fm!!
-) {
-    private val fragmentList: ArrayList<NetworkFragment> = ArrayList<NetworkFragment>()
+class SectionPageAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
+    private val fragmentList = ArrayList<Fragment>()
     private val fragmentTitleList = ArrayList<String>()
-    fun addFragment(fragment: NetworkFragment, title: String) {
+
+    fun addFragment(fragment: Fragment, title: String) {
         fragmentList.add(fragment)
         fragmentTitleList.add(title)
     }
 
-    override fun getPageTitle(position: Int): CharSequence? {
+    override fun getPageTitle(position: Int): CharSequence {
         return fragmentTitleList[position]
     }
 
@@ -25,9 +24,5 @@ class SectionPageAdapter(fm: FragmentManager?) : FragmentStatePagerAdapter(
 
     override fun getCount(): Int {
         return fragmentList.size
-    }
-
-    fun getNetworkSetting(position: Int): NetworkSetting {
-        return fragmentList[position].getNetworkSetting()
     }
 }

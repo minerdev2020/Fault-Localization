@@ -1,37 +1,42 @@
-package com.minerdev.greformanager.http.retrofit
+package com.minerdev.faultlocalization.retrofit
 
-import android.media.Image
 import android.util.Log
-import com.minerdev.greformanager.model.House
-import com.minerdev.greformanager.model.Image
-import com.minerdev.greformanager.utils.Constants
-import com.minerdev.greformanager.utils.Constants.BASE_URL
-import com.minerdev.greformanager.utils.Constants.NAVER_CLIENT_ID
-import com.minerdev.greformanager.utils.Constants.NAVER_CLIENT_SECRET
+import com.minerdev.faultlocalization.model.Equipment
+import com.minerdev.faultlocalization.model.Item
+import com.minerdev.faultlocalization.model.Message
+import com.minerdev.faultlocalization.model.Person
+import com.minerdev.faultlocalization.utils.Constants
+import com.minerdev.faultlocalization.utils.Constants.BASE_URL
 import kotlinx.serialization.json.JsonObject
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.io.File
 
 class RetrofitManager {
     companion object {
         val instance = RetrofitManager()
     }
 
-    private val iRetrofit: IRetrofit? = RetrofitClient.getClient(BASE_URL)?.create(IRetrofit::class.java)
+    private val iRetrofit: IRetrofit? =
+        RetrofitClient.getClient(BASE_URL)?.create(IRetrofit::class.java)
 
-    // 네이버 지도 서비스
-    fun getQueryResponseFromNaver(address: String, onResponse: (response: String) -> Unit, onFailure: (error: Throwable) -> Unit) {
-        val call = iRetrofit?.getQueryResponseFromNaver(
-                NAVER_CLIENT_ID,
-                NAVER_CLIENT_SECRET,
-                address)
-                ?: return
-        call.enqueue(object : Callback<JsonObject> {
+    fun getAllItems(
+        itemType: String,
+        onResponse: (response: String) -> Unit,
+        onFailure: (error: Throwable) -> Unit
+    ) {
+        val call = run {
+            when (itemType) {
+                "person" -> iRetrofit?.getAllPerson()
+                "equipment" -> iRetrofit?.getAllEquipment()
+                "message" -> iRetrofit?.getAllMessage()
+                else -> {
+                    return
+                }
+            }
+        }
+
+        call?.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful && response.body() != null) {
                     onResponse(response.body().toString())
@@ -44,10 +49,24 @@ class RetrofitManager {
         })
     }
 
-    // 매물 정보
-    fun getAllHouse(state: Byte, onResponse: (response: String) -> Unit, onFailure: (error: Throwable) -> Unit) {
-        val call = iRetrofit?.getAllHouse(state) ?: return
-        call.enqueue(object : Callback<JsonObject> {
+    fun getItem(
+        itemType: String,
+        id: Int,
+        onResponse: (response: String) -> Unit,
+        onFailure: (error: Throwable) -> Unit
+    ) {
+        val call = run {
+            when (itemType) {
+                "person" -> iRetrofit?.getPerson(id)
+                "equipment" -> iRetrofit?.getEquipment(id)
+                "message" -> iRetrofit?.getMessage(id)
+                else -> {
+                    return
+                }
+            }
+        }
+
+        call?.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful && response.body() != null) {
                     onResponse(response.body().toString())
@@ -60,9 +79,24 @@ class RetrofitManager {
         })
     }
 
-    fun getHouse(id: Int, onResponse: (response: String) -> Unit, onFailure: (error: Throwable) -> Unit) {
-        val call = iRetrofit?.getHouse(id) ?: return
-        call.enqueue(object : Callback<JsonObject> {
+    fun <T : Item> createItem(
+        itemType: String,
+        item: T,
+        onResponse: (response: String) -> Unit,
+        onFailure: (error: Throwable) -> Unit
+    ) {
+        val call = run {
+            when (itemType) {
+                "person" -> iRetrofit?.createPerson(item as Person)
+                "equipment" -> iRetrofit?.createEquipment(item as Equipment)
+                "message" -> iRetrofit?.createMessage(item as Message)
+                else -> {
+                    return
+                }
+            }
+        }
+
+        call?.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful && response.body() != null) {
                     onResponse(response.body().toString())
@@ -75,25 +109,26 @@ class RetrofitManager {
         })
     }
 
-    fun createHouse(house: House, onResponse: (response: String) -> Unit, onFailure: (error: Throwable) -> Unit) {
-        val call = iRetrofit?.createHouse(house) ?: return
-        call.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful && response.body() != null) {
-                    onResponse(response.body().toString())
+    fun updateItem(
+        itemType: String,
+        id: Int,
+        state: Byte,
+        onResponse: (response: String) -> Unit,
+        onFailure: (error: Throwable) -> Unit
+    ) {
+        val call = run {
+            when (itemType) {
+                "person" -> iRetrofit?.updatePerson(id, state)
+                "equipment" -> iRetrofit?.updateEquipment(id, state)
+                "message" -> iRetrofit?.updateMessage(id, state)
+                else -> {
+                    return
                 }
             }
+        }
 
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                onFailure(t)
-            }
-        })
-    }
-
-    fun updateHouse(id: Int, state: Byte, onResponse: (response: String) -> Unit, onFailure: (error: Throwable) -> Unit) {
         Log.d(Constants.TAG, "state : $state")
-        val call = iRetrofit?.updateHouse(id, state) ?: return
-        call.enqueue(object : Callback<JsonObject> {
+        call?.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful && response.body() != null) {
                     onResponse(response.body().toString())
@@ -106,10 +141,26 @@ class RetrofitManager {
         })
     }
 
-    fun updateHouse(id: Int, house: House, onResponse: (response: String) -> Unit, onFailure: (error: Throwable) -> Unit) {
-        Log.d(Constants.TAG, house.toString())
-        val call = iRetrofit?.updateHouse(id, house) ?: return
-        call.enqueue(object : Callback<JsonObject> {
+    fun <T : Item> updateItem(
+        itemType: String,
+        id: Int,
+        item: T,
+        onResponse: (response: String) -> Unit,
+        onFailure: (error: Throwable) -> Unit
+    ) {
+        val call = run {
+            when (itemType) {
+                "person" -> iRetrofit?.updatePerson(id, item as Person)
+                "equipment" -> iRetrofit?.updateEquipment(id, item as Equipment)
+                "message" -> iRetrofit?.updateMessage(id, item as Message)
+                else -> {
+                    return
+                }
+            }
+        }
+
+        Log.d(Constants.TAG, item.toString())
+        call?.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful && response.body() != null) {
                     onResponse(response.body().toString())
@@ -122,9 +173,24 @@ class RetrofitManager {
         })
     }
 
-    fun deleteHouse(id: Int, onResponse: (response: String) -> Unit, onFailure: (error: Throwable) -> Unit) {
-        val call = iRetrofit?.deleteHouse(id) ?: return
-        call.enqueue(object : Callback<JsonObject> {
+    fun deleteItem(
+        itemType: String,
+        id: Int,
+        onResponse: (response: String) -> Unit,
+        onFailure: (error: Throwable) -> Unit
+    ) {
+        val call = run {
+            when (itemType) {
+                "person" -> iRetrofit?.deletePerson(id)
+                "equipment" -> iRetrofit?.deleteEquipment(id)
+                "message" -> iRetrofit?.deleteMessage(id)
+                else -> {
+                    return
+                }
+            }
+        }
+
+        call?.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful && response.body() != null) {
                     onResponse(response.body().toString())
@@ -137,9 +203,23 @@ class RetrofitManager {
         })
     }
 
-    fun deleteAllHouse(onResponse: (response: String) -> Unit, onFailure: (error: Throwable) -> Unit) {
-        val call = iRetrofit?.deleteAllHouse() ?: return
-        call.enqueue(object : Callback<JsonObject> {
+    fun deleteAllItems(
+        itemType: String,
+        onResponse: (response: String) -> Unit,
+        onFailure: (error: Throwable) -> Unit
+    ) {
+        val call = run {
+            when (itemType) {
+                "person" -> iRetrofit?.deleteAllPerson()
+                "equipment" -> iRetrofit?.deleteAllEquipment()
+                "message" -> iRetrofit?.deleteAllMessage()
+                else -> {
+                    return
+                }
+            }
+        }
+
+        call?.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful && response.body() != null) {
                     onResponse(response.body().toString())
@@ -151,102 +231,4 @@ class RetrofitManager {
             }
         })
     }
-
-
-    // 매물 이미지 정보
-    fun getAllImage(houseId: Int, onResponse: (response: String) -> Unit, onFailure: (error: Throwable) -> Unit) {
-        val call = iRetrofit?.getAllImage(houseId) ?: return
-        call.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful && response.body() != null) {
-                    onResponse(response.body().toString())
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                onFailure(t)
-            }
-        })
-    }
-
-    fun getImage(houseId: Int, position: Int, onResponse: (response: String) -> Unit, onFailure: (error: Throwable) -> Unit) {
-        val call = iRetrofit?.getImage(houseId, position) ?: return
-        call.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful && response.body() != null) {
-                    onResponse(response.body().toString())
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                onFailure(t)
-            }
-        })
-    }
-
-    fun createImage(houseId: Int, image: Image, onResponse: (response: String) -> Unit, onFailure: (error: Throwable) -> Unit) {
-        val file = File(image.localUri!!)
-        val requestFile = file.asRequestBody("multipart/form-data".toMediaTypeOrNull())
-        val fileName = System.currentTimeMillis().toString() + "." + file.extension
-        val body = MultipartBody.Part.createFormData("image", fileName, requestFile)
-
-        val call = iRetrofit?.createImage(houseId, image.position, image.thumbnail, body) ?: return
-        call.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful && response.body() != null) {
-                    onResponse(response.body().toString())
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                onFailure(t)
-            }
-        })
-    }
-
-    fun updateImage(id: Int, image: Image, onResponse: (response: String) -> Unit, onFailure: (error: Throwable) -> Unit) {
-        val call = iRetrofit?.updateImage(id, image.position, image.thumbnail) ?: return
-        call.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful && response.body() != null) {
-                    onResponse(response.body().toString())
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                onFailure(t)
-            }
-        })
-    }
-
-    fun deleteImage(id: Int, onResponse: (response: String) -> Unit, onFailure: (error: Throwable) -> Unit) {
-        val call = iRetrofit?.deleteImage(id) ?: return
-        call.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful && response.body() != null) {
-                    onResponse(response.body().toString())
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                onFailure(t)
-            }
-        })
-    }
-
-    fun deleteAllImage(houseId: Int, onResponse: (response: String) -> Unit, onFailure: (error: Throwable) -> Unit) {
-        val call = iRetrofit?.deleteAllImage(houseId) ?: return
-        call.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful && response.body() != null) {
-                    onResponse(response.body().toString())
-                }
-            }
-
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                onFailure(t)
-            }
-        })
-    }
-
 }

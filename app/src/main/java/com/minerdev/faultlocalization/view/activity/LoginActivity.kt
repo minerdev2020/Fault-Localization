@@ -1,11 +1,12 @@
 package com.minerdev.faultlocalization.view.activity
 
 import android.app.AlertDialog
-import android.content.ContentValues
 import android.content.Intent
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.text.InputFilter
 import android.text.InputFilter.LengthFilter
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.EditorInfo
@@ -17,7 +18,10 @@ import androidx.core.app.ActivityCompat
 import com.google.android.material.snackbar.Snackbar
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.databinding.ActivityLoginBinding
-import com.minerdev.greformanager.utils.Constants.FINISH_INTERVAL_TIME
+import com.minerdev.faultlocalization.retrofit.AuthRetrofitManager
+import com.minerdev.faultlocalization.utils.Constants.FINISH_INTERVAL_TIME
+import com.minerdev.faultlocalization.utils.Constants.TAG
+import org.json.JSONObject
 import java.util.regex.Pattern
 import kotlin.system.exitProcess
 
@@ -33,7 +37,7 @@ class LoginActivity : AppCompatActivity() {
 
         setupEditTexts()
 
-        if (SocketClient.checkInternetState(this) === -1) {
+        if (!checkInternetConnection()) {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("友情提示")
             builder.setMessage("未检测到网络，请检查网络连接状态。")
@@ -65,36 +69,43 @@ class LoginActivity : AppCompatActivity() {
     }
 
     private fun tryLogin(view: View, id: String, pw: String) {
-        if (!id.isEmpty() && !pw.isEmpty()) {
-            val values = ContentValues()
-            values.put("id", id)
-            values.put("pw", pw)
-            val networkTask = NetworkTask(this,
-                "http://192.168.35.141:80/login.php", values, "登录中...",
-                object : OnDataReceiveListener() {
-                    fun parseData(receivedString: String) {
-                        when (receivedString) {
-                            "login_correct" -> {
+        if (id.isNotEmpty() && pw.isNotEmpty()) {
+            AuthRetrofitManager.instance.login(id, pw,
+                { response: String ->
+                    run {
+                        val data = JSONObject(response)
+                        Log.d(TAG, "tryLogin response : " + data.getString("message"))
+                        when (data.getInt("result")) {
+                            101 -> {
                                 val sharedPreferences = getSharedPreferences("login", MODE_PRIVATE)
                                 val editor = sharedPreferences.edit()
-                                editor.putString("id", values["id"].toString())
+                                editor.putString("id", id)
                                 editor.apply()
+
                                 val intent = Intent(this@LoginActivity, MainActivity::class.java)
                                 startActivity(intent)
                                 finish()
                             }
-                            "login_wrong" -> {
+                            102 -> {
                                 Snackbar.make(view, "账号或密码有误！", Snackbar.LENGTH_LONG).show()
                                 binding.etPw.setText("")
                             }
-                            else -> {
+                            103 -> {
                                 Snackbar.make(view, "账号不存在！", Snackbar.LENGTH_LONG).show()
                                 binding.etPw.setText("")
                             }
+                            else -> {
+
+                            }
                         }
                     }
-                })
-            networkTask.execute()
+                },
+                { error: Throwable ->
+                    run {
+                        Log.d(TAG, "tryLogin error : " + error.localizedMessage)
+                    }
+                }
+            )
         } else {
             Snackbar.make(view, "账号或密码有误！", Snackbar.LENGTH_LONG).show()
         }
@@ -144,5 +155,11 @@ class LoginActivity : AppCompatActivity() {
             }
             false
         })
+    }
+
+    private fun checkInternetConnection(): Boolean {
+        val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+        val activeNetwork = connectivityManager.activeNetwork
+        return activeNetwork != null
     }
 }

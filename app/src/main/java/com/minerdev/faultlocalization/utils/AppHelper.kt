@@ -1,4 +1,4 @@
-package com.minerdev.greformanager.utils
+package com.minerdev.faultlocalization.utils
 
 import android.content.Context
 import android.icu.text.SimpleDateFormat

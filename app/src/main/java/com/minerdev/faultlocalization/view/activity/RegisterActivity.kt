@@ -1,13 +1,17 @@
 package com.minerdev.faultlocalization.view.activity
 
-import android.content.ContentValues
 import android.os.Bundle
 import android.text.InputFilter
 import android.text.InputFilter.LengthFilter
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.snackbar.Snackbar
 import com.minerdev.faultlocalization.databinding.ActivityRegisterBinding
+import com.minerdev.faultlocalization.model.Person
+import com.minerdev.faultlocalization.retrofit.AuthRetrofitManager
+import com.minerdev.faultlocalization.utils.Constants
+import org.json.JSONObject
 import java.util.regex.Pattern
 
 class RegisterActivity : AppCompatActivity() {
@@ -24,23 +28,28 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun tryRegister(view: View, id: String, pw: String, name: String, phone: String) {
         if (id.isNotEmpty() && pw.isNotEmpty() && name.isNotEmpty() && phone.isNotEmpty()) {
-            val values = ContentValues()
-            values.put("id", id)
-            values.put("pw", pw)
-            values.put("name", name)
-            values.put("phone", phone)
-            val networkTask = NetworkTask(this,
-                "http://192.168.35.141:80/register.php", values, "注册中...",
-                object : OnDataReceiveListener() {
-                    fun parseData(receivedString: String) {
-                        if (receivedString == "register_correct") {
-                            finish()
-                        } else {
-                            Snackbar.make(view, "账号已存在！", Snackbar.LENGTH_LONG).show()
+            val person = Person()
+            AuthRetrofitManager.instance.register(person,
+                { response: String ->
+                    run {
+                        val data = JSONObject(response)
+                        Log.d(Constants.TAG, "tryRegister response : " + data.getString("message"))
+                        when (data.getInt("result")) {
+                            201 -> {
+                                finish()
+                            }
+                            else -> {
+                                Snackbar.make(view, "账号已存在！", Snackbar.LENGTH_LONG).show()
+                            }
                         }
                     }
-                })
-            networkTask.execute()
+                },
+                { error: Throwable ->
+                    run {
+                        Log.d(Constants.TAG, "tryRegister error : " + error.localizedMessage)
+                    }
+                }
+            )
         } else {
             Snackbar.make(view, "有误！", Snackbar.LENGTH_LONG).show()
         }
@@ -59,14 +68,14 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun setupEditTexts() {
-        binding.etId.filters = arrayOf(InputFilter { charSequence, i, i1, spanned, i2, i3 ->
+        binding.etId.filters = arrayOf(InputFilter { charSequence, _, _, _, _, _ ->
             val pattern = Pattern.compile("^[a-zA-Z0-9]*$")
             if (charSequence == "" || pattern.matcher(charSequence).matches()) {
                 charSequence
             } else ""
         }, LengthFilter(8))
 
-        binding.etPw.filters = arrayOf(InputFilter { charSequence, i, i1, spanned, i2, i3 ->
+        binding.etPw.filters = arrayOf(InputFilter { charSequence, _, _, _, _, _ ->
             val pattern = Pattern.compile("^[a-zA-Z0-9]*$")
             if (charSequence == "" || pattern.matcher(charSequence).matches()) {
                 charSequence

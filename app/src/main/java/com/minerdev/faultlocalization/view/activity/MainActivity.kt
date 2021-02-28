@@ -8,15 +8,14 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.custom.SectionPageAdapter
 import com.minerdev.faultlocalization.databinding.ActivityMainBinding
-import com.minerdev.faultlocalization.view.fragment.EquipFragment
+import com.minerdev.faultlocalization.utils.Constants.FINISH_INTERVAL_TIME
+import com.minerdev.faultlocalization.view.fragment.EquipmentFragment
 import com.minerdev.faultlocalization.view.fragment.MessageFragment
 import com.minerdev.faultlocalization.view.fragment.PersonFragment
 import com.minerdev.faultlocalization.view.fragment.SettingsFragment
-import com.minerdev.greformanager.utils.Constants.FINISH_INTERVAL_TIME
 
 class MainActivity : AppCompatActivity() {
     private var backPressedTime: Long = 0
@@ -30,7 +29,7 @@ class MainActivity : AppCompatActivity() {
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar!!.setTitle(adapter.getPageTitle(0))
+        supportActionBar?.setTitle(adapter.getPageTitle(0))
 
         setViewPager()
 
@@ -79,32 +78,24 @@ class MainActivity : AppCompatActivity() {
 
             override fun onPageSelected(position: Int) {
                 binding.bottomNav.menu.getItem(position).isChecked = true
-                supportActionBar!!.setTitle(adapter.getPageTitle(position))
+                supportActionBar?.setTitle(adapter.getPageTitle(position))
+                binding.searchView.onActionViewCollapsed()
                 invalidateOptionsMenu()
-                val searchView = findViewById<SearchView>(R.id.searchView)
-                searchView.onActionViewCollapsed()
-                networkThread.stopRepeat()
-                if (position < 3) {
-                    networkThread = NetworkThread(
-                        this@MainActivity,
-                        handler,
-                        adapter.getNetworkSetting(viewPager.getCurrentItem())
-                    )
-                    networkThread.start()
-                }
             }
 
             override fun onPageScrollStateChanged(state: Int) {}
         })
+
         adapter.addFragment(PersonFragment(), "人员管理")
-        adapter.addFragment(EquipFragment(), "设备管理")
+        adapter.addFragment(EquipmentFragment(), "设备管理")
         adapter.addFragment(MessageFragment(), "通知管理")
         adapter.addFragment(SettingsFragment(), "设置")
+
         binding.viewPager.adapter = adapter
     }
 
     private fun setBottomNavigationView() {
-        binding.bottomNav.setOnNavigationItemSelectedListener(BottomNavigationView.OnNavigationItemSelectedListener { item ->
+        binding.bottomNav.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.tab_person -> binding.viewPager.currentItem = 0
                 R.id.tab_equip -> binding.viewPager.currentItem = 1
@@ -114,6 +105,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             true
-        })
+        }
     }
 }

@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.minerdev.faultlocalization">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -9,7 +12,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.FaultLocalization">
-        <activity android:name=".MainActivity">
+        <activity android:name=".view.activity.DataHistoryActivity" />
+        <activity android:name=".view.activity.LoginLogActivity" />
+        <activity android:name=".view.activity.PersonModifyActivity" />
+        <activity android:name=".view.activity.EquipmentModifyActivity" />
+        <activity
+            android:name=".view.activity.RegisterActivity"
+            android:theme="@style/Theme.FaultLocalization.NoActionBar" />
+        <activity
+            android:name=".view.activity.MainActivity"
+            android:theme="@style/Theme.FaultLocalization.NoActionBar" />
+        <activity
+            android:name=".view.activity.LoginActivity"
+            android:theme="@style/Theme.FaultLocalization.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

@@ -2,6 +2,7 @@ package com.minerdev.faultlocalization.view.fragment
 
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -11,19 +12,26 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
-import com.minerdev.faultlocalization.custom.MessageListAdapter
+import com.minerdev.faultlocalization.Repository
+import com.minerdev.faultlocalization.custom.EquipmentListAdapter
 import com.minerdev.faultlocalization.custom.SelectDialog
-import com.minerdev.faultlocalization.databinding.FragmentMessageBinding
+import com.minerdev.faultlocalization.databinding.FragmentEquipBinding
+import com.minerdev.faultlocalization.databinding.FragmentPersonBinding
+import com.minerdev.faultlocalization.model.Equipment
+import com.minerdev.faultlocalization.model.Person
+import com.minerdev.faultlocalization.view.activity.DataHistoryActivity
+import com.minerdev.faultlocalization.view.activity.EquipmentModifyActivity
+import com.minerdev.faultlocalization.viewmodel.EquipmentViewModel
 import com.minerdev.faultlocalization.viewmodel.MessageViewModel
 import java.util.*
 
-class MessageFragment : Fragment() {
-    private val items1 = listOf("全部", "未完成", "进行中", "已完成")
-    private val items2 = listOf("全部", "注册", "维修申请", "维修完成")
+class EquipmentFragment : Fragment() {
+    private val items1 = listOf("全部", "正常", "维修中", "停用")
+    private val items2 = listOf("全部", "工程1", "工程2", "工程3", "工程4")
 
-    private val binding by lazy { FragmentMessageBinding.inflate(layoutInflater) }
-    private val viewModel: MessageViewModel by viewModels()
-    private val adapter = MessageListAdapter()
+    private val binding by lazy { FragmentEquipBinding.inflate(layoutInflater) }
+    private val viewModel : EquipmentViewModel by viewModels()
+    private val adapter = EquipmentListAdapter()
 
     private var group1 = 0
     private var group2 = 0
@@ -34,38 +42,34 @@ class MessageFragment : Fragment() {
     ): View {
         val manager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.layoutManager = manager
-        adapter.listener = object : MessageListAdapter.OnItemClickListener {
+        adapter.listener = object : EquipmentListAdapter.OnItemClickListener {
             override fun onItemClick(
-                viewHolder: MessageListAdapter.ViewHolder?,
+                viewHolder: EquipmentListAdapter.ViewHolder?,
+                view: View?,
+                position: Int
+            ) {
+                val intent = Intent(context, DataHistoryActivity::class.java)
+                startActivity(intent)
+            }
+
+            override fun onItemLongClick(
+                viewHolder: EquipmentListAdapter.ViewHolder?,
                 view: View?,
                 position: Int
             ) {
                 val builder = context?.let { AlertDialog.Builder(it) }
                 builder?.setTitle("友情提示")
-                builder?.setMessage("是否允许该请求？")
-                builder?.setIcon(R.drawable.ic_round_notification_important_24)
-
+                builder?.setMessage("您真的要删除吗？")
+                builder?.setIcon(R.drawable.ic_round_warning_24)
                 builder?.setPositiveButton(
-                    "允许",
+                    "确认",
                     DialogInterface.OnClickListener { _, _ ->
+//                        delete(adapter.getItem(position).uid)
                         return@OnClickListener
-                    }
-                )
-
+                    })
                 builder?.setNegativeButton(
-                    "拒绝",
-                    DialogInterface.OnClickListener { _, _ ->
-                        return@OnClickListener
-                    }
-                )
-
-                builder?.setNeutralButton(
                     "取消",
-                    DialogInterface.OnClickListener { _, _ ->
-                        return@OnClickListener
-                    }
-                )
-
+                    DialogInterface.OnClickListener { _, _ -> return@OnClickListener })
                 val alertDialog = builder?.create()
                 alertDialog?.show()
             }
@@ -90,6 +94,7 @@ class MessageFragment : Fragment() {
                     activity?.currentFocus?.windowToken,
                     InputMethodManager.HIDE_NOT_ALWAYS
                 )
+
                 return true
             }
 
@@ -102,13 +107,15 @@ class MessageFragment : Fragment() {
             searchView.onActionViewCollapsed()
             true
         }
-
-        val item = menu.findItem(R.id.toolbar_menu_add)
-        item.isVisible = false
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.toolbar_menu_add -> {
+                val intent = Intent(context, EquipmentModifyActivity::class.java)
+                startActivity(intent)
+            }
+
             R.id.toolbar_menu_filter -> {
                 val dialog = context?.let { SelectDialog(it) }
                 dialog?.items1 = items1
@@ -125,7 +132,6 @@ class MessageFragment : Fragment() {
             else -> {
             }
         }
-
         return super.onOptionsItemSelected(item)
     }
 
