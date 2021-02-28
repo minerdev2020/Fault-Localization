@@ -16,11 +16,11 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.custom.PersonListAdapter
-import com.minerdev.faultlocalization.custom.SelectDialog
 import com.minerdev.faultlocalization.databinding.FragmentPersonBinding
+import com.minerdev.faultlocalization.model.Person
 import com.minerdev.faultlocalization.view.activity.LoginLogActivity
 import com.minerdev.faultlocalization.view.activity.PersonModifyActivity
-import com.minerdev.faultlocalization.viewmodel.PersonViewModel
+import com.minerdev.faultlocalization.viewmodel.ItemViewModel
 import java.util.*
 
 class PersonFragment : Fragment() {
@@ -29,7 +29,7 @@ class PersonFragment : Fragment() {
     private val items2 = listOf("全部", "管理", "维修")
 
     private val binding by lazy { FragmentPersonBinding.inflate(layoutInflater) }
-    private val viewModel: PersonViewModel by viewModels()
+    private val viewModel: ItemViewModel<Person> by viewModels()
     private val adapter = PersonListAdapter()
 
     private var group1 = 0
@@ -101,16 +101,15 @@ class PersonFragment : Fragment() {
                 startActivity(intent)
             }
             R.id.toolbar_menu_filter -> {
-                val dialog = context?.let { SelectDialog(it) }
-                dialog?.items1 = items1
-                dialog?.items2 = items2
-                dialog?.setCancelable(false)
-                dialog?.listener = View.OnClickListener {
-                    group1 = dialog?.spinner1ItemPosition ?: -1
-                    group2 = dialog?.spinner2ItemPosition ?: -1
+                val dialog = SelectDialog()
+                dialog.items1 = items1
+                dialog.items2 = items2
+                dialog.listener = View.OnClickListener {
+                    group1 = dialog.spinner1ItemPosition
+                    group2 = dialog.spinner2ItemPosition
                     rearrangeList(null, group1, group2)
                 }
-                dialog?.show()
+                activity?.supportFragmentManager?.let { dialog.show(it, "SampleDialog") }
             }
 
             else -> {

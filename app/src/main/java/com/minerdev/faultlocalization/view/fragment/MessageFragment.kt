@@ -12,9 +12,9 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.custom.MessageListAdapter
-import com.minerdev.faultlocalization.custom.SelectDialog
 import com.minerdev.faultlocalization.databinding.FragmentMessageBinding
-import com.minerdev.faultlocalization.viewmodel.MessageViewModel
+import com.minerdev.faultlocalization.model.Message
+import com.minerdev.faultlocalization.viewmodel.ItemViewModel
 import java.util.*
 
 class MessageFragment : Fragment() {
@@ -22,7 +22,7 @@ class MessageFragment : Fragment() {
     private val items2 = listOf("全部", "注册", "维修申请", "维修完成")
 
     private val binding by lazy { FragmentMessageBinding.inflate(layoutInflater) }
-    private val viewModel: MessageViewModel by viewModels()
+    private val viewModel: ItemViewModel<Message> by viewModels()
     private val adapter = MessageListAdapter()
 
     private var group1 = 0
@@ -110,16 +110,15 @@ class MessageFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.toolbar_menu_filter -> {
-                val dialog = context?.let { SelectDialog(it) }
-                dialog?.items1 = items1
-                dialog?.items2 = items2
-                dialog?.setCancelable(false)
-                dialog?.listener = View.OnClickListener {
-                    group1 = dialog?.spinner1ItemPosition ?: -1
-                    group2 = dialog?.spinner2ItemPosition ?: -1
+                val dialog = SelectDialog()
+                dialog.items1 = items1
+                dialog.items2 = items2
+                dialog.listener = View.OnClickListener {
+                    group1 = dialog.spinner1ItemPosition
+                    group2 = dialog.spinner2ItemPosition
                     rearrangeList(null, group1, group2)
                 }
-                dialog?.show()
+                activity?.supportFragmentManager?.let { dialog.show(it, "SampleDialog") }
             }
 
             else -> {

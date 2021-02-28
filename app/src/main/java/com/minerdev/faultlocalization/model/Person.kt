@@ -13,5 +13,5 @@ data class Person(
     override var type: Int = 0,
     override var state: Int = 0,
     var name: String = "",
-    var phone: String,
+    var phone: String = "",
 ) : Item, Parcelable

@@ -26,14 +26,15 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
+        
+        setViewPager()
+        
+        setBottomNavigationView()
+        
+        // 설정이 끝나고 타이틀 바꿔야 오류가 안 남
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.setTitle(adapter.getPageTitle(0))
-
-        setViewPager()
-
-        setBottomNavigationView()
+        supportActionBar?.title = adapter.getPageTitle(0)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

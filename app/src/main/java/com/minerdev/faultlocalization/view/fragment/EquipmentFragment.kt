@@ -12,17 +12,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
-import com.minerdev.faultlocalization.Repository
 import com.minerdev.faultlocalization.custom.EquipmentListAdapter
-import com.minerdev.faultlocalization.custom.SelectDialog
 import com.minerdev.faultlocalization.databinding.FragmentEquipBinding
-import com.minerdev.faultlocalization.databinding.FragmentPersonBinding
 import com.minerdev.faultlocalization.model.Equipment
-import com.minerdev.faultlocalization.model.Person
 import com.minerdev.faultlocalization.view.activity.DataHistoryActivity
 import com.minerdev.faultlocalization.view.activity.EquipmentModifyActivity
-import com.minerdev.faultlocalization.viewmodel.EquipmentViewModel
-import com.minerdev.faultlocalization.viewmodel.MessageViewModel
+import com.minerdev.faultlocalization.viewmodel.ItemViewModel
 import java.util.*
 
 class EquipmentFragment : Fragment() {
@@ -30,7 +25,7 @@ class EquipmentFragment : Fragment() {
     private val items2 = listOf("全部", "工程1", "工程2", "工程3", "工程4")
 
     private val binding by lazy { FragmentEquipBinding.inflate(layoutInflater) }
-    private val viewModel : EquipmentViewModel by viewModels()
+    private val viewModel : ItemViewModel<Equipment> by viewModels()
     private val adapter = EquipmentListAdapter()
 
     private var group1 = 0
@@ -117,16 +112,15 @@ class EquipmentFragment : Fragment() {
             }
 
             R.id.toolbar_menu_filter -> {
-                val dialog = context?.let { SelectDialog(it) }
-                dialog?.items1 = items1
-                dialog?.items2 = items2
-                dialog?.setCancelable(false)
-                dialog?.listener = View.OnClickListener {
-                    group1 = dialog?.spinner1ItemPosition ?: -1
-                    group2 = dialog?.spinner2ItemPosition ?: -1
+                val dialog = SelectDialog()
+                dialog.items1 = items1
+                dialog.items2 = items2
+                dialog.listener = View.OnClickListener {
+                    group1 = dialog.spinner1ItemPosition
+                    group2 = dialog.spinner2ItemPosition
                     rearrangeList(null, group1, group2)
                 }
-                dialog?.show()
+                activity?.supportFragmentManager?.let { dialog.show(it, "SampleDialog") }
             }
 
             else -> {

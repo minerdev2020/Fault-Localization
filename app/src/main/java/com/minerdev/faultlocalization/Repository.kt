@@ -22,7 +22,7 @@ class Repository<T : Item>(private val itemType: String) {
                     Log.d(TAG, "loadItem response : " + data.getString("data"))
 
                     val format = Json { encodeDefaults = true }
-                    item.postValue(format.decodeFromString<T>(data.getString("data")))
+//                    item.postValue(format.decodeFromString<T>(data.getString("data")))
                 }
             },
             { error: Throwable ->

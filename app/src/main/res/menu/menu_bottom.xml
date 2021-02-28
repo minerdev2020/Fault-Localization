@@ -4,28 +4,28 @@
     <item
         android:id="@+id/tab_person"
         android:enabled="true"
-        android:icon="@drawable/round_person_24"
+        android:icon="@drawable/ic_round_person_24"
         android:title="人员"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/tab_equip"
         android:enabled="true"
-        android:icon="@drawable/round_build_24"
+        android:icon="@drawable/ic_round_miscellaneous_services_24"
         android:title="设备"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/tab_message"
         android:enabled="true"
-        android:icon="@drawable/round_question_answer_24"
+        android:icon="@drawable/ic_round_message_24"
         android:title="通知"
         app:showAsAction="always" />
 
     <item
         android:id="@+id/tab_settings"
         android:enabled="true"
-        android:icon="@drawable/round_settings_24"
+        android:icon="@drawable/ic_round_tune_24"
         android:title="设定"
         app:showAsAction="always" />
 </menu>

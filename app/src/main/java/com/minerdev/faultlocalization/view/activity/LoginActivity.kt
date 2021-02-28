@@ -70,42 +70,51 @@ class LoginActivity : AppCompatActivity() {
 
     private fun tryLogin(view: View, id: String, pw: String) {
         if (id.isNotEmpty() && pw.isNotEmpty()) {
-            AuthRetrofitManager.instance.login(id, pw,
-                { response: String ->
-                    run {
-                        val data = JSONObject(response)
-                        Log.d(TAG, "tryLogin response : " + data.getString("message"))
-                        when (data.getInt("result")) {
-                            101 -> {
-                                val sharedPreferences = getSharedPreferences("login", MODE_PRIVATE)
-                                val editor = sharedPreferences.edit()
-                                editor.putString("id", id)
-                                editor.apply()
+            val sharedPreferences = getSharedPreferences("login", MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.putString("id", id)
+            editor.apply()
 
-                                val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                                startActivity(intent)
-                                finish()
-                            }
-                            102 -> {
-                                Snackbar.make(view, "账号或密码有误！", Snackbar.LENGTH_LONG).show()
-                                binding.etPw.setText("")
-                            }
-                            103 -> {
-                                Snackbar.make(view, "账号不存在！", Snackbar.LENGTH_LONG).show()
-                                binding.etPw.setText("")
-                            }
-                            else -> {
+            val intent = Intent(this@LoginActivity, MainActivity::class.java)
+            startActivity(intent)
+            finish()
 
-                            }
-                        }
-                    }
-                },
-                { error: Throwable ->
-                    run {
-                        Log.d(TAG, "tryLogin error : " + error.localizedMessage)
-                    }
-                }
-            )
+//            AuthRetrofitManager.instance.login(id, pw,
+//                { response: String ->
+//                    run {
+//                        val data = JSONObject(response)
+//                        Log.d(TAG, "tryLogin response : " + data.getString("message"))
+//                        when (data.getInt("result")) {
+//                            101 -> {
+//                                val sharedPreferences = getSharedPreferences("login", MODE_PRIVATE)
+//                                val editor = sharedPreferences.edit()
+//                                editor.putString("id", id)
+//                                editor.apply()
+//
+//                                val intent = Intent(this@LoginActivity, MainActivity::class.java)
+//                                startActivity(intent)
+//                                finish()
+//                            }
+//                            102 -> {
+//                                Snackbar.make(view, "账号或密码有误！", Snackbar.LENGTH_LONG).show()
+//                                binding.etPw.setText("")
+//                            }
+//                            103 -> {
+//                                Snackbar.make(view, "账号不存在！", Snackbar.LENGTH_LONG).show()
+//                                binding.etPw.setText("")
+//                            }
+//                            else -> {
+//
+//                            }
+//                        }
+//                    }
+//                },
+//                { error: Throwable ->
+//                    run {
+//                        Log.d(TAG, "tryLogin error : " + error.localizedMessage)
+//                    }
+//                }
+//            )
         } else {
             Snackbar.make(view, "账号或密码有误！", Snackbar.LENGTH_LONG).show()
         }
