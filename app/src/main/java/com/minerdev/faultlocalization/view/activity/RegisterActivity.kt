@@ -28,8 +28,7 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun tryRegister(view: View, id: String, pw: String, name: String, phone: String) {
         if (id.isNotEmpty() && pw.isNotEmpty() && name.isNotEmpty() && phone.isNotEmpty()) {
-            val person = Person()
-            AuthRetrofitManager.instance.register(person,
+            AuthRetrofitManager.instance.register(id, pw, name, phone,
                 { response: String ->
                     run {
                         val data = JSONObject(response)

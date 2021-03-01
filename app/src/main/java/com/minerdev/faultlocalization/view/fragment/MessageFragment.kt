@@ -15,6 +15,7 @@ import com.minerdev.faultlocalization.custom.MessageListAdapter
 import com.minerdev.faultlocalization.databinding.FragmentMessageBinding
 import com.minerdev.faultlocalization.model.Message
 import com.minerdev.faultlocalization.viewmodel.ItemViewModel
+import com.minerdev.faultlocalization.viewmodel.ItemViewModelFactory
 import java.util.*
 
 class MessageFragment : Fragment() {
@@ -22,7 +23,7 @@ class MessageFragment : Fragment() {
     private val items2 = listOf("全部", "注册", "维修申请", "维修完成")
 
     private val binding by lazy { FragmentMessageBinding.inflate(layoutInflater) }
-    private val viewModel: ItemViewModel<Message> by viewModels()
+    private val viewModel: ItemViewModel<Message> by viewModels { ItemViewModelFactory(Message::class) }
     private val adapter = MessageListAdapter()
 
     private var group1 = 0

@@ -8,10 +8,11 @@ import com.minerdev.faultlocalization.utils.Constants.TAG
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.json.JSONObject
+import kotlin.reflect.KClass
 
-class Repository<T : Item>(private val itemType: String) {
+class Repository<T : Item>(private val itemType: KClass<T>) {
     val allItems = MutableLiveData<List<T>>()
-    val item = MutableLiveData<T>()
+    val items = MutableLiveData<List<T>>()
 
     fun loadItem(id: Int) {
         RetrofitManager.instance.getItem(itemType, id,
@@ -22,7 +23,7 @@ class Repository<T : Item>(private val itemType: String) {
                     Log.d(TAG, "loadItem response : " + data.getString("data"))
 
                     val format = Json { encodeDefaults = true }
-//                    item.postValue(format.decodeFromString<T>(data.getString("data")))
+                    items.postValue(format.decodeFromString<List<T>>(data.getString("data")))
                 }
             },
             { error: Throwable ->

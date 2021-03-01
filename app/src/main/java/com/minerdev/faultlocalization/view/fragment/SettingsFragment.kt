@@ -57,7 +57,7 @@ class SettingsFragment : Fragment() {
                     val data = JSONObject(response)
                     Log.d(Constants.TAG, "logout response : " + data.getString("message"))
                     when (data.getInt("result")) {
-                        101 -> {
+                        301 -> {
                             val sharedPreferences =
                                 activity?.getSharedPreferences("login", MODE_PRIVATE)
                             val editor = sharedPreferences?.edit()

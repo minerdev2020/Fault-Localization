@@ -11,6 +11,7 @@ import kotlinx.serialization.json.JsonObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.reflect.KClass
 
 class RetrofitManager {
     companion object {
@@ -21,15 +22,15 @@ class RetrofitManager {
         RetrofitClient.getClient(BASE_URL)?.create(IRetrofit::class.java)
 
     fun getAllItems(
-        itemType: String,
+        itemType: KClass<*>,
         onResponse: (response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val call = run {
-            when (itemType) {
-                "person" -> iRetrofit?.getAllPerson()
-                "equipment" -> iRetrofit?.getAllEquipment()
-                "message" -> iRetrofit?.getAllMessage()
+            when (itemType.simpleName) {
+                "Person" -> iRetrofit?.getAllPerson()
+                "Equipment" -> iRetrofit?.getAllEquipment()
+                "Message" -> iRetrofit?.getAllMessage()
                 else -> {
                     return
                 }
@@ -50,16 +51,16 @@ class RetrofitManager {
     }
 
     fun getItem(
-        itemType: String,
+        itemType: KClass<*>,
         id: Int,
         onResponse: (response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val call = run {
-            when (itemType) {
-                "person" -> iRetrofit?.getPerson(id)
-                "equipment" -> iRetrofit?.getEquipment(id)
-                "message" -> iRetrofit?.getMessage(id)
+            when (itemType.simpleName) {
+                "Person" -> iRetrofit?.getPerson(id)
+                "Equipment" -> iRetrofit?.getEquipment(id)
+                "Message" -> iRetrofit?.getMessage(id)
                 else -> {
                     return
                 }
@@ -80,16 +81,16 @@ class RetrofitManager {
     }
 
     fun <T : Item> createItem(
-        itemType: String,
+        itemType: KClass<*>,
         item: T,
         onResponse: (response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val call = run {
-            when (itemType) {
-                "person" -> iRetrofit?.createPerson(item as Person)
-                "equipment" -> iRetrofit?.createEquipment(item as Equipment)
-                "message" -> iRetrofit?.createMessage(item as Message)
+            when (itemType.simpleName) {
+                "Person" -> iRetrofit?.createPerson(item as Person)
+                "Equipment" -> iRetrofit?.createEquipment(item as Equipment)
+                "Message" -> iRetrofit?.createMessage(item as Message)
                 else -> {
                     return
                 }
@@ -110,17 +111,17 @@ class RetrofitManager {
     }
 
     fun updateItem(
-        itemType: String,
+        itemType: KClass<*>,
         id: Int,
         state: Byte,
         onResponse: (response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val call = run {
-            when (itemType) {
-                "person" -> iRetrofit?.updatePerson(id, state)
-                "equipment" -> iRetrofit?.updateEquipment(id, state)
-                "message" -> iRetrofit?.updateMessage(id, state)
+            when (itemType.simpleName) {
+                "Person" -> iRetrofit?.updatePerson(id, state)
+                "Equipment" -> iRetrofit?.updateEquipment(id, state)
+                "Message" -> iRetrofit?.updateMessage(id, state)
                 else -> {
                     return
                 }
@@ -142,17 +143,17 @@ class RetrofitManager {
     }
 
     fun <T : Item> updateItem(
-        itemType: String,
+        itemType: KClass<*>,
         id: Int,
         item: T,
         onResponse: (response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val call = run {
-            when (itemType) {
-                "person" -> iRetrofit?.updatePerson(id, item as Person)
-                "equipment" -> iRetrofit?.updateEquipment(id, item as Equipment)
-                "message" -> iRetrofit?.updateMessage(id, item as Message)
+            when (itemType.simpleName) {
+                "Person" -> iRetrofit?.updatePerson(id, item as Person)
+                "Equipment" -> iRetrofit?.updateEquipment(id, item as Equipment)
+                "Message" -> iRetrofit?.updateMessage(id, item as Message)
                 else -> {
                     return
                 }
@@ -174,16 +175,16 @@ class RetrofitManager {
     }
 
     fun deleteItem(
-        itemType: String,
+        itemType: KClass<*>,
         id: Int,
         onResponse: (response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val call = run {
-            when (itemType) {
-                "person" -> iRetrofit?.deletePerson(id)
-                "equipment" -> iRetrofit?.deleteEquipment(id)
-                "message" -> iRetrofit?.deleteMessage(id)
+            when (itemType.simpleName) {
+                "Person" -> iRetrofit?.deletePerson(id)
+                "Equipment" -> iRetrofit?.deleteEquipment(id)
+                "Message" -> iRetrofit?.deleteMessage(id)
                 else -> {
                     return
                 }
@@ -204,15 +205,15 @@ class RetrofitManager {
     }
 
     fun deleteAllItems(
-        itemType: String,
+        itemType: KClass<*>,
         onResponse: (response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val call = run {
-            when (itemType) {
-                "person" -> iRetrofit?.deleteAllPerson()
-                "equipment" -> iRetrofit?.deleteAllEquipment()
-                "message" -> iRetrofit?.deleteAllMessage()
+            when (itemType.simpleName) {
+                "Person" -> iRetrofit?.deleteAllPerson()
+                "Equipment" -> iRetrofit?.deleteAllEquipment()
+                "Message" -> iRetrofit?.deleteAllMessage()
                 else -> {
                     return
                 }

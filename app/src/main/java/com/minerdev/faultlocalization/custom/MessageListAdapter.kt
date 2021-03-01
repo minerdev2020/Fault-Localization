@@ -39,9 +39,9 @@ class MessageListAdapter : RecyclerView.Adapter<MessageListAdapter.ViewHolder>()
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(message: Message) {
-            binding.tvFrom.text = message.fromWho
-            binding.tvState.text = message.state.toString()
-            binding.tvType.text = message.type.toString()
+            binding.tvFrom.text = ""
+            binding.tvState.text = message.state
+            binding.tvType.text = message.type
             binding.tvContents.text = message.contents
         }
 

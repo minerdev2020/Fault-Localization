@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity() {
 
             override fun onPageSelected(position: Int) {
                 binding.bottomNav.menu.getItem(position).isChecked = true
-                supportActionBar?.setTitle(adapter.getPageTitle(position))
+                supportActionBar?.title = adapter.getPageTitle(position)
                 binding.searchView.onActionViewCollapsed()
                 invalidateOptionsMenu()
             }

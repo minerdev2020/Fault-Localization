@@ -45,8 +45,8 @@ class PersonListAdapter : RecyclerView.Adapter<PersonListAdapter.ViewHolder>() {
 
         fun bind(person: Person) {
             binding.tvName.text = person.name
-            binding.tvState.text = person.state.toString()
-            binding.tvType.text = person.type.toString()
+            binding.tvState.text = person.state
+            binding.tvType.text = person.type
             binding.tvPhone.text = person.phone
             binding.ivProfile.setBackgroundResource(R.drawable.ic_launcher_background)
             binding.ivProfile.setImageResource(R.drawable.ic_launcher_foreground)

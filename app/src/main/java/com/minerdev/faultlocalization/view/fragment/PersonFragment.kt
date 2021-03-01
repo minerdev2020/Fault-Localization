@@ -21,15 +21,15 @@ import com.minerdev.faultlocalization.model.Person
 import com.minerdev.faultlocalization.view.activity.LoginLogActivity
 import com.minerdev.faultlocalization.view.activity.PersonModifyActivity
 import com.minerdev.faultlocalization.viewmodel.ItemViewModel
+import com.minerdev.faultlocalization.viewmodel.ItemViewModelFactory
 import java.util.*
 
 class PersonFragment : Fragment() {
-
     private val items1 = listOf("全部", "上线", "下线")
     private val items2 = listOf("全部", "管理", "维修")
 
     private val binding by lazy { FragmentPersonBinding.inflate(layoutInflater) }
-    private val viewModel: ItemViewModel<Person> by viewModels()
+    private val viewModel: ItemViewModel<Person> by viewModels { ItemViewModelFactory(Person::class) }
     private val adapter = PersonListAdapter()
 
     private var group1 = 0
@@ -63,7 +63,16 @@ class PersonFragment : Fragment() {
 
         binding.recyclerView.adapter = adapter
 
+        viewModel.allItems.observe(viewLifecycleOwner, {
+            it?.let { adapter.items = it as ArrayList<Person> }
+        })
+
         return binding.root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadItems()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

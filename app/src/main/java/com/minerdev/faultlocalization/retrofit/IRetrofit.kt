@@ -3,23 +3,26 @@ package com.minerdev.faultlocalization.retrofit
 import com.minerdev.faultlocalization.model.Equipment
 import com.minerdev.faultlocalization.model.Message
 import com.minerdev.faultlocalization.model.Person
+import com.minerdev.faultlocalization.model.Sensor
 import com.minerdev.faultlocalization.utils.Constants.API_AUTH
-import com.minerdev.faultlocalization.utils.Constants.API_EQUIP
+import com.minerdev.faultlocalization.utils.Constants.API_EQUIPMENT
 import com.minerdev.faultlocalization.utils.Constants.API_MESSAGE
 import com.minerdev.faultlocalization.utils.Constants.API_PERSON
+import com.minerdev.faultlocalization.utils.Constants.API_SENSOR
+import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import retrofit2.Call
 import retrofit2.http.*
 
 interface IRetrofit {
-    @GET(API_AUTH)
-    fun login(): Call<JsonObject>
+    @POST("$API_AUTH/login")
+    fun login(@Body user: JsonElement): Call<JsonObject>
 
-    @GET(API_AUTH)
-    fun logout(): Call<JsonObject>
+    @GET("$API_AUTH/logout")
+    fun logout(@Body user: JsonElement): Call<JsonObject>
 
-    @GET(API_AUTH)
-    fun register(): Call<JsonObject>
+    @POST("$API_AUTH/register")
+    fun register(@Body user: JsonElement): Call<JsonObject>
 
 
     @GET(API_PERSON)
@@ -56,41 +59,74 @@ interface IRetrofit {
     fun deleteAllPerson(): Call<JsonObject>
 
 
-    @GET(API_EQUIP)
+    @GET(API_EQUIPMENT)
     fun getAllEquipment(): Call<JsonObject>
 
-    @GET("$API_EQUIP/{id}")
+    @GET("$API_EQUIPMENT/{id}")
     fun getEquipment(
         @Path("id") id: Int
     ): Call<JsonObject>
 
-    @Multipart
-    @POST(API_EQUIP)
+    @POST(API_EQUIPMENT)
     fun createEquipment(
         @Body equipment: Equipment
     ): Call<JsonObject>
 
-    @PATCH("$API_EQUIP/{id}")
+    @PUT("$API_EQUIPMENT/{id}")
     fun updateEquipment(
         @Path("id") id: Int,
         @Body equipment: Equipment
     ): Call<JsonObject>
 
-    @PATCH("$API_EQUIP/{id}")
+    @PATCH("$API_EQUIPMENT/{id}")
     fun updateEquipment(
         @Path("id") id: Int,
         @Query("state") state: Byte
     ): Call<JsonObject>
 
-    @DELETE("$API_EQUIP/{id}")
+    @DELETE("$API_EQUIPMENT/{id}")
     fun deleteEquipment(
         @Path("id") id: Int
     ): Call<JsonObject>
 
-    @DELETE(API_EQUIP)
+    @DELETE(API_EQUIPMENT)
     fun deleteAllEquipment(): Call<JsonObject>
 
 
+    @GET(API_SENSOR)
+    fun getAllSensor(): Call<JsonObject>
+
+    @GET("$API_SENSOR/{id}")
+    fun getSensor(
+        @Path("id") id: Int
+    ): Call<JsonObject>
+
+    @POST(API_SENSOR)
+    fun createSensor(
+        @Body message: Sensor
+    ): Call<JsonObject>
+
+    @PUT("$API_SENSOR/{id}")
+    fun updateSensor(
+        @Path("id") id: Int,
+        @Body message: Sensor
+    ): Call<JsonObject>
+
+    @PATCH("$API_SENSOR/{id}")
+    fun updateSensor(
+        @Path("id") id: Int,
+        @Query("state") state: Byte
+    ): Call<JsonObject>
+
+    @DELETE("$API_SENSOR/{id}")
+    fun deleteSensor(
+        @Path("id") id: Int
+    ): Call<JsonObject>
+
+    @DELETE(API_SENSOR)
+    fun deleteAllSensor(): Call<JsonObject>
+
+    
     @GET(API_MESSAGE)
     fun getAllMessage(): Call<JsonObject>
 
@@ -99,13 +135,12 @@ interface IRetrofit {
         @Path("id") id: Int
     ): Call<JsonObject>
 
-    @Multipart
     @POST(API_MESSAGE)
     fun createMessage(
         @Body message: Message
     ): Call<JsonObject>
 
-    @PATCH("$API_MESSAGE/{id}")
+    @PUT("$API_MESSAGE/{id}")
     fun updateMessage(
         @Path("id") id: Int,
         @Body message: Message

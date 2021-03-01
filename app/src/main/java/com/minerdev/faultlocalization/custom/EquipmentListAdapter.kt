@@ -50,7 +50,7 @@ class EquipmentListAdapter : RecyclerView.Adapter<EquipmentListAdapter.ViewHolde
 
         fun bind(equipment: Equipment) {
             binding.tvName.text = equipment.name
-            binding.tvState.text = equipment.state.toString()
+            binding.tvState.text = equipment.state
             binding.ivProfile.setBackgroundResource(R.drawable.ic_launcher_background)
             binding.ivProfile.setImageResource(R.drawable.ic_launcher_foreground)
         }
