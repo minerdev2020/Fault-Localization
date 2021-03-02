@@ -22,6 +22,7 @@ import com.minerdev.faultlocalization.view.activity.LoginLogActivity
 import com.minerdev.faultlocalization.view.activity.PersonModifyActivity
 import com.minerdev.faultlocalization.viewmodel.ItemViewModel
 import com.minerdev.faultlocalization.viewmodel.ItemViewModelFactory
+import kotlinx.serialization.InternalSerializationApi
 import java.util.*
 
 class PersonFragment : Fragment() {
@@ -29,8 +30,8 @@ class PersonFragment : Fragment() {
     private val items2 = listOf("全部", "管理", "维修")
 
     private val binding by lazy { FragmentPersonBinding.inflate(layoutInflater) }
+    private val adapter by lazy { PersonListAdapter(PersonListAdapter.DiffCallback()) }
     private val viewModel: ItemViewModel<Person> by viewModels { ItemViewModelFactory(Person::class) }
-    private val adapter = PersonListAdapter()
 
     private var group1 = 0
     private var group2 = 0
@@ -57,19 +58,18 @@ class PersonFragment : Fragment() {
                 view: View?,
                 position: Int
             ) {
-                tryCall(adapter.items[position].phone)
+                tryCall(adapter[position].phone)
             }
         }
 
         binding.recyclerView.adapter = adapter
 
-        viewModel.allItems.observe(viewLifecycleOwner, {
-            it?.let { adapter.items = it as ArrayList<Person> }
-        })
+        viewModel.allItems.observe(viewLifecycleOwner, adapter::submitList)
 
         return binding.root
     }
 
+    @InternalSerializationApi
     override fun onResume() {
         super.onResume()
         viewModel.loadItems()
@@ -157,7 +157,7 @@ class PersonFragment : Fragment() {
                     startActivity(intent)
                 }
 
-                R.id.popup_person_call -> tryCall(adapter.items[position].phone)
+                R.id.popup_person_call -> tryCall(adapter[position].phone)
 
                 R.id.popup_person_modify -> {
                     intent = Intent(context, PersonModifyActivity::class.java)

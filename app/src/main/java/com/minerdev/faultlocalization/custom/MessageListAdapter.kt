@@ -3,13 +3,16 @@ package com.minerdev.faultlocalization.custom
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.minerdev.faultlocalization.databinding.MessageItemBinding
 import com.minerdev.faultlocalization.model.Message
+import com.minerdev.faultlocalization.model.Person
 import java.util.*
 
-class MessageListAdapter : RecyclerView.Adapter<MessageListAdapter.ViewHolder>() {
-    var items = ArrayList<Message>()
+class MessageListAdapter(diffCallback: DiffCallback) :
+    ListAdapter<Message, MessageListAdapter.ViewHolder>(diffCallback) {
     var listener: OnItemClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -23,12 +26,12 @@ class MessageListAdapter : RecyclerView.Adapter<MessageListAdapter.ViewHolder>()
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = items[position]
+        val item = getItem(position)
         holder.bind(item)
     }
 
-    override fun getItemCount(): Int {
-        return items.size
+    operator fun get(position: Int): Message {
+        return getItem(position)
     }
 
     interface OnItemClickListener {
@@ -49,6 +52,16 @@ class MessageListAdapter : RecyclerView.Adapter<MessageListAdapter.ViewHolder>()
             binding.imageBtn.setOnClickListener {
                 clickListener?.onItemClick(this@ViewHolder, itemView, bindingAdapterPosition)
             }
+        }
+    }
+
+    class DiffCallback : DiffUtil.ItemCallback<Message>() {
+        override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean {
+            return oldItem == newItem
         }
     }
 }

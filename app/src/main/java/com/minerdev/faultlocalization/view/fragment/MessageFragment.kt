@@ -23,8 +23,8 @@ class MessageFragment : Fragment() {
     private val items2 = listOf("全部", "注册", "维修申请", "维修完成")
 
     private val binding by lazy { FragmentMessageBinding.inflate(layoutInflater) }
+    private val adapter by lazy { MessageListAdapter(MessageListAdapter.DiffCallback()) }
     private val viewModel: ItemViewModel<Message> by viewModels { ItemViewModelFactory(Message::class) }
-    private val adapter = MessageListAdapter()
 
     private var group1 = 0
     private var group2 = 0
@@ -73,6 +73,8 @@ class MessageFragment : Fragment() {
         }
 
         binding.recyclerView.adapter = adapter
+
+        viewModel.allItems.observe(viewLifecycleOwner, adapter::submitList)
 
         return binding.root
     }

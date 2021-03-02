@@ -5,16 +5,20 @@ import androidx.lifecycle.MutableLiveData
 import com.minerdev.faultlocalization.model.Item
 import com.minerdev.faultlocalization.retrofit.RetrofitManager
 import com.minerdev.faultlocalization.utils.Constants.TAG
+import kotlinx.serialization.InternalSerializationApi
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.serializer
 import org.json.JSONObject
 import kotlin.reflect.KClass
 
 class Repository<T : Item>(private val itemType: KClass<T>) {
     val allItems = MutableLiveData<List<T>>()
-    val items = MutableLiveData<List<T>>()
+    val item = MutableLiveData<T>()
 
-    fun loadItem(id: Int) {
+     @InternalSerializationApi
+     fun loadItem(id: Int) {
         RetrofitManager.instance.getItem(itemType, id,
             { response: String ->
                 run {
@@ -23,7 +27,7 @@ class Repository<T : Item>(private val itemType: KClass<T>) {
                     Log.d(TAG, "loadItem response : " + data.getString("data"))
 
                     val format = Json { encodeDefaults = true }
-                    items.postValue(format.decodeFromString<List<T>>(data.getString("data")))
+                    item.postValue(format.decodeFromString(itemType.serializer(), data.getString("data")))
                 }
             },
             { error: Throwable ->
@@ -33,6 +37,7 @@ class Repository<T : Item>(private val itemType: KClass<T>) {
             })
     }
 
+    @InternalSerializationApi
     fun loadItems() {
         RetrofitManager.instance.getAllItems(itemType,
             { response: String ->
@@ -42,7 +47,7 @@ class Repository<T : Item>(private val itemType: KClass<T>) {
                     Log.d(TAG, "loadItems sale response : " + data.getString("data"))
 
                     val format = Json { encodeDefaults = true }
-                    val items = format.decodeFromString<List<T>>(data.getString("data"))
+                    val items = format.decodeFromString(ListSerializer(itemType.serializer()), data.getString("data"))
                     allItems.postValue(items)
                 }
             },

@@ -4,14 +4,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.databinding.PersonItemBinding
 import com.minerdev.faultlocalization.model.Person
 import java.util.*
 
-class PersonListAdapter : RecyclerView.Adapter<PersonListAdapter.ViewHolder>() {
-    var items = ArrayList<Person>()
+class PersonListAdapter(diffCallback: DiffCallback) : ListAdapter<Person, PersonListAdapter.ViewHolder>(diffCallback) {
     var listener: OnItemClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -25,12 +26,12 @@ class PersonListAdapter : RecyclerView.Adapter<PersonListAdapter.ViewHolder>() {
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = items[position]
+        val item = getItem(position)
         holder.bind(item)
     }
 
-    override fun getItemCount(): Int {
-        return items.size
+    operator fun get(position: Int): Person {
+        return getItem(position)
     }
 
     interface OnItemClickListener {
@@ -61,6 +62,16 @@ class PersonListAdapter : RecyclerView.Adapter<PersonListAdapter.ViewHolder>() {
             binding.imageBtn.setOnClickListener {
                 clickListener?.onItemClick(this@ViewHolder, itemView, bindingAdapterPosition)
             }
+        }
+    }
+
+    class DiffCallback : DiffUtil.ItemCallback<Person>() {
+        override fun areItemsTheSame(oldItem: Person, newItem: Person): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Person, newItem: Person): Boolean {
+            return oldItem == newItem
         }
     }
 }

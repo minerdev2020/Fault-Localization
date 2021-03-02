@@ -26,8 +26,8 @@ class EquipmentFragment : Fragment() {
     private val items2 = listOf("全部", "工程1", "工程2", "工程3", "工程4")
 
     private val binding by lazy { FragmentEquipBinding.inflate(layoutInflater) }
+    private val adapter by lazy { EquipmentListAdapter(EquipmentListAdapter.DiffCallback()) }
     private val viewModel: ItemViewModel<Equipment> by viewModels { ItemViewModelFactory(Equipment::class) }
-    private val adapter = EquipmentListAdapter()
 
     private var group1 = 0
     private var group2 = 0
@@ -72,6 +72,8 @@ class EquipmentFragment : Fragment() {
         }
 
         binding.recyclerView.adapter = adapter
+
+        viewModel.allItems.observe(viewLifecycleOwner, adapter::submitList)
 
         return binding.root
     }

@@ -5,14 +5,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.databinding.EquipmentItemBinding
 import com.minerdev.faultlocalization.model.Equipment
 import java.util.*
 
-class EquipmentListAdapter : RecyclerView.Adapter<EquipmentListAdapter.ViewHolder>() {
-    var items = ArrayList<Equipment>()
+class EquipmentListAdapter(diffCallback: DiffCallback) :
+    ListAdapter<Equipment, EquipmentListAdapter.ViewHolder>(diffCallback) {
     var listener: OnItemClickListener? = null
 
     private val selectedItems = SparseBooleanArray()
@@ -29,13 +31,13 @@ class EquipmentListAdapter : RecyclerView.Adapter<EquipmentListAdapter.ViewHolde
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val item = items[position]
+        val item = getItem(position)
         holder.bind(item)
         holder.setVisibility(selectedItems[position])
     }
 
-    override fun getItemCount(): Int {
-        return items.size
+    operator fun get(position: Int): Equipment {
+        return getItem(position)
     }
 
     interface OnItemClickListener {
@@ -88,6 +90,16 @@ class EquipmentListAdapter : RecyclerView.Adapter<EquipmentListAdapter.ViewHolde
             binding.btnDetail.setOnClickListener {
                 clickListener?.onItemClick(this@ViewHolder, itemView, bindingAdapterPosition)
             }
+        }
+    }
+
+    class DiffCallback : DiffUtil.ItemCallback<Equipment>() {
+        override fun areItemsTheSame(oldItem: Equipment, newItem: Equipment): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Equipment, newItem: Equipment): Boolean {
+            return oldItem == newItem
         }
     }
 }
