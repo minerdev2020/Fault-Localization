@@ -13,6 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FaultLocalization"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".view.activity.LoginActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".view.activity.RegisterActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity android:name=".view.activity.DataHistoryActivity" />
         <activity android:name=".view.activity.LoginLogActivity" />
         <activity android:name=".view.activity.PersonModifyActivity" />
@@ -21,7 +27,7 @@
             android:name=".view.activity.MainActivity"
             android:theme="@style/Theme.FaultLocalization.NoActionBar" />
         <activity
-            android:name=".view.activity.TitleActivity"
+            android:name=".view.activity.SplashActivity"
             android:theme="@style/Theme.FaultLocalization.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -29,7 +35,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
     </application>
 
 </manifest>

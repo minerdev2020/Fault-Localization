@@ -1,7 +1,5 @@
-package com.minerdev.faultlocalization.view.fragment
+package com.minerdev.faultlocalization.view.activity
 
-import android.content.Context.INPUT_METHOD_SERVICE
-import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.os.Bundle
 import android.text.InputFilter
@@ -12,40 +10,35 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
-import androidx.fragment.app.Fragment
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
-import com.minerdev.faultlocalization.R
-import com.minerdev.faultlocalization.databinding.FragmentLoginBinding
+import androidx.appcompat.app.AppCompatActivity
+import com.minerdev.faultlocalization.databinding.ActivityLoginBinding
 import com.minerdev.faultlocalization.retrofit.AuthRetrofitManager
 import com.minerdev.faultlocalization.utils.Constants.TAG
 import com.minerdev.faultlocalization.utils.Constants.TOKEN
-import com.minerdev.faultlocalization.view.activity.MainActivity
 import org.json.JSONObject
 import java.util.regex.Pattern
 
-class LoginFragment : Fragment() {
-    private val binding by lazy { FragmentLoginBinding.inflate(layoutInflater) }
-    lateinit var navController: NavController
+class LoginActivity : AppCompatActivity() {
+    private val binding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val actionBar = activity?.actionBar
-        return binding.root
-    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(binding.root)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        navController = Navigation.findNavController(view)
-        val appBarConfiguration = AppBarConfiguration(navController.graph)
-        binding.toolbar.setupWithNavController(navController, appBarConfiguration)
+        supportActionBar?.title = "登录"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         setupButtons()
         setupEditTexts()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> finish()
+            else -> {
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun tryLogin(view: View, id: String, pw: String) {
@@ -58,25 +51,27 @@ class LoginFragment : Fragment() {
                         when (data.getInt("code")) {
                             200 -> {
                                 val sharedPreferences =
-                                    activity?.getSharedPreferences("login", MODE_PRIVATE)
-                                val editor = sharedPreferences?.edit()
-                                editor?.putString("id", id)
-                                editor?.putString("token", data.getString("token"))
-                                editor?.apply()
+                                    getSharedPreferences("login", MODE_PRIVATE)
+                                val editor = sharedPreferences.edit()
+                                editor.putString("id", id)
+                                editor.putString("token", data.getString("token"))
+                                editor.apply()
 
                                 TOKEN = data.getString("token")
                                 Log.d(TAG, "tryLogin response : " + data.getString("token"))
 
-                                val intent = Intent(activity, MainActivity::class.java)
+                                val intent = Intent(this@LoginActivity, MainActivity::class.java)
                                 startActivity(intent)
-                                activity?.finish()
+                                finish()
                             }
                             400 -> {
-                                Toast.makeText(context, "账号或密码有误！", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@LoginActivity, "账号或密码有误！", Toast.LENGTH_SHORT)
+                                    .show()
                                 binding.textInputEtPw.setText("")
                             }
                             404 -> {
-                                Toast.makeText(context, "账号不存在！", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@LoginActivity, "账号不存在！", Toast.LENGTH_SHORT)
+                                    .show()
                                 binding.textInputEtPw.setText("")
                             }
                             else -> {
@@ -92,7 +87,7 @@ class LoginFragment : Fragment() {
                 }
             )
         } else {
-            Toast.makeText(context, "账号或密码有误！", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "账号或密码有误！", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -103,7 +98,7 @@ class LoginFragment : Fragment() {
         }
 
         binding.btnBack.setOnClickListener {
-            navController.navigate(R.id.action_loginFragment_to_splashFragment)
+            finish()
         }
     }
 
@@ -124,9 +119,9 @@ class LoginFragment : Fragment() {
 
         binding.textInputEtPw.setOnEditorActionListener(OnEditorActionListener { _, i, keyEvent ->
             if (keyEvent != null && keyEvent.keyCode == KeyEvent.KEYCODE_ENTER || i == EditorInfo.IME_ACTION_DONE) {
-                val manager = activity?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                val manager = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 manager.hideSoftInputFromWindow(
-                    activity?.currentFocus?.windowToken,
+                    currentFocus?.windowToken,
                     InputMethodManager.HIDE_NOT_ALWAYS
                 )
 

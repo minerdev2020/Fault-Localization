@@ -7,6 +7,7 @@ import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityCompat
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.custom.SectionPageAdapter
@@ -60,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         val intervalTime = tempTime - backPressedTime
 
         if (intervalTime in 0..FINISH_INTERVAL_TIME) {
-            finish()
+            ActivityCompat.finishAffinity(this);
 
         } else {
             backPressedTime = tempTime

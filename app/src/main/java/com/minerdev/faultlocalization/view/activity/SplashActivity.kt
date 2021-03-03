@@ -6,27 +6,22 @@ import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.NavController
-import androidx.navigation.fragment.NavHostFragment
 import com.minerdev.faultlocalization.R
-import com.minerdev.faultlocalization.databinding.ActivityTitleBinding
+import com.minerdev.faultlocalization.databinding.ActivitySplashBinding
 import com.minerdev.faultlocalization.utils.Constants.BASE_URL
 import com.minerdev.faultlocalization.utils.Constants.TAG
 import com.minerdev.faultlocalization.utils.Constants.TOKEN
 
-class TitleActivity : AppCompatActivity() {
-    private val binding by lazy { ActivityTitleBinding.inflate(layoutInflater) }
-    lateinit var navController: NavController
+class SplashActivity : AppCompatActivity() {
+    private val binding by lazy { ActivitySplashBinding.inflate(layoutInflater) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        navController = navHostFragment.navController
-
         BASE_URL = getString(R.string.local_server_dns)
+
+        setupButtons()
 
         if (!checkInternetConnection()) {
             val builder = AlertDialog.Builder(this)
@@ -47,7 +42,6 @@ class TitleActivity : AppCompatActivity() {
 
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
-            finish()
         }
     }
 
@@ -60,5 +54,16 @@ class TitleActivity : AppCompatActivity() {
         val connectivityManager = getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
         val activeNetwork = connectivityManager.activeNetwork
         return activeNetwork != null
+    }
+
+    private fun setupButtons() {
+        binding.btnLogin.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+        }
+        binding.btnRegister.setOnClickListener {
+            val intent = Intent(this, RegisterActivity::class.java)
+            startActivity(intent)
+        }
     }
 }

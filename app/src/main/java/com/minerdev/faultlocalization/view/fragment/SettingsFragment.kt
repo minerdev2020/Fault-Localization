@@ -13,7 +13,7 @@ import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.databinding.FragmentSettingsBinding
 import com.minerdev.faultlocalization.retrofit.AuthRetrofitManager
 import com.minerdev.faultlocalization.utils.Constants.TAG
-import com.minerdev.faultlocalization.view.activity.TitleActivity
+import com.minerdev.faultlocalization.view.activity.SplashActivity
 import org.json.JSONObject
 
 class SettingsFragment : Fragment() {
@@ -65,9 +65,6 @@ class SettingsFragment : Fragment() {
                             val editor = sharedPreferences?.edit()
                             editor?.clear()
                             editor?.apply()
-
-                            val intent = Intent(context, TitleActivity::class.java)
-                            startActivity(intent)
                             activity?.finish()
                         }
                         else -> {

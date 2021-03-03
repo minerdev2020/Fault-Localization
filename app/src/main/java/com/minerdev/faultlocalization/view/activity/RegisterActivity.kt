@@ -1,44 +1,39 @@
-package com.minerdev.faultlocalization.view.fragment
+package com.minerdev.faultlocalization.view.activity
 
 import android.os.Bundle
 import android.text.InputFilter
 import android.text.InputFilter.LengthFilter
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.MenuItem
 import android.widget.Toast
-import androidx.fragment.app.Fragment
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupWithNavController
-import com.minerdev.faultlocalization.R
-import com.minerdev.faultlocalization.databinding.FragmentRegisterBinding
+import androidx.appcompat.app.AppCompatActivity
+import com.minerdev.faultlocalization.databinding.ActivityRegisterBinding
 import com.minerdev.faultlocalization.retrofit.AuthRetrofitManager
 import com.minerdev.faultlocalization.utils.Constants
 import org.json.JSONObject
 import java.util.regex.Pattern
 
-class RegisterFragment : Fragment() {
-    private val binding by lazy { FragmentRegisterBinding.inflate(layoutInflater) }
-    lateinit var navController: NavController
+class RegisterActivity : AppCompatActivity() {
+    private val binding by lazy { ActivityRegisterBinding.inflate(layoutInflater) }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        return binding.root
-    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(binding.root)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        navController = Navigation.findNavController(view)
-        val appBarConfiguration = AppBarConfiguration(navController.graph)
-        binding.toolbar.setupWithNavController(navController, appBarConfiguration)
+        supportActionBar?.title = "注册"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         setupButtons()
         setupEditTexts()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> finish()
+            else -> {
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     private fun tryRegister(
@@ -56,10 +51,11 @@ class RegisterFragment : Fragment() {
                         Log.d(Constants.TAG, "tryRegister response : " + data.getString("message"))
                         when (data.getInt("code")) {
                             201 -> {
-                                navController.navigate(R.id.action_registerFragment_to_splashFragment)
+                                finish()
                             }
                             409 -> {
-                                Toast.makeText(context, "该用户已存在！", Toast.LENGTH_SHORT).show()
+                                Toast.makeText(this@RegisterActivity, "该用户已存在！", Toast.LENGTH_SHORT)
+                                    .show()
                             }
                             else -> {
                             }
@@ -73,7 +69,7 @@ class RegisterFragment : Fragment() {
                 }
             )
         } else {
-            Toast.makeText(context, "所输入的用户信息不全！", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "所输入的用户信息不全！", Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -88,7 +84,7 @@ class RegisterFragment : Fragment() {
         }
 
         binding.btnBack.setOnClickListener {
-            navController.navigate(R.id.action_registerFragment_to_splashFragment)
+            finish()
         }
     }
 
