@@ -8,7 +8,7 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.DialogFragment
 import com.minerdev.faultlocalization.databinding.SelectDialogBinding
 
-class SelectDialog : DialogFragment() {
+class SelectDialogFragment : DialogFragment() {
     val spinner1ItemPosition: Int
         get() = binding.spn1.selectedItemPosition
 

@@ -13,6 +13,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.custom.PersonListAdapter
@@ -42,6 +43,14 @@ class PersonFragment : Fragment() {
     ): View {
         val manager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.layoutManager = manager
+        binding.recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                context,
+                DividerItemDecoration.VERTICAL
+            )
+        )
+        binding.recyclerView.adapter = adapter
+
         adapter.listener = object : PersonListAdapter.OnItemClickListener {
             override fun onItemClick(
                 viewHolder: PersonListAdapter.ViewHolder?,
@@ -61,8 +70,6 @@ class PersonFragment : Fragment() {
                 tryCall(adapter[position].phone)
             }
         }
-
-        binding.recyclerView.adapter = adapter
 
         viewModel.allItems.observe(viewLifecycleOwner, adapter::submitList)
 
@@ -110,7 +117,7 @@ class PersonFragment : Fragment() {
                 startActivity(intent)
             }
             R.id.toolbar_menu_filter -> {
-                val dialog = SelectDialog()
+                val dialog = SelectDialogFragment()
                 dialog.items1 = items1
                 dialog.items2 = items2
                 dialog.listener = View.OnClickListener {

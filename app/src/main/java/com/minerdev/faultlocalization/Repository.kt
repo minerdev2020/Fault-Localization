@@ -3,11 +3,10 @@ package com.minerdev.faultlocalization
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.minerdev.faultlocalization.model.Item
-import com.minerdev.faultlocalization.retrofit.RetrofitManager
+import com.minerdev.faultlocalization.retrofit.ItemRetrofitManager
 import com.minerdev.faultlocalization.utils.Constants.TAG
 import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.serializer
 import org.json.JSONObject
@@ -19,7 +18,7 @@ class Repository<T : Item>(private val itemType: KClass<T>) {
 
      @InternalSerializationApi
      fun loadItem(id: Int) {
-        RetrofitManager.instance.getItem(itemType, id,
+        ItemRetrofitManager.instance.getItem(itemType, id,
             { response: String ->
                 run {
                     val data = JSONObject(response)
@@ -39,7 +38,7 @@ class Repository<T : Item>(private val itemType: KClass<T>) {
 
     @InternalSerializationApi
     fun loadItems() {
-        RetrofitManager.instance.getAllItems(itemType,
+        ItemRetrofitManager.instance.getAllItems(itemType,
             { response: String ->
                 run {
                     val data = JSONObject(response)
@@ -59,7 +58,7 @@ class Repository<T : Item>(private val itemType: KClass<T>) {
     }
 
     fun addItem(item: T, onResponse: () -> Unit) {
-        RetrofitManager.instance.createItem(itemType, item,
+        ItemRetrofitManager.instance.createItem(itemType, item,
             { response: String ->
                 run {
                     val data = JSONObject(response)
@@ -75,7 +74,7 @@ class Repository<T : Item>(private val itemType: KClass<T>) {
     }
 
     fun modifyItem(item: T, onResponse: () -> Unit) {
-        RetrofitManager.instance.updateItem(itemType, item.id, item,
+        ItemRetrofitManager.instance.updateItem(itemType, item.id, item,
             { response: String ->
                 run {
                     val data = JSONObject(response)
@@ -90,7 +89,7 @@ class Repository<T : Item>(private val itemType: KClass<T>) {
     }
 
     fun modifyItemState(id: Int, state: Byte) {
-        RetrofitManager.instance.updateItem(itemType, id, state,
+        ItemRetrofitManager.instance.updateItem(itemType, id, state,
             { response: String ->
                 run {
                     val data = JSONObject(response)
@@ -105,7 +104,7 @@ class Repository<T : Item>(private val itemType: KClass<T>) {
     }
 
     fun deleteItem(id: Int) {
-        RetrofitManager.instance.deleteItem(itemType, id,
+        ItemRetrofitManager.instance.deleteItem(itemType, id,
             { response: String ->
                 run {
                     val data = JSONObject(response)

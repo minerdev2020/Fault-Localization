@@ -18,13 +18,10 @@
         <activity android:name=".view.activity.PersonModifyActivity" />
         <activity android:name=".view.activity.EquipmentModifyActivity" />
         <activity
-            android:name=".view.activity.RegisterActivity"
-            android:theme="@style/Theme.FaultLocalization.NoActionBar" />
-        <activity
             android:name=".view.activity.MainActivity"
             android:theme="@style/Theme.FaultLocalization.NoActionBar" />
         <activity
-            android:name=".view.activity.LoginActivity"
+            android:name=".view.activity.TitleActivity"
             android:theme="@style/Theme.FaultLocalization.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -32,6 +29,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
     </application>
 
 </manifest>

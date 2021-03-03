@@ -12,8 +12,8 @@ import androidx.fragment.app.Fragment
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.databinding.FragmentSettingsBinding
 import com.minerdev.faultlocalization.retrofit.AuthRetrofitManager
-import com.minerdev.faultlocalization.utils.Constants
-import com.minerdev.faultlocalization.view.activity.LoginActivity
+import com.minerdev.faultlocalization.utils.Constants.TAG
+import com.minerdev.faultlocalization.view.activity.TitleActivity
 import org.json.JSONObject
 
 class SettingsFragment : Fragment() {
@@ -51,20 +51,22 @@ class SettingsFragment : Fragment() {
     }
 
     private fun logout() {
+        val sharedPreferences = activity?.getSharedPreferences("login", MODE_PRIVATE)
+        val id = sharedPreferences?.getString("id", "") ?: ""
+        Log.d(TAG, "logout : $id")
+
         AuthRetrofitManager.instance.logout(id,
             { response: String ->
                 run {
                     val data = JSONObject(response)
-                    Log.d(Constants.TAG, "logout response : " + data.getString("message"))
-                    when (data.getInt("result")) {
-                        301 -> {
-                            val sharedPreferences =
-                                activity?.getSharedPreferences("login", MODE_PRIVATE)
+                    Log.d(TAG, "logout response : " + data.getString("message"))
+                    when (data.getInt("code")) {
+                        200 -> {
                             val editor = sharedPreferences?.edit()
                             editor?.clear()
                             editor?.apply()
 
-                            val intent = Intent(context, LoginActivity::class.java)
+                            val intent = Intent(context, TitleActivity::class.java)
                             startActivity(intent)
                             activity?.finish()
                         }
@@ -75,7 +77,7 @@ class SettingsFragment : Fragment() {
             },
             { error: Throwable ->
                 run {
-                    Log.d(Constants.TAG, "logout error : " + error.localizedMessage)
+                    Log.d(TAG, "logout error : " + error.localizedMessage)
                 }
             }
         )

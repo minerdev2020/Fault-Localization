@@ -3,7 +3,7 @@ package com.minerdev.faultlocalization.utils
 object Constants {
     const val TAG = "DEBUG_TAG"
 
-    const val BASE_URL = "http://192.168.35.141:3000"
+    lateinit var BASE_URL: String
     const val API_AUTH = "/api/auth"
     const val API_USER = "/api/users"
     const val API_PERSON = "/api/persons"

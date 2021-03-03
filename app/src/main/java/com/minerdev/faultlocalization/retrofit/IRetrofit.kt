@@ -18,7 +18,7 @@ interface IRetrofit {
     @POST("$API_AUTH/login")
     fun login(@Body user: JsonElement): Call<JsonObject>
 
-    @GET("$API_AUTH/logout")
+    @POST("$API_AUTH/logout")
     fun logout(@Body user: JsonElement): Call<JsonObject>
 
     @POST("$API_AUTH/register")

@@ -13,9 +13,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import kotlin.reflect.KClass
 
-class RetrofitManager {
+class ItemRetrofitManager {
     companion object {
-        val instance = RetrofitManager()
+        val instance = ItemRetrofitManager()
     }
 
     private val iRetrofit: IRetrofit? =

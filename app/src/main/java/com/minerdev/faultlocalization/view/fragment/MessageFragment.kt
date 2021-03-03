@@ -9,6 +9,7 @@ import android.widget.SearchView
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.custom.MessageListAdapter
@@ -35,6 +36,14 @@ class MessageFragment : Fragment() {
     ): View {
         val manager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.layoutManager = manager
+        binding.recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                context,
+                DividerItemDecoration.VERTICAL
+            )
+        )
+        binding.recyclerView.adapter = adapter
+
         adapter.listener = object : MessageListAdapter.OnItemClickListener {
             override fun onItemClick(
                 viewHolder: MessageListAdapter.ViewHolder?,
@@ -71,8 +80,6 @@ class MessageFragment : Fragment() {
                 alertDialog?.show()
             }
         }
-
-        binding.recyclerView.adapter = adapter
 
         viewModel.allItems.observe(viewLifecycleOwner, adapter::submitList)
 
@@ -113,7 +120,7 @@ class MessageFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.toolbar_menu_filter -> {
-                val dialog = SelectDialog()
+                val dialog = SelectDialogFragment()
                 dialog.items1 = items1
                 dialog.items2 = items2
                 dialog.listener = View.OnClickListener {
