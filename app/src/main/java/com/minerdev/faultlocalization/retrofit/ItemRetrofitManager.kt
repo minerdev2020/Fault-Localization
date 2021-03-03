@@ -7,6 +7,7 @@ import com.minerdev.faultlocalization.model.Message
 import com.minerdev.faultlocalization.model.Person
 import com.minerdev.faultlocalization.utils.Constants
 import com.minerdev.faultlocalization.utils.Constants.BASE_URL
+import com.minerdev.faultlocalization.utils.Constants.TOKEN
 import kotlinx.serialization.json.JsonObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -28,9 +29,9 @@ class ItemRetrofitManager {
     ) {
         val call = run {
             when (itemType.simpleName) {
-                "Person" -> iRetrofit?.getAllPerson()
-                "Equipment" -> iRetrofit?.getAllEquipment()
-                "Message" -> iRetrofit?.getAllMessage()
+                "Person" -> iRetrofit?.getAllPerson(TOKEN)
+                "Equipment" -> iRetrofit?.getAllEquipment(TOKEN)
+                "Message" -> iRetrofit?.getAllMessage(TOKEN)
                 else -> {
                     return
                 }
@@ -58,9 +59,9 @@ class ItemRetrofitManager {
     ) {
         val call = run {
             when (itemType.simpleName) {
-                "Person" -> iRetrofit?.getPerson(id)
-                "Equipment" -> iRetrofit?.getEquipment(id)
-                "Message" -> iRetrofit?.getMessage(id)
+                "Person" -> iRetrofit?.getPerson(TOKEN, id)
+                "Equipment" -> iRetrofit?.getEquipment(TOKEN, id)
+                "Message" -> iRetrofit?.getMessage(TOKEN, id)
                 else -> {
                     return
                 }
@@ -88,9 +89,9 @@ class ItemRetrofitManager {
     ) {
         val call = run {
             when (itemType.simpleName) {
-                "Person" -> iRetrofit?.createPerson(item as Person)
-                "Equipment" -> iRetrofit?.createEquipment(item as Equipment)
-                "Message" -> iRetrofit?.createMessage(item as Message)
+                "Person" -> iRetrofit?.createPerson(TOKEN, item as Person)
+                "Equipment" -> iRetrofit?.createEquipment(TOKEN, item as Equipment)
+                "Message" -> iRetrofit?.createMessage(TOKEN, item as Message)
                 else -> {
                     return
                 }
@@ -119,9 +120,9 @@ class ItemRetrofitManager {
     ) {
         val call = run {
             when (itemType.simpleName) {
-                "Person" -> iRetrofit?.updatePerson(id, state)
-                "Equipment" -> iRetrofit?.updateEquipment(id, state)
-                "Message" -> iRetrofit?.updateMessage(id, state)
+                "Person" -> iRetrofit?.updatePerson(TOKEN, id, state)
+                "Equipment" -> iRetrofit?.updateEquipment(TOKEN, id, state)
+                "Message" -> iRetrofit?.updateMessage(TOKEN, id, state)
                 else -> {
                     return
                 }
@@ -151,9 +152,9 @@ class ItemRetrofitManager {
     ) {
         val call = run {
             when (itemType.simpleName) {
-                "Person" -> iRetrofit?.updatePerson(id, item as Person)
-                "Equipment" -> iRetrofit?.updateEquipment(id, item as Equipment)
-                "Message" -> iRetrofit?.updateMessage(id, item as Message)
+                "Person" -> iRetrofit?.updatePerson(TOKEN, id, item as Person)
+                "Equipment" -> iRetrofit?.updateEquipment(TOKEN, id, item as Equipment)
+                "Message" -> iRetrofit?.updateMessage(TOKEN, id, item as Message)
                 else -> {
                     return
                 }
@@ -182,9 +183,9 @@ class ItemRetrofitManager {
     ) {
         val call = run {
             when (itemType.simpleName) {
-                "Person" -> iRetrofit?.deletePerson(id)
-                "Equipment" -> iRetrofit?.deleteEquipment(id)
-                "Message" -> iRetrofit?.deleteMessage(id)
+                "Person" -> iRetrofit?.deletePerson(TOKEN, id)
+                "Equipment" -> iRetrofit?.deleteEquipment(TOKEN, id)
+                "Message" -> iRetrofit?.deleteMessage(TOKEN, id)
                 else -> {
                     return
                 }
@@ -211,9 +212,9 @@ class ItemRetrofitManager {
     ) {
         val call = run {
             when (itemType.simpleName) {
-                "Person" -> iRetrofit?.deleteAllPerson()
-                "Equipment" -> iRetrofit?.deleteAllEquipment()
-                "Message" -> iRetrofit?.deleteAllMessage()
+                "Person" -> iRetrofit?.deleteAllPerson(TOKEN)
+                "Equipment" -> iRetrofit?.deleteAllEquipment(TOKEN)
+                "Message" -> iRetrofit?.deleteAllMessage(TOKEN)
                 else -> {
                     return
                 }

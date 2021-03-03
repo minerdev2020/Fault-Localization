@@ -11,6 +11,8 @@ object Constants {
     const val API_SENSOR = "/api/sensors"
     const val API_MESSAGE = "/api/messages"
 
+    lateinit var TOKEN: String
+
     const val FINISH_INTERVAL_TIME = 2000
 
     const val FILE_MAX_SIZE: Long = 10485760

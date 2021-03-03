@@ -11,7 +11,7 @@ open class ItemViewModel<T : Item>(itemType: KClass<T>) : ViewModel() {
     val allItems : MutableLiveData<List<T>>
     val item : MutableLiveData<T>
 
-    private val repository : Repository<T> = Repository(itemType)
+    private val repository = Repository(itemType)
 
     init {
         allItems = repository.allItems

@@ -1,6 +1,7 @@
 package com.minerdev.faultlocalization.retrofit
 
 import com.minerdev.faultlocalization.utils.Constants.BASE_URL
+import com.minerdev.faultlocalization.utils.Constants.TOKEN
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
@@ -48,7 +49,7 @@ class AuthRetrofitManager {
         val user = buildJsonObject {
             put("user_id", id)
         }
-        val call = iRetrofit?.logout(user) ?: return
+        val call = iRetrofit?.logout(TOKEN, user) ?: return
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful && response.body() != null) {

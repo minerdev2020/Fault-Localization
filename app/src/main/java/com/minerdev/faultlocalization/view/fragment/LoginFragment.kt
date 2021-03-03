@@ -21,6 +21,7 @@ import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.databinding.FragmentLoginBinding
 import com.minerdev.faultlocalization.retrofit.AuthRetrofitManager
 import com.minerdev.faultlocalization.utils.Constants.TAG
+import com.minerdev.faultlocalization.utils.Constants.TOKEN
 import com.minerdev.faultlocalization.view.activity.MainActivity
 import org.json.JSONObject
 import java.util.regex.Pattern
@@ -60,7 +61,11 @@ class LoginFragment : Fragment() {
                                     activity?.getSharedPreferences("login", MODE_PRIVATE)
                                 val editor = sharedPreferences?.edit()
                                 editor?.putString("id", id)
+                                editor?.putString("token", data.getString("token"))
                                 editor?.apply()
+
+                                TOKEN = data.getString("token")
+                                Log.d(TAG, "tryLogin response : " + data.getString("token"))
 
                                 val intent = Intent(activity, MainActivity::class.java)
                                 startActivity(intent)
@@ -98,7 +103,7 @@ class LoginFragment : Fragment() {
         }
 
         binding.btnBack.setOnClickListener {
-            navController.navigate(R.id.action_loginFragment_to_titleFragment)
+            navController.navigate(R.id.action_loginFragment_to_splashFragment)
         }
     }
 

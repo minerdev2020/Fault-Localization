@@ -12,6 +12,7 @@ import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.databinding.ActivityTitleBinding
 import com.minerdev.faultlocalization.utils.Constants.BASE_URL
 import com.minerdev.faultlocalization.utils.Constants.TAG
+import com.minerdev.faultlocalization.utils.Constants.TOKEN
 
 class TitleActivity : AppCompatActivity() {
     private val binding by lazy { ActivityTitleBinding.inflate(layoutInflater) }
@@ -39,7 +40,10 @@ class TitleActivity : AppCompatActivity() {
         } else if (checkLoginStatus()) {
             val sharedPreferences = getSharedPreferences("login", MODE_PRIVATE)
             val id = sharedPreferences.getString("id", "") ?: ""
+            val token = sharedPreferences.getString("token", "") ?: ""
+            TOKEN = token
             Log.d(TAG, "login : $id")
+            Log.d(TAG, "login : $token")
 
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)

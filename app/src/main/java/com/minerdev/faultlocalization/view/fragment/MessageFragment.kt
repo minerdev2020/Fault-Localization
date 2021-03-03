@@ -17,6 +17,7 @@ import com.minerdev.faultlocalization.databinding.FragmentMessageBinding
 import com.minerdev.faultlocalization.model.Message
 import com.minerdev.faultlocalization.viewmodel.ItemViewModel
 import com.minerdev.faultlocalization.viewmodel.ItemViewModelFactory
+import kotlinx.serialization.InternalSerializationApi
 import java.util.*
 
 class MessageFragment : Fragment() {
@@ -84,6 +85,12 @@ class MessageFragment : Fragment() {
         viewModel.allItems.observe(viewLifecycleOwner, adapter::submitList)
 
         return binding.root
+    }
+
+    @InternalSerializationApi
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadItems()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

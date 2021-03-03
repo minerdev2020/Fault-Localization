@@ -20,6 +20,7 @@ import com.minerdev.faultlocalization.view.activity.DataHistoryActivity
 import com.minerdev.faultlocalization.view.activity.EquipmentModifyActivity
 import com.minerdev.faultlocalization.viewmodel.ItemViewModel
 import com.minerdev.faultlocalization.viewmodel.ItemViewModelFactory
+import kotlinx.serialization.InternalSerializationApi
 import java.util.*
 
 class EquipmentFragment : Fragment() {
@@ -83,6 +84,12 @@ class EquipmentFragment : Fragment() {
         viewModel.allItems.observe(viewLifecycleOwner, adapter::submitList)
 
         return binding.root
+    }
+
+    @InternalSerializationApi
+    override fun onResume() {
+        super.onResume()
+        viewModel.loadItems()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

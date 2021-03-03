@@ -56,7 +56,7 @@ class RegisterFragment : Fragment() {
                         Log.d(Constants.TAG, "tryRegister response : " + data.getString("message"))
                         when (data.getInt("code")) {
                             201 -> {
-                                navController.navigate(R.id.action_registerFragment_to_titleFragment)
+                                navController.navigate(R.id.action_registerFragment_to_splashFragment)
                             }
                             409 -> {
                                 Toast.makeText(context, "该用户已存在！", Toast.LENGTH_SHORT).show()
@@ -88,7 +88,7 @@ class RegisterFragment : Fragment() {
         }
 
         binding.btnBack.setOnClickListener {
-            navController.navigate(R.id.action_registerFragment_to_titleFragment)
+            navController.navigate(R.id.action_registerFragment_to_splashFragment)
         }
     }
 
