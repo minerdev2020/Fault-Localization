@@ -69,6 +69,11 @@ class LoginActivity : AppCompatActivity() {
                                     .show()
                                 binding.textInputEtPw.setText("")
                             }
+                            401 -> {
+                                Toast.makeText(this@LoginActivity, "该账号已登录！", Toast.LENGTH_SHORT)
+                                    .show()
+                                binding.textInputEtPw.setText("")
+                            }
                             404 -> {
                                 Toast.makeText(this@LoginActivity, "账号不存在！", Toast.LENGTH_SHORT)
                                     .show()

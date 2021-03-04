@@ -1,4 +1,4 @@
-package com.minerdev.faultlocalization.custom
+package com.minerdev.faultlocalization.adapter
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager

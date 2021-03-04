@@ -1,4 +1,4 @@
-package com.minerdev.faultlocalization.custom
+package com.minerdev.faultlocalization.adapter
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.minerdev.faultlocalization.databinding.MessageItemBinding
 import com.minerdev.faultlocalization.model.Message
-import com.minerdev.faultlocalization.model.Person
 import java.util.*
 
 class MessageListAdapter(diffCallback: DiffCallback) :
@@ -41,17 +40,17 @@ class MessageListAdapter(diffCallback: DiffCallback) :
     class ViewHolder(val binding: MessageItemBinding, clickListener: OnItemClickListener?) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(message: Message) {
-            binding.tvFrom.text = ""
-            binding.tvState.text = message.state
-            binding.tvType.text = message.type
-            binding.tvContents.text = message.contents
-        }
-
         init {
             binding.imageBtn.setOnClickListener {
                 clickListener?.onItemClick(this@ViewHolder, itemView, bindingAdapterPosition)
             }
+        }
+
+        fun bind(message: Message) {
+            binding.tvFrom.text = message.From.name
+            binding.tvState.text = message.MessageState.name
+            binding.tvType.text = message.MessageType.name
+            binding.tvContents.text = message.contents
         }
     }
 

@@ -1,19 +1,18 @@
 package com.minerdev.faultlocalization.view.fragment
 
 import android.content.Context.MODE_PRIVATE
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.SearchView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.databinding.FragmentSettingsBinding
 import com.minerdev.faultlocalization.retrofit.AuthRetrofitManager
 import com.minerdev.faultlocalization.utils.Constants.TAG
-import com.minerdev.faultlocalization.view.activity.SplashActivity
 import org.json.JSONObject
 
 class SettingsFragment : Fragment() {
@@ -62,6 +61,22 @@ class SettingsFragment : Fragment() {
                     Log.d(TAG, "logout response : " + data.getString("message"))
                     when (data.getInt("code")) {
                         200 -> {
+                            val editor = sharedPreferences?.edit()
+                            editor?.clear()
+                            editor?.apply()
+                            activity?.finish()
+                        }
+                        401 -> {
+                            Toast.makeText(context, "该账号已注销！", Toast.LENGTH_SHORT)
+                                .show()
+                            val editor = sharedPreferences?.edit()
+                            editor?.clear()
+                            editor?.apply()
+                            activity?.finish()
+                        }
+                        404 -> {
+                            Toast.makeText(context, "该账号不存在！", Toast.LENGTH_SHORT)
+                                .show()
                             val editor = sharedPreferences?.edit()
                             editor?.clear()
                             editor?.apply()

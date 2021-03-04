@@ -21,8 +21,12 @@
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".view.activity.DataHistoryActivity" />
         <activity android:name=".view.activity.LoginLogActivity" />
-        <activity android:name=".view.activity.PersonModifyActivity" />
-        <activity android:name=".view.activity.EquipmentModifyActivity" />
+        <activity
+            android:name=".view.activity.PersonModifyActivity"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".view.activity.EquipmentModifyActivity"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".view.activity.MainActivity"
             android:theme="@style/Theme.FaultLocalization.NoActionBar" />

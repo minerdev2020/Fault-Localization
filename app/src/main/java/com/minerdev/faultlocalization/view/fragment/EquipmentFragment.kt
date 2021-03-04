@@ -13,13 +13,12 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
-import com.minerdev.faultlocalization.custom.EquipmentListAdapter
+import com.minerdev.faultlocalization.adapter.EquipmentListAdapter
 import com.minerdev.faultlocalization.databinding.FragmentEquipBinding
-import com.minerdev.faultlocalization.model.Equipment
+import com.minerdev.faultlocalization.factory.EquipmentViewModelFactory
 import com.minerdev.faultlocalization.view.activity.DataHistoryActivity
 import com.minerdev.faultlocalization.view.activity.EquipmentModifyActivity
-import com.minerdev.faultlocalization.viewmodel.ItemViewModel
-import com.minerdev.faultlocalization.viewmodel.ItemViewModelFactory
+import com.minerdev.faultlocalization.viewmodel.EquipmentViewModel
 import kotlinx.serialization.InternalSerializationApi
 import java.util.*
 
@@ -29,10 +28,12 @@ class EquipmentFragment : Fragment() {
 
     private val binding by lazy { FragmentEquipBinding.inflate(layoutInflater) }
     private val adapter by lazy { EquipmentListAdapter(EquipmentListAdapter.DiffCallback()) }
-    private val viewModel: ItemViewModel<Equipment> by viewModels { ItemViewModelFactory(Equipment::class) }
+    private val viewModel: EquipmentViewModel by viewModels { EquipmentViewModelFactory() }
 
     private var group1 = 0
     private var group2 = 0
+
+    private lateinit var searchView: SearchView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -55,6 +56,7 @@ class EquipmentFragment : Fragment() {
                 position: Int
             ) {
                 val intent = Intent(context, DataHistoryActivity::class.java)
+                intent.putExtra("id", adapter[position].id)
                 startActivity(intent)
             }
 
@@ -70,7 +72,7 @@ class EquipmentFragment : Fragment() {
                 builder?.setPositiveButton(
                     "确认",
                     DialogInterface.OnClickListener { _, _ ->
-//                        delete(adapter.getItem(position).uid)
+                        viewModel.deleteItem(adapter[position].id)
                         return@OnClickListener
                     })
                 builder?.setNegativeButton(
@@ -95,7 +97,7 @@ class EquipmentFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
 
-        val searchView: SearchView = activity?.findViewById(R.id.searchView) ?: return
+        searchView = activity?.findViewById(R.id.searchView) ?: return
         searchView.visibility = View.VISIBLE
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
@@ -124,18 +126,26 @@ class EquipmentFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.toolbar_menu_add -> {
+                if (searchView.hasFocus()) {
+                    searchView.onActionViewCollapsed()
+                }
+
                 val intent = Intent(context, EquipmentModifyActivity::class.java)
                 startActivity(intent)
             }
 
             R.id.toolbar_menu_filter -> {
+                if (searchView.hasFocus()) {
+                    searchView.onActionViewCollapsed()
+                }
+
                 val dialog = SelectDialogFragment()
                 dialog.items1 = items1
                 dialog.items2 = items2
                 dialog.listener = View.OnClickListener {
                     group1 = dialog.spinner1ItemPosition
                     group2 = dialog.spinner2ItemPosition
-                    rearrangeList(null, group1, group2)
+                    rearrangeList("", group1, group2)
                 }
                 activity?.supportFragmentManager?.let { dialog.show(it, "SampleDialog") }
             }
@@ -146,7 +156,7 @@ class EquipmentFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun rearrangeList(keyword: String?, group1: Int, group2: Int) {
+    private fun rearrangeList(keyword: String, group1: Int, group2: Int) {
 
     }
 }

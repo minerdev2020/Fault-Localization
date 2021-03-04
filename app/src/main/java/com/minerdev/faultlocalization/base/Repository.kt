@@ -1,23 +1,22 @@
-package com.minerdev.faultlocalization
+package com.minerdev.faultlocalization.base
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.minerdev.faultlocalization.model.Item
 import com.minerdev.faultlocalization.retrofit.ItemRetrofitManager
 import com.minerdev.faultlocalization.utils.Constants.TAG
-import kotlinx.serialization.InternalSerializationApi
-import kotlinx.serialization.builtins.ListSerializer
-import kotlinx.serialization.json.Json
-import kotlinx.serialization.serializer
 import org.json.JSONObject
 import kotlin.reflect.KClass
 
-class Repository<T : Item>(private val itemType: KClass<T>) {
+open class Repository<T : Item>(
+    private val itemType: KClass<T>,
+    private val onItemResponse: (response: String) -> T,
+    private val onItemsResponse: (response: String) -> List<T>
+) {
     val allItems = MutableLiveData<List<T>>()
     val item = MutableLiveData<T>()
 
-     @InternalSerializationApi
-     fun loadItem(id: Int) {
+    fun loadItem(id: Int) {
         ItemRetrofitManager.instance.getItem(itemType, id,
             { response: String ->
                 run {
@@ -25,8 +24,7 @@ class Repository<T : Item>(private val itemType: KClass<T>) {
                     Log.d(TAG, "loadItem response : " + data.getString("message"))
                     Log.d(TAG, "loadItem response : " + data.getString("data"))
 
-                    val format = Json { encodeDefaults = true }
-                    item.postValue(format.decodeFromString(itemType.serializer(), data.getString("data")))
+                    item.postValue(onItemResponse(data.getString("data")))
                 }
             },
             { error: Throwable ->
@@ -36,7 +34,6 @@ class Repository<T : Item>(private val itemType: KClass<T>) {
             })
     }
 
-    @InternalSerializationApi
     fun loadItems() {
         ItemRetrofitManager.instance.getAllItems(itemType,
             { response: String ->
@@ -45,9 +42,7 @@ class Repository<T : Item>(private val itemType: KClass<T>) {
                     Log.d(TAG, "loadItems sale response : " + data.getString("message"))
                     Log.d(TAG, "loadItems sale response : " + data.getString("data"))
 
-                    val format = Json { encodeDefaults = true }
-                    val items = format.decodeFromString(ListSerializer(itemType.serializer()), data.getString("data"))
-                    allItems.postValue(items)
+                    allItems.postValue(onItemsResponse(data.getString("data")))
                 }
             },
             { error: Throwable ->
@@ -57,7 +52,7 @@ class Repository<T : Item>(private val itemType: KClass<T>) {
             })
     }
 
-    fun addItem(item: T, onResponse: () -> Unit) {
+    fun addItem(item: T) {
         ItemRetrofitManager.instance.createItem(itemType, item,
             { response: String ->
                 run {
@@ -73,7 +68,7 @@ class Repository<T : Item>(private val itemType: KClass<T>) {
             })
     }
 
-    fun modifyItem(item: T, onResponse: () -> Unit) {
+    fun modifyItem(item: T) {
         ItemRetrofitManager.instance.updateItem(itemType, item.id, item,
             { response: String ->
                 run {

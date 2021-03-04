@@ -16,13 +16,12 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
-import com.minerdev.faultlocalization.custom.PersonListAdapter
+import com.minerdev.faultlocalization.adapter.PersonListAdapter
 import com.minerdev.faultlocalization.databinding.FragmentPersonBinding
-import com.minerdev.faultlocalization.model.Person
+import com.minerdev.faultlocalization.factory.PersonViewModelFactory
 import com.minerdev.faultlocalization.view.activity.LoginLogActivity
 import com.minerdev.faultlocalization.view.activity.PersonModifyActivity
-import com.minerdev.faultlocalization.viewmodel.ItemViewModel
-import com.minerdev.faultlocalization.viewmodel.ItemViewModelFactory
+import com.minerdev.faultlocalization.viewmodel.PersonViewModel
 import kotlinx.serialization.InternalSerializationApi
 import java.util.*
 
@@ -32,10 +31,12 @@ class PersonFragment : Fragment() {
 
     private val binding by lazy { FragmentPersonBinding.inflate(layoutInflater) }
     private val adapter by lazy { PersonListAdapter(PersonListAdapter.DiffCallback()) }
-    private val viewModel: ItemViewModel<Person> by viewModels { ItemViewModelFactory(Person::class) }
+    private val viewModel: PersonViewModel by viewModels { PersonViewModelFactory() }
 
     private var group1 = 0
     private var group2 = 0
+
+    private lateinit var searchView: SearchView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,18 +54,20 @@ class PersonFragment : Fragment() {
 
         adapter.listener = object : PersonListAdapter.OnItemClickListener {
             override fun onItemClick(
-                viewHolder: PersonListAdapter.ViewHolder?,
-                view: View?,
+                viewHolder: PersonListAdapter.ViewHolder,
+                view: View,
                 position: Int
             ) {
-                if (view != null) {
-                    setPopupMenu(view, position)
+                if (searchView.hasFocus()) {
+                    searchView.onActionViewCollapsed()
                 }
+
+                showPopupMenu(view, position)
             }
 
             override fun onItemLongClick(
-                viewHolder: PersonListAdapter.ViewHolder?,
-                view: View?,
+                viewHolder: PersonListAdapter.ViewHolder,
+                view: View,
                 position: Int
             ) {
                 tryCall(adapter[position].phone)
@@ -85,7 +88,7 @@ class PersonFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
 
-        val searchView: SearchView = activity?.findViewById(R.id.searchView) ?: return
+        searchView = activity?.findViewById(R.id.searchView) ?: return
         searchView.visibility = View.VISIBLE
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
@@ -108,22 +111,25 @@ class PersonFragment : Fragment() {
             searchView.onActionViewCollapsed()
             true
         }
+
+        val item = menu.findItem(R.id.toolbar_menu_add)
+        item.isVisible = false
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.toolbar_menu_add -> {
-                val intent = Intent(context, PersonModifyActivity::class.java)
-                startActivity(intent)
-            }
             R.id.toolbar_menu_filter -> {
+                if (searchView.hasFocus()) {
+                    searchView.onActionViewCollapsed()
+                }
+
                 val dialog = SelectDialogFragment()
                 dialog.items1 = items1
                 dialog.items2 = items2
                 dialog.listener = View.OnClickListener {
                     group1 = dialog.spinner1ItemPosition
                     group2 = dialog.spinner2ItemPosition
-                    rearrangeList(null, group1, group2)
+                    rearrangeList("", group1, group2)
                 }
                 activity?.supportFragmentManager?.let { dialog.show(it, "SampleDialog") }
             }
@@ -153,14 +159,15 @@ class PersonFragment : Fragment() {
         alertDialog?.show()
     }
 
-    private fun setPopupMenu(view: View, position: Int) {
-        val popupMenu = context?.let { PopupMenu(it, view) }
-        activity?.menuInflater?.inflate(R.menu.menu_person, popupMenu?.menu)
-        popupMenu?.setOnMenuItemClickListener { menuItem ->
+    private fun showPopupMenu(view: View, position: Int) {
+        val popupMenu = PopupMenu(requireContext(), view, Gravity.END)
+        requireActivity().menuInflater.inflate(R.menu.menu_person, popupMenu.menu)
+        popupMenu.setOnMenuItemClickListener { menuItem ->
             val intent: Intent
             when (menuItem.itemId) {
                 R.id.popup_person_log -> {
                     intent = Intent(context, LoginLogActivity::class.java)
+                    intent.putExtra("id", adapter[position].id)
                     startActivity(intent)
                 }
 
@@ -168,23 +175,24 @@ class PersonFragment : Fragment() {
 
                 R.id.popup_person_modify -> {
                     intent = Intent(context, PersonModifyActivity::class.java)
+                    intent.putExtra("id", adapter[position].id)
                     startActivity(intent)
                 }
 
                 R.id.popup_person_delete -> {
-                    val builder = context?.let { AlertDialog.Builder(it) }
-                    builder?.setTitle("友情提示")
-                    builder?.setMessage("您真的要删除吗？")
-                    builder?.setIcon(R.drawable.ic_round_warning_24)
-                    builder?.setPositiveButton("确认") { _, _ ->
-//                        delete(adapter.getItem(position).getUid())
+                    val builder = AlertDialog.Builder(requireContext())
+                    builder.setTitle("友情提示")
+                    builder.setIcon(R.drawable.ic_round_warning_24)
+                    builder.setMessage("您真的要删除吗？")
+                    builder.setPositiveButton("确认") { _, _ ->
+                        viewModel.deleteItem(adapter[position].id)
                     }
-                    builder?.setNegativeButton("取消") { _, _ ->
+                    builder.setNegativeButton("取消") { _, _ ->
                         DialogInterface.OnClickListener { _, _ -> return@OnClickListener }
                     }
 
-                    val alertDialog = builder?.create()
-                    alertDialog?.show()
+                    val alertDialog = builder.create()
+                    alertDialog.show()
                 }
 
                 else -> Toast.makeText(context, "popup menu error.", Toast.LENGTH_SHORT).show()
@@ -192,10 +200,10 @@ class PersonFragment : Fragment() {
             true
         }
 
-        popupMenu?.show()
+        popupMenu.show()
     }
 
-    private fun rearrangeList(keyword: String?, group1: Int, group2: Int) {
+    private fun rearrangeList(keyword: String, group1: Int, group2: Int) {
 
     }
 }

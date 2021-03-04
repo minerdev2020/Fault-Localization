@@ -1,4 +1,4 @@
-package com.minerdev.faultlocalization.custom
+package com.minerdev.faultlocalization.adapter
 
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
@@ -50,24 +50,6 @@ class EquipmentListAdapter(diffCallback: DiffCallback) :
     inner class ViewHolder(val binding: EquipmentItemBinding, clickListener: OnItemClickListener?) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(equipment: Equipment) {
-            binding.tvName.text = equipment.name
-            binding.tvState.text = equipment.state
-            binding.ivProfile.setBackgroundResource(R.drawable.ic_launcher_background)
-            binding.ivProfile.setImageResource(R.drawable.ic_launcher_foreground)
-        }
-
-        fun setVisibility(isExpanded: Boolean) {
-            binding.imageBtnExpand.setImageResource(
-                if (isExpanded)
-                    R.drawable.ic_round_expand_less_24
-                else
-                    R.drawable.ic_round_expand_more_24
-            )
-            binding.hiddenLayout.visibility = if (isExpanded) View.VISIBLE else View.GONE
-            binding.hiddenLayout.requestLayout()
-        }
-
         init {
             binding.imageBtnExpand.setOnClickListener {
                 val position = bindingAdapterPosition
@@ -90,6 +72,24 @@ class EquipmentListAdapter(diffCallback: DiffCallback) :
             binding.btnDetail.setOnClickListener {
                 clickListener?.onItemClick(this@ViewHolder, itemView, bindingAdapterPosition)
             }
+        }
+
+        fun bind(equipment: Equipment) {
+            binding.tvName.text = equipment.name
+            binding.tvState.text = equipment.EquipmentState.name
+            binding.ivProfile.setBackgroundResource(R.drawable.ic_launcher_background)
+            binding.ivProfile.setImageResource(R.drawable.ic_launcher_foreground)
+        }
+
+        fun setVisibility(isExpanded: Boolean) {
+            binding.imageBtnExpand.setImageResource(
+                if (isExpanded)
+                    R.drawable.ic_round_expand_less_24
+                else
+                    R.drawable.ic_round_expand_more_24
+            )
+            binding.hiddenLayout.visibility = if (isExpanded) View.VISIBLE else View.GONE
+            binding.hiddenLayout.requestLayout()
         }
     }
 

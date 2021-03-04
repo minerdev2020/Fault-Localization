@@ -10,7 +10,7 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.minerdev.faultlocalization.R
-import com.minerdev.faultlocalization.custom.SectionPageAdapter
+import com.minerdev.faultlocalization.adapter.SectionPageAdapter
 import com.minerdev.faultlocalization.databinding.ActivityMainBinding
 import com.minerdev.faultlocalization.utils.Constants.FINISH_INTERVAL_TIME
 import com.minerdev.faultlocalization.view.fragment.EquipmentFragment

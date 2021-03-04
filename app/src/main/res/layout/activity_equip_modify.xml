@@ -1,6 +1,164 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".view.activity.PersonModifyActivity"></androidx.constraintlayout.widget.ConstraintLayout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.minerdev.faultlocalization.viewmodel.EquipmentViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".view.activity.EquipmentModifyActivity">
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.3">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:stretchColumns="1">
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="@dimen/table_text_width"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="型号"
+                        android:textSize="20sp" />
+
+                    <EditText
+                        android:id="@+id/et_number"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:enabled="false"
+                        android:hint="输入设备型号"
+                        android:inputType="textShortMessage"
+                        android:privateImeOptions="defaultInputmode=english"
+                        android:text="@={viewModel.item.number}" />
+
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="@dimen/table_text_width"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="设备名称"
+                        android:textSize="20sp" />
+
+                    <EditText
+                        android:id="@+id/et_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:hint="输入设备名称"
+                        android:inputType="textShortMessage"
+                        android:text="@={viewModel.item.name}" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="@dimen/table_text_width"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="种类"
+                        android:textSize="20sp" />
+
+                    <EditText
+                        android:id="@+id/et_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:hint="输入设备种类"
+                        android:inputType="textShortMessage"
+                        android:text="@={viewModel.item.equipmentType.name}" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="@dimen/table_text_width"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="运行状态"
+                        android:textSize="20sp" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroup_state"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <RadioButton
+                            android:id="@+id/radioButton_running"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:checked="@{viewModel.item.state_id == 1}"
+                            android:text="运行中" />
+
+                        <RadioButton
+                            android:id="@+id/radioButton_under_repair"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:checked="@{viewModel.item.state_id == 2}"
+                            android:text="维修中" />
+
+                        <RadioButton
+                            android:id="@+id/radioButton_stoped"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:checked="@{viewModel.item.state_id == 3}"
+                            android:text="停用" />
+                    </RadioGroup>
+                </TableRow>
+            </TableLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btn_modify"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_weight="1"
+                    android:text="修改"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/btn_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_weight="1"
+                    android:text="取消"
+                    android:textSize="20sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

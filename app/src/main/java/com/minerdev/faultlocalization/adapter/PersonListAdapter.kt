@@ -1,8 +1,6 @@
-package com.minerdev.faultlocalization.custom
+package com.minerdev.faultlocalization.adapter
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.*
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -12,7 +10,10 @@ import com.minerdev.faultlocalization.databinding.PersonItemBinding
 import com.minerdev.faultlocalization.model.Person
 import java.util.*
 
-class PersonListAdapter(diffCallback: DiffCallback) : ListAdapter<Person, PersonListAdapter.ViewHolder>(diffCallback) {
+class PersonListAdapter(diffCallback: DiffCallback) :
+    ListAdapter<Person, PersonListAdapter.ViewHolder>(
+        diffCallback
+    ) {
     var listener: OnItemClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -35,23 +36,12 @@ class PersonListAdapter(diffCallback: DiffCallback) : ListAdapter<Person, Person
     }
 
     interface OnItemClickListener {
-        fun onItemClick(viewHolder: ViewHolder?, view: View?, position: Int)
-        fun onItemLongClick(
-            viewHolder: ViewHolder?, view: View?, position: Int
-        )
+        fun onItemClick(viewHolder: ViewHolder, view: View, position: Int)
+        fun onItemLongClick(viewHolder: ViewHolder, view: View, position: Int)
     }
 
     class ViewHolder(val binding: PersonItemBinding, clickListener: OnItemClickListener?) :
         RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(person: Person) {
-            binding.tvName.text = person.name
-            binding.tvState.text = person.state
-            binding.tvType.text = person.type
-            binding.tvPhone.text = person.phone
-            binding.ivProfile.setBackgroundResource(R.drawable.ic_launcher_background)
-            binding.ivProfile.setImageResource(R.drawable.ic_launcher_foreground)
-        }
 
         init {
             binding.personItemLayout.setOnLongClickListener {
@@ -60,8 +50,21 @@ class PersonListAdapter(diffCallback: DiffCallback) : ListAdapter<Person, Person
             }
 
             binding.imageBtn.setOnClickListener {
-                clickListener?.onItemClick(this@ViewHolder, itemView, bindingAdapterPosition)
+                clickListener?.onItemClick(
+                    this@ViewHolder,
+                    binding.imageBtn,
+                    bindingAdapterPosition
+                )
             }
+        }
+
+        fun bind(person: Person) {
+            binding.tvName.text = person.name
+            binding.tvState.text = person.PersonState.name
+            binding.tvType.text = person.PersonType.name
+            binding.tvPhone.text = person.phone
+            binding.ivProfile.setBackgroundResource(R.drawable.ic_launcher_background)
+            binding.ivProfile.setImageResource(R.drawable.ic_launcher_foreground)
         }
     }
 

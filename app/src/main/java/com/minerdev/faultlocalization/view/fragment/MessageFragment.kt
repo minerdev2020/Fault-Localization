@@ -12,11 +12,10 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
-import com.minerdev.faultlocalization.custom.MessageListAdapter
+import com.minerdev.faultlocalization.adapter.MessageListAdapter
 import com.minerdev.faultlocalization.databinding.FragmentMessageBinding
-import com.minerdev.faultlocalization.model.Message
-import com.minerdev.faultlocalization.viewmodel.ItemViewModel
-import com.minerdev.faultlocalization.viewmodel.ItemViewModelFactory
+import com.minerdev.faultlocalization.factory.MessageViewModelFactory
+import com.minerdev.faultlocalization.viewmodel.MessageViewModel
 import kotlinx.serialization.InternalSerializationApi
 import java.util.*
 
@@ -26,10 +25,12 @@ class MessageFragment : Fragment() {
 
     private val binding by lazy { FragmentMessageBinding.inflate(layoutInflater) }
     private val adapter by lazy { MessageListAdapter(MessageListAdapter.DiffCallback()) }
-    private val viewModel: ItemViewModel<Message> by viewModels { ItemViewModelFactory(Message::class) }
+    private val viewModel: MessageViewModel by viewModels { MessageViewModelFactory() }
 
     private var group1 = 0
     private var group2 = 0
+
+    private lateinit var searchView: SearchView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -96,7 +97,7 @@ class MessageFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
 
-        val searchView: SearchView = activity?.findViewById(R.id.searchView) ?: return
+        searchView = activity?.findViewById(R.id.searchView) ?: return
         searchView.visibility = View.VISIBLE
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
@@ -127,13 +128,17 @@ class MessageFragment : Fragment() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.toolbar_menu_filter -> {
+                if (searchView.hasFocus()) {
+                    searchView.onActionViewCollapsed()
+                }
+
                 val dialog = SelectDialogFragment()
                 dialog.items1 = items1
                 dialog.items2 = items2
                 dialog.listener = View.OnClickListener {
                     group1 = dialog.spinner1ItemPosition
                     group2 = dialog.spinner2ItemPosition
-                    rearrangeList(null, group1, group2)
+                    rearrangeList("", group1, group2)
                 }
                 activity?.supportFragmentManager?.let { dialog.show(it, "SampleDialog") }
             }
@@ -145,7 +150,7 @@ class MessageFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun rearrangeList(keyword: String?, group1: Int, group2: Int) {
+    private fun rearrangeList(keyword: String, group1: Int, group2: Int) {
 
     }
 }
