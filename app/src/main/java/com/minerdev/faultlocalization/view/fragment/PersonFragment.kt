@@ -79,7 +79,6 @@ class PersonFragment : Fragment() {
         return binding.root
     }
 
-    @InternalSerializationApi
     override fun onResume() {
         super.onResume()
         viewModel.loadItems()

@@ -4,7 +4,9 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.databinding.ActivitySplashBinding
@@ -23,6 +25,13 @@ class SplashActivity : AppCompatActivity() {
 
         setupButtons()
 
+        binding.btnLogin.visibility = View.GONE
+        binding.btnRegister.visibility = View.GONE
+    }
+
+    override fun onResume() {
+        super.onResume()
+
         if (!checkInternetConnection()) {
             val builder = AlertDialog.Builder(this)
             builder.setTitle("友情提示")
@@ -33,15 +42,21 @@ class SplashActivity : AppCompatActivity() {
             alertDialog.show()
 
         } else if (checkLoginStatus()) {
-            val sharedPreferences = getSharedPreferences("login", MODE_PRIVATE)
+            val sharedPreferences = getSharedPreferences("login", AppCompatActivity.MODE_PRIVATE)
             val id = sharedPreferences.getString("id", "") ?: ""
             val token = sharedPreferences.getString("token", "") ?: ""
             TOKEN = token
             Log.d(TAG, "login : $id")
             Log.d(TAG, "login : $token")
 
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            Handler().postDelayed({
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+            }, 1000)
+
+        } else {
+            binding.btnLogin.visibility = View.VISIBLE
+            binding.btnRegister.visibility = View.VISIBLE
         }
     }
 
