@@ -22,8 +22,8 @@ import com.minerdev.faultlocalization.factory.PersonViewModelFactory
 import com.minerdev.faultlocalization.view.activity.LoginLogActivity
 import com.minerdev.faultlocalization.view.activity.PersonModifyActivity
 import com.minerdev.faultlocalization.viewmodel.PersonViewModel
-import kotlinx.serialization.InternalSerializationApi
 import java.util.*
+import kotlin.concurrent.timer
 
 class PersonFragment : Fragment() {
     private val items1 = listOf("全部", "上线", "下线")
@@ -37,6 +37,7 @@ class PersonFragment : Fragment() {
     private var group2 = 0
 
     private lateinit var searchView: SearchView
+    private lateinit var timer: Timer
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -81,7 +82,14 @@ class PersonFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.loadItems()
+        timer = timer(period = 1000) {
+            viewModel.loadItems()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        timer.cancel()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

@@ -93,6 +93,14 @@ dependencies {
     implementation "org.koin:koin-androidx-viewmodel:2.2.2"
     implementation "org.koin:koin-androidx-ext:2.2.2"
 
+    // MPAndroidChart
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
+
+    // socket.io for webSocket
+    implementation ('io.socket:socket.io-client:2.0.0') {
+        exclude group: 'org.json', module: 'json'
+    }
+
     // navigation
     def nav_version = "2.3.3"
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"

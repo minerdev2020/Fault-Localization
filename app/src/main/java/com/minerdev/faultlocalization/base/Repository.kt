@@ -29,7 +29,7 @@ open class Repository<T : Item>(
             },
             { error: Throwable ->
                 run {
-                    Log.d(TAG, "loadItem sale error : " + error.localizedMessage)
+                    Log.d(TAG, "loadItem error : " + error.localizedMessage)
                 }
             })
     }
@@ -39,15 +39,15 @@ open class Repository<T : Item>(
             { response: String ->
                 run {
                     val data = JSONObject(response)
-                    Log.d(TAG, "loadItems sale response : " + data.getString("message"))
-                    Log.d(TAG, "loadItems sale response : " + data.getString("data"))
+                    Log.d(TAG, "loadItems response : " + data.getString("message"))
+                    Log.d(TAG, "loadItems response : " + data.getString("data"))
 
                     allItems.postValue(onItemsResponse(data.getString("data")))
                 }
             },
             { error: Throwable ->
                 run {
-                    Log.d(TAG, "loadItems sale error : " + error.localizedMessage)
+                    Log.d(TAG, "loadItems error : " + error.localizedMessage)
                 }
             })
     }

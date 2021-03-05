@@ -52,7 +52,7 @@
                         android:hint="输入6到8个英文字符或数字"
                         android:inputType="textShortMessage"
                         android:privateImeOptions="defaultInputmode=english"
-                        android:text="@={viewModel.item.name}" />
+                        android:text="@={viewModel.item.user.user_id}" />
 
                 </TableRow>
 
