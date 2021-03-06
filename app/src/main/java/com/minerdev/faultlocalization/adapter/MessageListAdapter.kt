@@ -12,7 +12,7 @@ import java.util.*
 
 class MessageListAdapter(diffCallback: DiffCallback) :
     ListAdapter<Message, MessageListAdapter.ViewHolder>(diffCallback) {
-    var listener: OnItemClickListener? = null
+    lateinit var listener: (viewHolder: ViewHolder?, view: View?, position: Int) -> Unit
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = MessageItemBinding.inflate(
@@ -33,16 +33,15 @@ class MessageListAdapter(diffCallback: DiffCallback) :
         return getItem(position)
     }
 
-    interface OnItemClickListener {
-        fun onItemClick(viewHolder: ViewHolder?, view: View?, position: Int)
-    }
-
-    class ViewHolder(val binding: MessageItemBinding, clickListener: OnItemClickListener?) :
+    class ViewHolder(
+        val binding: MessageItemBinding,
+        listener: (viewHolder: ViewHolder?, view: View?, position: Int) -> Unit
+    ) :
         RecyclerView.ViewHolder(binding.root) {
 
         init {
             binding.imageBtn.setOnClickListener {
-                clickListener?.onItemClick(this@ViewHolder, itemView, bindingAdapterPosition)
+                listener(this@ViewHolder, itemView, bindingAdapterPosition)
             }
         }
 

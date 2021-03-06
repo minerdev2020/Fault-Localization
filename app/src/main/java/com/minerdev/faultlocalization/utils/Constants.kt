@@ -20,4 +20,8 @@ object Constants {
     const val CREATE = 0;
     const val UPDATE = 1;
     const val DELETE = 2;
+
+    const val TYPE_HEADER = 0
+    const val TYPE_ITEM = 1
+    const val TYPE_FOOTER = 2
 }

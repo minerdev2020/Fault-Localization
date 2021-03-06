@@ -19,7 +19,6 @@ class PersonModifyActivity : AppCompatActivity() {
     private lateinit var binding: ActivityPersonModifyBinding
     private lateinit var person: Person
 
-    @InternalSerializationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_person_modify)

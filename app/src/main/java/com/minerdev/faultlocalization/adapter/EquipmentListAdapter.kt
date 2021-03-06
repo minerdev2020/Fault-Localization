@@ -1,23 +1,37 @@
 package com.minerdev.faultlocalization.adapter
 
+import android.content.Context
 import android.util.SparseBooleanArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.*
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.databinding.EquipmentItemBinding
 import com.minerdev.faultlocalization.model.Equipment
-import java.util.*
 
-class EquipmentListAdapter(diffCallback: DiffCallback) :
+
+class EquipmentListAdapter(private val context: Context, diffCallback: DiffCallback) :
     ListAdapter<Equipment, EquipmentListAdapter.ViewHolder>(diffCallback) {
-    var listener: OnItemClickListener? = null
-
     private val selectedItems = SparseBooleanArray()
+    private val expandListener = { position: Int ->
+        if (selectedItems[position]) {
+            selectedItems.delete(position)
+
+        } else {
+            selectedItems.delete(prePosition)
+            selectedItems.put(position, true)
+        }
+
+        if (prePosition != -1 && prePosition != position) {
+            this.notifyItemChanged(prePosition)
+        }
+
+        this.notifyItemChanged(position)
+        prePosition = position
+    }
+
+    lateinit var listener: OnItemClickListener
     private var prePosition = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -26,8 +40,8 @@ class EquipmentListAdapter(diffCallback: DiffCallback) :
             parent,
             false
         )
-
-        return ViewHolder(binding, listener)
+        
+        return ViewHolder(binding, listener, context, expandListener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -42,36 +56,37 @@ class EquipmentListAdapter(diffCallback: DiffCallback) :
 
     interface OnItemClickListener {
         fun onItemClick(viewHolder: ViewHolder?, view: View?, position: Int)
-        fun onItemLongClick(
-            viewHolder: ViewHolder?, view: View?, position: Int
-        )
+        fun onItemLongClick(viewHolder: ViewHolder?, view: View?, position: Int)
     }
 
-    inner class ViewHolder(val binding: EquipmentItemBinding, clickListener: OnItemClickListener?) :
+    class ViewHolder(
+        val binding: EquipmentItemBinding,
+        clickListener: OnItemClickListener?,
+        context: Context,
+        expandListener: (position: Int) -> Unit
+    ) :
         RecyclerView.ViewHolder(binding.root) {
+        private val adapter by lazy { SensorListAdapter(SensorListAdapter.DiffCallback()) }
 
         init {
             binding.imageBtnExpand.setOnClickListener {
-                val position = bindingAdapterPosition
-                if (selectedItems[position]) {
-                    selectedItems.delete(position)
-
-                } else {
-                    selectedItems.delete(prePosition)
-                    selectedItems.put(position, true)
-                }
-
-                if (prePosition != -1 && prePosition != position) {
-                    this@EquipmentListAdapter.notifyItemChanged(prePosition)
-                }
-
-                this@EquipmentListAdapter.notifyItemChanged(position)
-                prePosition = position
+                expandListener(bindingAdapterPosition)
             }
 
             binding.btnDetail.setOnClickListener {
                 clickListener?.onItemClick(this@ViewHolder, itemView, bindingAdapterPosition)
             }
+
+            val manager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+            binding.recyclerView.layoutManager = manager
+            binding.recyclerView.addItemDecoration(
+                DividerItemDecoration(
+                    context,
+                    DividerItemDecoration.VERTICAL
+                )
+            )
+
+            binding.recyclerView.adapter = adapter
         }
 
         fun bind(equipment: Equipment) {
@@ -79,6 +94,7 @@ class EquipmentListAdapter(diffCallback: DiffCallback) :
             binding.tvState.text = equipment.EquipmentState.name
             binding.ivProfile.setBackgroundResource(R.drawable.ic_launcher_background)
             binding.ivProfile.setImageResource(R.drawable.ic_launcher_foreground)
+            adapter.submitList(equipment.Sensor)
         }
 
         fun setVisibility(isExpanded: Boolean) {

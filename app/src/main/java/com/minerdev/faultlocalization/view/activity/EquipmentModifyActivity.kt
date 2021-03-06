@@ -3,25 +3,30 @@ package com.minerdev.faultlocalization.view.activity
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
+import com.minerdev.faultlocalization.adapter.SensorModifyListAdapter
 import com.minerdev.faultlocalization.databinding.ActivityEquipModifyBinding
 import com.minerdev.faultlocalization.factory.EquipmentViewModelFactory
 import com.minerdev.faultlocalization.model.Equipment
 import com.minerdev.faultlocalization.model.EquipmentState
 import com.minerdev.faultlocalization.model.EquipmentType
+import com.minerdev.faultlocalization.model.Sensor
 import com.minerdev.faultlocalization.viewmodel.EquipmentViewModel
-import kotlinx.serialization.InternalSerializationApi
 
 class EquipmentModifyActivity : AppCompatActivity() {
     private val viewModel: EquipmentViewModel by viewModels { EquipmentViewModelFactory() }
+    private val adapter by lazy { SensorModifyListAdapter() }
+
     private lateinit var binding: ActivityEquipModifyBinding
     private lateinit var equipment: Equipment
 
-    @InternalSerializationApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_equip_modify)
@@ -39,12 +44,47 @@ class EquipmentModifyActivity : AppCompatActivity() {
             viewModel.item.postValue(
                 Equipment(
                     EquipmentState = EquipmentState(),
-                    EquipmentType = EquipmentType()
+                    EquipmentType = EquipmentType(),
+                    Sensor = ArrayList()
                 )
             )
         }
 
-        viewModel.item.observe(this, { equipment = it })
+        val manager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.recyclerView.layoutManager = manager
+        binding.recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                this,
+                DividerItemDecoration.VERTICAL
+            )
+        )
+        binding.recyclerView.adapter = adapter
+
+        adapter.listener = { _: SensorModifyListAdapter.ItemViewHolder?,
+                             _: View?,
+                             position: Int ->
+            val builder = AlertDialog.Builder(this)
+            builder.setTitle("友情提示")
+            builder.setMessage("您真的要删除吗？")
+            builder.setIcon(R.drawable.ic_round_warning_24)
+            builder.setPositiveButton(
+                "确认",
+                DialogInterface.OnClickListener { _, _ ->
+                    adapter.removeItem(position)
+                    return@OnClickListener
+                })
+            builder.setNegativeButton(
+                "取消",
+                DialogInterface.OnClickListener { _, _ -> return@OnClickListener })
+            val alertDialog = builder.create()
+            alertDialog.show()
+        }
+
+        viewModel.item.observe(this, {
+            equipment = it
+            adapter.items.addAll(equipment.Sensor)
+            adapter.notifyDataSetChanged()
+        })
 
         binding.btnModify.setOnClickListener {
             when (binding.radioGroupState.checkedRadioButtonId) {
@@ -57,6 +97,7 @@ class EquipmentModifyActivity : AppCompatActivity() {
             viewModel.modifyItems(equipment)
             super.finish()
         }
+
         binding.btnCancel.setOnClickListener { finish() }
     }
 

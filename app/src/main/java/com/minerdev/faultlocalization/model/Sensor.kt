@@ -10,8 +10,9 @@ data class Sensor(
     override var type_id: Int = 0,
     override var state_id: Int = 0,
     var name: String = "",
-    var number: String = "",
+    var model_number: String = "",
     var parent_id: Int = 0,
     var SensorState: SensorState,
-    var SensorType: SensorType
+    var SensorType: SensorType,
+    var state: Int = 0
 ) : Item

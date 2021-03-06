@@ -19,7 +19,6 @@ import com.minerdev.faultlocalization.factory.EquipmentViewModelFactory
 import com.minerdev.faultlocalization.view.activity.DataHistoryActivity
 import com.minerdev.faultlocalization.view.activity.EquipmentModifyActivity
 import com.minerdev.faultlocalization.viewmodel.EquipmentViewModel
-import kotlinx.serialization.InternalSerializationApi
 import java.util.*
 
 class EquipmentFragment : Fragment() {
@@ -27,7 +26,12 @@ class EquipmentFragment : Fragment() {
     private val items2 = listOf("全部", "工程1", "工程2", "工程3", "工程4")
 
     private val binding by lazy { FragmentEquipBinding.inflate(layoutInflater) }
-    private val adapter by lazy { EquipmentListAdapter(EquipmentListAdapter.DiffCallback()) }
+    private val adapter by lazy {
+        EquipmentListAdapter(
+            requireContext(),
+            EquipmentListAdapter.DiffCallback()
+        )
+    }
     private val viewModel: EquipmentViewModel by viewModels { EquipmentViewModelFactory() }
 
     private var group1 = 0

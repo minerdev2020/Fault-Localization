@@ -10,7 +10,8 @@ data class Equipment(
     override var type_id: Int = 0,
     override var state_id: Int = 0,
     var name: String = "",
-    var number: String = "",
+    var model_number: String = "",
     var EquipmentState: EquipmentState,
-    var EquipmentType: EquipmentType
+    var EquipmentType: EquipmentType,
+    var Sensor: List<Sensor>
 ) : Item
