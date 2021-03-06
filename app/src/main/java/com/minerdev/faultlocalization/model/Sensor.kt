@@ -1,5 +1,6 @@
 package com.minerdev.faultlocalization.model
 
+import com.minerdev.faultlocalization.utils.Constants.UPDATE
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -14,5 +15,5 @@ data class Sensor(
     var parent_id: Int = 0,
     var SensorState: SensorState,
     var SensorType: SensorType,
-    var state: Int = 0
+    var state: Int = UPDATE
 ) : Item

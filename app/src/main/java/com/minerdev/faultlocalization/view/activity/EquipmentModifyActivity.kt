@@ -17,12 +17,11 @@ import com.minerdev.faultlocalization.factory.EquipmentViewModelFactory
 import com.minerdev.faultlocalization.model.Equipment
 import com.minerdev.faultlocalization.model.EquipmentState
 import com.minerdev.faultlocalization.model.EquipmentType
-import com.minerdev.faultlocalization.model.Sensor
 import com.minerdev.faultlocalization.viewmodel.EquipmentViewModel
 
 class EquipmentModifyActivity : AppCompatActivity() {
     private val viewModel: EquipmentViewModel by viewModels { EquipmentViewModelFactory() }
-    private val adapter by lazy { SensorModifyListAdapter() }
+    private val adapter by lazy { SensorModifyListAdapter(SensorModifyListAdapter.DiffCallback()) }
 
     private lateinit var binding: ActivityEquipModifyBinding
     private lateinit var equipment: Equipment
@@ -60,7 +59,7 @@ class EquipmentModifyActivity : AppCompatActivity() {
         )
         binding.recyclerView.adapter = adapter
 
-        adapter.listener = { _: SensorModifyListAdapter.ItemViewHolder?,
+        adapter.listener = { _: SensorModifyListAdapter.ViewHolder?,
                              _: View?,
                              position: Int ->
             val builder = AlertDialog.Builder(this)
@@ -82,9 +81,12 @@ class EquipmentModifyActivity : AppCompatActivity() {
 
         viewModel.item.observe(this, {
             equipment = it
-            adapter.items.addAll(equipment.Sensor)
-            adapter.notifyDataSetChanged()
+            adapter.submitList(equipment.Sensor)
         })
+
+        binding.materialBtnAdd.setOnClickListener {
+            adapter.addEmptyItem()
+        }
 
         binding.btnModify.setOnClickListener {
             when (binding.radioGroupState.checkedRadioButtonId) {
