@@ -61,6 +61,7 @@ class EquipmentFragment : Fragment() {
             ) {
                 val intent = Intent(context, DataHistoryActivity::class.java)
                 intent.putExtra("id", adapter[position].id)
+                intent.putExtra("mode", "modify")
                 startActivity(intent)
             }
 
@@ -134,6 +135,7 @@ class EquipmentFragment : Fragment() {
                 }
 
                 val intent = Intent(context, EquipmentModifyActivity::class.java)
+                intent.putExtra("mode", "add")
                 startActivity(intent)
             }
 

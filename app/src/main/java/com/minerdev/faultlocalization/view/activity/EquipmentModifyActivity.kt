@@ -32,8 +32,17 @@ class EquipmentModifyActivity : AppCompatActivity() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
-        supportActionBar?.title = "人员信息修改"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        val mode = intent.getStringExtra("mode") ?: ""
+        if (mode == "add") {
+            supportActionBar?.title = "添加设备信息"
+            binding.btnModify.text = "添加"
+
+        } else if (mode == "modify") {
+            supportActionBar?.title = "设备信息"
+            binding.btnModify.text = "修改"
+        }
 
         val id = intent.getIntExtra("id", 0)
         if (id > 0) {

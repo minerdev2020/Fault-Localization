@@ -25,7 +25,7 @@ class PersonModifyActivity : AppCompatActivity() {
         binding.viewModel = viewModel
         binding.lifecycleOwner = this
 
-        supportActionBar?.title = "人员信息修改"
+        supportActionBar?.title = "修改人员信息"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         val id = intent.getIntExtra("id", 0)
