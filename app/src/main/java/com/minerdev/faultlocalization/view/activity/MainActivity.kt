@@ -1,6 +1,7 @@
 package com.minerdev.faultlocalization.view.activity
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.SearchView
@@ -12,11 +13,22 @@ import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.SectionPageAdapter
 import com.minerdev.faultlocalization.databinding.ActivityMainBinding
+import com.minerdev.faultlocalization.retrofit.AuthRetrofitManager
+import com.minerdev.faultlocalization.utils.Constants
+import com.minerdev.faultlocalization.utils.Constants.EQUIPMENT_STATE
+import com.minerdev.faultlocalization.utils.Constants.EQUIPMENT_TYPE
 import com.minerdev.faultlocalization.utils.Constants.FINISH_INTERVAL_TIME
+import com.minerdev.faultlocalization.utils.Constants.MESSAGE_STATE
+import com.minerdev.faultlocalization.utils.Constants.MESSAGE_TYPE
+import com.minerdev.faultlocalization.utils.Constants.PERSON_STATE
+import com.minerdev.faultlocalization.utils.Constants.PERSON_TYPE
+import com.minerdev.faultlocalization.utils.Constants.SENSOR_STATE
+import com.minerdev.faultlocalization.utils.Constants.SENSOR_TYPE
 import com.minerdev.faultlocalization.view.fragment.EquipmentFragment
 import com.minerdev.faultlocalization.view.fragment.MessageFragment
 import com.minerdev.faultlocalization.view.fragment.PersonFragment
 import com.minerdev.faultlocalization.view.fragment.SettingsFragment
+import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
     private var backPressedTime: Long = 0
@@ -32,6 +44,8 @@ class MainActivity : AppCompatActivity() {
 
         setBottomNavigationView()
 
+        loadStatesAndTypes()
+
         // 설정이 끝나고 타이틀 바꿔야 오류가 안 남
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -40,7 +54,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val menuInflater = menuInflater
-        menuInflater.inflate(R.menu.menu_toolbar, menu)
+        menuInflater.inflate(R.menu.menu_main_toolbar, menu)
         adapter.getItem(binding.viewPager.currentItem).onCreateOptionsMenu(menu, menuInflater)
         return super.onCreateOptionsMenu(menu)
     }
@@ -108,5 +122,50 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
+    }
+
+    private fun loadStatesAndTypes() {
+        AuthRetrofitManager.instance.initialize(
+            { response: String ->
+                run {
+                    val data = JSONObject(response)
+                    Log.d(Constants.TAG, "instance response : " + data.getString("message"))
+                    when (data.getInt("code")) {
+                        200 -> {
+                            PERSON_STATE.addAll()
+                            PERSON_TYPE.addAll()
+
+                            EQUIPMENT_STATE.addAll()
+                            EQUIPMENT_TYPE.addAll()
+
+                            SENSOR_STATE.addAll()
+                            SENSOR_TYPE.addAll()
+
+                            MESSAGE_STATE.addAll()
+                            MESSAGE_TYPE.addAll()
+                        }
+                        401 -> {
+                            Toast.makeText(this@MainActivity, "无效的Token！", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                        419 -> {
+                            Toast.makeText(
+                                this@MainActivity,
+                                "该Token已过期！请重新登录！",
+                                Toast.LENGTH_SHORT
+                            )
+                                .show()
+                        }
+                        else -> {
+                        }
+                    }
+                }
+            },
+            { error: Throwable ->
+                run {
+                    Log.d(Constants.TAG, "instance error : " + error.localizedMessage)
+                }
+            }
+        )
     }
 }

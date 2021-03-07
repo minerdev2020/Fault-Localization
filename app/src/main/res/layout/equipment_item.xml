@@ -64,9 +64,9 @@
 
         <Button
             android:id="@+id/btn_detail"
-            android:layout_width="100dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="OK" />
+            android:text="进入详细信息画面" />
     </LinearLayout>
 </LinearLayout>

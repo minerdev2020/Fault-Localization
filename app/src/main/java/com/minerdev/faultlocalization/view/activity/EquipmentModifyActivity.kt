@@ -13,18 +13,23 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.SensorModifyListAdapter
 import com.minerdev.faultlocalization.databinding.ActivityEquipModifyBinding
-import com.minerdev.faultlocalization.factory.EquipmentViewModelFactory
 import com.minerdev.faultlocalization.model.Equipment
 import com.minerdev.faultlocalization.model.EquipmentState
 import com.minerdev.faultlocalization.model.EquipmentType
-import com.minerdev.faultlocalization.viewmodel.EquipmentViewModel
+import com.minerdev.faultlocalization.utils.Constants.CREATE
+import com.minerdev.faultlocalization.utils.Constants.DELETE
+import com.minerdev.faultlocalization.utils.Constants.UPDATE
+import com.minerdev.faultlocalization.viewmodel.EquipmentModifyViewModel
+import com.minerdev.faultlocalization.viewmodel.factory.EquipmentModifyViewModelFactory
+import com.minerdev.faultlocalization.viewmodel.factory.EquipmentViewModelFactory
 
 class EquipmentModifyActivity : AppCompatActivity() {
-    private val viewModel: EquipmentViewModel by viewModels { EquipmentViewModelFactory() }
+    private val viewModel: EquipmentModifyViewModel by viewModels { EquipmentModifyViewModelFactory(this) }
     private val adapter by lazy { SensorModifyListAdapter(SensorModifyListAdapter.DiffCallback()) }
 
     private lateinit var binding: ActivityEquipModifyBinding
     private lateinit var equipment: Equipment
+    private lateinit var mode: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,28 +39,24 @@ class EquipmentModifyActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val mode = intent.getStringExtra("mode") ?: ""
+        mode = intent.getStringExtra("mode") ?: ""
         if (mode == "add") {
             supportActionBar?.title = "添加设备信息"
             binding.btnModify.text = "添加"
 
-        } else if (mode == "modify") {
-            supportActionBar?.title = "设备信息"
-            binding.btnModify.text = "修改"
-        }
-
-        val id = intent.getIntExtra("id", 0)
-        if (id > 0) {
-            viewModel.loadItem(id)
-
-        } else {
             viewModel.item.postValue(
                 Equipment(
                     EquipmentState = EquipmentState(),
                     EquipmentType = EquipmentType(),
-                    Sensor = ArrayList()
+                    Sensors = ArrayList()
                 )
             )
+
+        } else if (mode == "modify") {
+            supportActionBar?.title = "设备信息"
+            binding.btnModify.text = "修改"
+            val id = intent.getIntExtra("id", 0)
+            viewModel.loadItem(id)
         }
 
         val manager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
@@ -75,22 +76,19 @@ class EquipmentModifyActivity : AppCompatActivity() {
             builder.setTitle("友情提示")
             builder.setMessage("您真的要删除吗？")
             builder.setIcon(R.drawable.ic_round_warning_24)
-            builder.setPositiveButton(
-                "确认",
-                DialogInterface.OnClickListener { _, _ ->
-                    adapter.removeItem(position)
-                    return@OnClickListener
-                })
-            builder.setNegativeButton(
-                "取消",
-                DialogInterface.OnClickListener { _, _ -> return@OnClickListener })
+            builder.setPositiveButton("确认") { _, _ ->
+                adapter.removeItem(position)
+            }
+            builder.setNegativeButton("取消") { _, _ ->
+                return@setNegativeButton
+            }
             val alertDialog = builder.create()
             alertDialog.show()
         }
 
         viewModel.item.observe(this, {
             equipment = it
-            adapter.submitList(equipment.Sensor)
+            adapter.submitList(equipment.Sensors)
         })
 
         binding.materialBtnAdd.setOnClickListener {
@@ -105,7 +103,26 @@ class EquipmentModifyActivity : AppCompatActivity() {
                 else -> {
                 }
             }
-            viewModel.modifyItems(equipment)
+
+            if (mode == "add") {
+                viewModel.addItem(equipment)
+                for (sensor in equipment.Sensors) {
+                    viewModel.addSensor(sensor)
+                }
+
+            } else if (mode == "modify") {
+                viewModel.modifyItem(equipment)
+                for (sensor in equipment.Sensors) {
+                    when (sensor.state) {
+                        CREATE -> viewModel.addSensor(sensor)
+                        UPDATE -> viewModel.modifySensor(sensor)
+                        DELETE -> viewModel.deleteSensor(sensor.id)
+                        else -> {
+                        }
+                    }
+                }
+            }
+
             super.finish()
         }
 

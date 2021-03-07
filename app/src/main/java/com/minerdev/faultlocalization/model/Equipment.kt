@@ -13,5 +13,5 @@ data class Equipment(
     var model_number: String = "",
     var EquipmentState: EquipmentState,
     var EquipmentType: EquipmentType,
-    var Sensor: List<Sensor>
+    var Sensors: List<Sensor>
 ) : Item

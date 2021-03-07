@@ -1,6 +1,8 @@
 package com.minerdev.faultlocalization.base
 
+import android.content.Context
 import android.util.Log
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.minerdev.faultlocalization.model.Item
 import com.minerdev.faultlocalization.retrofit.ItemRetrofitManager
@@ -9,6 +11,7 @@ import org.json.JSONObject
 import kotlin.reflect.KClass
 
 open class Repository<T : Item>(
+    private val context: Context,
     private val itemType: KClass<T>,
     private val onItemResponse: (response: String) -> T,
     private val onItemsResponse: (response: String) -> List<T>
@@ -24,7 +27,9 @@ open class Repository<T : Item>(
                     Log.d(TAG, "loadItem response : " + data.getString("message"))
                     Log.d(TAG, "loadItem response : " + data.getString("data"))
 
-                    item.postValue(onItemResponse(data.getString("data")))
+                    if (checkTokenResponse(data.getInt("code"))) {
+                        item.postValue(onItemResponse(data.getString("data")))
+                    }
                 }
             },
             { error: Throwable ->
@@ -42,7 +47,9 @@ open class Repository<T : Item>(
                     Log.d(TAG, "loadItems response : " + data.getString("message"))
                     Log.d(TAG, "loadItems response : " + data.getString("data"))
 
-                    allItems.postValue(onItemsResponse(data.getString("data")))
+                    if (checkTokenResponse(data.getInt("code"))) {
+                        allItems.postValue(onItemsResponse(data.getString("data")))
+                    }
                 }
             },
             { error: Throwable ->
@@ -111,5 +118,26 @@ open class Repository<T : Item>(
                     Log.d(TAG, "deleteItem error : " + error.localizedMessage)
                 }
             })
+    }
+
+    private fun checkTokenResponse(code: Int): Boolean {
+        when (code) {
+            200 -> {
+                return true
+            }
+            401 -> {
+                Toast.makeText(context, "无效的Token！", Toast.LENGTH_SHORT)
+                    .show()
+                return false
+            }
+            419 -> {
+                Toast.makeText(context, "该Token已过期！请重新登录！", Toast.LENGTH_SHORT)
+                    .show()
+                return false
+            }
+            else -> {
+                return false
+            }
+        }
     }
 }

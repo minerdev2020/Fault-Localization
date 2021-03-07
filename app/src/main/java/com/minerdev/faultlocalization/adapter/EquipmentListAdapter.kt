@@ -77,6 +77,11 @@ class EquipmentListAdapter(private val context: Context, diffCallback: DiffCallb
                 clickListener?.onItemClick(this@ViewHolder, itemView, bindingAdapterPosition)
             }
 
+            binding.shownLayout.setOnLongClickListener {
+                clickListener?.onItemLongClick(this@ViewHolder, itemView, bindingAdapterPosition)
+                true
+            }
+
             val manager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             binding.recyclerView.layoutManager = manager
             binding.recyclerView.addItemDecoration(
@@ -94,7 +99,7 @@ class EquipmentListAdapter(private val context: Context, diffCallback: DiffCallb
             binding.tvState.text = equipment.EquipmentState.name
             binding.ivProfile.setBackgroundResource(R.drawable.ic_launcher_background)
             binding.ivProfile.setImageResource(R.drawable.ic_launcher_foreground)
-            adapter.submitList(equipment.Sensor)
+            adapter.submitList(equipment.Sensors)
         }
 
         fun setVisibility(isExpanded: Boolean) {

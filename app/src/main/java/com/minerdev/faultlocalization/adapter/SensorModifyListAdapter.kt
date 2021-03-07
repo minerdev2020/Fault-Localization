@@ -1,6 +1,5 @@
 package com.minerdev.faultlocalization.adapter
 
-import android.service.quicksettings.Tile
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,10 +14,8 @@ import com.minerdev.faultlocalization.utils.Constants.CREATE
 import com.minerdev.faultlocalization.utils.Constants.DELETE
 import com.minerdev.faultlocalization.utils.Constants.UPDATE
 
-
 class SensorModifyListAdapter(diffCallback: DiffCallback) :
     ListAdapter<Sensor, SensorModifyListAdapter.ViewHolder>(diffCallback) {
-    var deletedItems = ArrayList<Sensor>()
 
     lateinit var listener: (
         viewHolder: ViewHolder?,
@@ -48,7 +45,6 @@ class SensorModifyListAdapter(diffCallback: DiffCallback) :
     fun removeItem(position: Int) {
         if (getItem(position).state == UPDATE) {
             getItem(position).state = DELETE
-            deletedItems.add(getItem(position))
         }
 
         val newList = mutableListOf<Sensor>().apply {
@@ -81,9 +77,23 @@ class SensorModifyListAdapter(diffCallback: DiffCallback) :
         }
 
         fun bind(sensor: Sensor) {
-            binding.etName.setText(sensor.name)
-            binding.etModelNumber.setText(sensor.SensorState.name)
-            binding.etType.setText(sensor.SensorType.name)
+            binding.model = sensor
+
+            binding.radioButtonRunning.setOnCheckedChangeListener { _, p1 ->
+                if (p1) {
+                    sensor.state_id = 1
+                }
+            }
+            binding.radioButtonUnderRepair.setOnCheckedChangeListener { _, p1 ->
+                if (p1) {
+                    sensor.state_id = 2
+                }
+            }
+            binding.radioButtonStoped.setOnCheckedChangeListener { _, p1 ->
+                if (p1) {
+                    sensor.state_id = 3
+                }
+            }
         }
     }
 

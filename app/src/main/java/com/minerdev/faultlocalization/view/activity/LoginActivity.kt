@@ -80,7 +80,6 @@ class LoginActivity : AppCompatActivity() {
                                 binding.textInputEtPw.setText("")
                             }
                             else -> {
-
                             }
                         }
                     }

@@ -1,7 +1,6 @@
 package com.minerdev.faultlocalization.view.fragment
 
 import android.content.Context.INPUT_METHOD_SERVICE
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
@@ -15,11 +14,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.EquipmentListAdapter
 import com.minerdev.faultlocalization.databinding.FragmentEquipBinding
-import com.minerdev.faultlocalization.factory.EquipmentViewModelFactory
+import com.minerdev.faultlocalization.viewmodel.factory.EquipmentViewModelFactory
 import com.minerdev.faultlocalization.view.activity.DataHistoryActivity
 import com.minerdev.faultlocalization.view.activity.EquipmentModifyActivity
 import com.minerdev.faultlocalization.viewmodel.EquipmentViewModel
 import java.util.*
+import kotlin.concurrent.timer
 
 class EquipmentFragment : Fragment() {
     private val items1 = listOf("全部", "正常", "维修中", "停用")
@@ -32,17 +32,20 @@ class EquipmentFragment : Fragment() {
             EquipmentListAdapter.DiffCallback()
         )
     }
-    private val viewModel: EquipmentViewModel by viewModels { EquipmentViewModelFactory() }
+    private val viewModel: EquipmentViewModel by viewModels { EquipmentViewModelFactory(requireContext()) }
 
     private var group1 = 0
     private var group2 = 0
 
     private lateinit var searchView: SearchView
+    private lateinit var timer: Timer
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        viewModel.allItems.observe(viewLifecycleOwner, adapter::submitList)
+
         val manager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.layoutManager = manager
         binding.recyclerView.addItemDecoration(
@@ -61,7 +64,6 @@ class EquipmentFragment : Fragment() {
             ) {
                 val intent = Intent(context, DataHistoryActivity::class.java)
                 intent.putExtra("id", adapter[position].id)
-                intent.putExtra("mode", "modify")
                 startActivity(intent)
             }
 
@@ -74,28 +76,30 @@ class EquipmentFragment : Fragment() {
                 builder?.setTitle("友情提示")
                 builder?.setMessage("您真的要删除吗？")
                 builder?.setIcon(R.drawable.ic_round_warning_24)
-                builder?.setPositiveButton(
-                    "确认",
-                    DialogInterface.OnClickListener { _, _ ->
-                        viewModel.deleteItem(adapter[position].id)
-                        return@OnClickListener
-                    })
-                builder?.setNegativeButton(
-                    "取消",
-                    DialogInterface.OnClickListener { _, _ -> return@OnClickListener })
+                builder?.setPositiveButton("确认") { _, _ ->
+                    viewModel.deleteItem(adapter[position].id)
+                }
+                builder?.setNegativeButton("取消") { _, _ ->
+                    return@setNegativeButton
+                }
                 val alertDialog = builder?.create()
                 alertDialog?.show()
             }
         }
-
-        viewModel.allItems.observe(viewLifecycleOwner, adapter::submitList)
 
         return binding.root
     }
 
     override fun onResume() {
         super.onResume()
-        viewModel.loadItems()
+        timer = timer(period = 1000) {
+            viewModel.loadItems()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        timer.cancel()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

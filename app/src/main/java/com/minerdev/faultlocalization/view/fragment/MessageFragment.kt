@@ -1,7 +1,6 @@
 package com.minerdev.faultlocalization.view.fragment
 
 import android.content.Context.INPUT_METHOD_SERVICE
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.InputMethodManager
@@ -14,9 +13,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.MessageListAdapter
 import com.minerdev.faultlocalization.databinding.FragmentMessageBinding
-import com.minerdev.faultlocalization.factory.MessageViewModelFactory
+import com.minerdev.faultlocalization.viewmodel.factory.MessageViewModelFactory
 import com.minerdev.faultlocalization.viewmodel.MessageViewModel
-import java.util.*
 
 class MessageFragment : Fragment() {
     private val items1 = listOf("全部", "未完成", "进行中", "已完成")
@@ -24,7 +22,7 @@ class MessageFragment : Fragment() {
 
     private val binding by lazy { FragmentMessageBinding.inflate(layoutInflater) }
     private val adapter by lazy { MessageListAdapter(MessageListAdapter.DiffCallback()) }
-    private val viewModel: MessageViewModel by viewModels { MessageViewModelFactory() }
+    private val viewModel: MessageViewModel by viewModels { MessageViewModelFactory(requireContext()) }
 
     private var group1 = 0
     private var group2 = 0
@@ -35,6 +33,8 @@ class MessageFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        viewModel.allItems.observe(viewLifecycleOwner, adapter::submitList)
+
         val manager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.layoutManager = manager
         binding.recyclerView.addItemDecoration(
@@ -53,32 +53,18 @@ class MessageFragment : Fragment() {
             builder?.setMessage("是否允许该请求？")
             builder?.setIcon(R.drawable.ic_round_notification_important_24)
 
-            builder?.setPositiveButton(
-                "允许",
-                DialogInterface.OnClickListener { _, _ ->
-                    return@OnClickListener
-                }
-            )
+            builder?.setPositiveButton("允许") { _, _ ->
+            }
 
-            builder?.setNegativeButton(
-                "拒绝",
-                DialogInterface.OnClickListener { _, _ ->
-                    return@OnClickListener
-                }
-            )
+            builder?.setNegativeButton("拒绝") { _, _ ->
+            }
 
-            builder?.setNeutralButton(
-                "取消",
-                DialogInterface.OnClickListener { _, _ ->
-                    return@OnClickListener
-                }
-            )
+            builder?.setNeutralButton("取消") { _, _ ->
+            }
 
             val alertDialog = builder?.create()
             alertDialog?.show()
         }
-
-        viewModel.allItems.observe(viewLifecycleOwner, adapter::submitList)
 
         return binding.root
     }

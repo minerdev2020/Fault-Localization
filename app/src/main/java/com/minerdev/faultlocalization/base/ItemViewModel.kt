@@ -20,7 +20,7 @@ open class ItemViewModel<T : Item>(private val repository: Repository<T>) : View
         repository.addItem(item)
     }
 
-    fun modifyItems(item: T) {
+    fun modifyItem(item: T) {
         repository.modifyItem(item)
     }
 

@@ -2,13 +2,13 @@ package com.minerdev.faultlocalization.repository
 
 import android.content.Context
 import com.minerdev.faultlocalization.base.Repository
-import com.minerdev.faultlocalization.model.Person
+import com.minerdev.faultlocalization.model.Sensor
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
-class PersonRepository(context: Context) : Repository<Person>(
+class SensorRepository(context: Context) : Repository<Sensor>(
     context,
-    Person::class,
+    Sensor::class,
     { response: String ->
         Json.decodeFromString(response)
     },

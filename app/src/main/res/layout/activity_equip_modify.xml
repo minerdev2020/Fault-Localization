@@ -7,7 +7,7 @@
 
         <variable
             name="viewModel"
-            type="com.minerdev.faultlocalization.viewmodel.EquipmentViewModel" />
+            type="com.minerdev.faultlocalization.viewmodel.EquipmentModifyViewModel" />
     </data>
 
     <androidx.core.widget.NestedScrollView

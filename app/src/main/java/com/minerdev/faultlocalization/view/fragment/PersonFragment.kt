@@ -18,7 +18,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.PersonListAdapter
 import com.minerdev.faultlocalization.databinding.FragmentPersonBinding
-import com.minerdev.faultlocalization.factory.PersonViewModelFactory
+import com.minerdev.faultlocalization.viewmodel.factory.PersonViewModelFactory
 import com.minerdev.faultlocalization.view.activity.LoginLogActivity
 import com.minerdev.faultlocalization.view.activity.PersonModifyActivity
 import com.minerdev.faultlocalization.viewmodel.PersonViewModel
@@ -31,7 +31,7 @@ class PersonFragment : Fragment() {
 
     private val binding by lazy { FragmentPersonBinding.inflate(layoutInflater) }
     private val adapter by lazy { PersonListAdapter(PersonListAdapter.DiffCallback()) }
-    private val viewModel: PersonViewModel by viewModels { PersonViewModelFactory() }
+    private val viewModel: PersonViewModel by viewModels { PersonViewModelFactory(requireContext()) }
 
     private var group1 = 0
     private var group2 = 0
@@ -43,6 +43,8 @@ class PersonFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        viewModel.allItems.observe(viewLifecycleOwner, adapter::submitList)
+
         val manager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.layoutManager = manager
         binding.recyclerView.addItemDecoration(
@@ -74,8 +76,6 @@ class PersonFragment : Fragment() {
                 tryCall(adapter[position].phone)
             }
         }
-
-        viewModel.allItems.observe(viewLifecycleOwner, adapter::submitList)
 
         return binding.root
     }
@@ -159,7 +159,7 @@ class PersonFragment : Fragment() {
         }
 
         builder?.setNegativeButton("取消") { _, _ ->
-            DialogInterface.OnClickListener { _, _ -> return@OnClickListener }
+            return@setNegativeButton
         }
 
         val alertDialog = builder?.create()
@@ -195,7 +195,7 @@ class PersonFragment : Fragment() {
                         viewModel.deleteItem(adapter[position].id)
                     }
                     builder.setNegativeButton("取消") { _, _ ->
-                        DialogInterface.OnClickListener { _, _ -> return@OnClickListener }
+                        return@setNegativeButton
                     }
 
                     val alertDialog = builder.create()

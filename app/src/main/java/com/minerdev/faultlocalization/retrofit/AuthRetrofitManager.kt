@@ -92,4 +92,22 @@ class AuthRetrofitManager {
             }
         })
     }
+
+    fun initialize(
+        onResponse: (response: String) -> Unit,
+        onFailure: (error: Throwable) -> Unit
+    ) {
+        val call = iRetrofit?.initialize(TOKEN) ?: return
+        call.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful && response.body() != null) {
+                    onResponse(response.body().toString())
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                onFailure(t)
+            }
+        })
+    }
 }

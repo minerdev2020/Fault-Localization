@@ -24,4 +24,16 @@ object Constants {
     const val TYPE_HEADER = 0
     const val TYPE_ITEM = 1
     const val TYPE_FOOTER = 2
+
+    val PERSON_STATE = ArrayList<String>()
+    val PERSON_TYPE = ArrayList<String>()
+
+    val EQUIPMENT_STATE = ArrayList<String>()
+    val EQUIPMENT_TYPE = ArrayList<String>()
+
+    val SENSOR_STATE = ArrayList<String>()
+    val SENSOR_TYPE = ArrayList<String>()
+
+    val MESSAGE_STATE = ArrayList<String>()
+    val MESSAGE_TYPE = ArrayList<String>()
 }
