@@ -30,6 +30,7 @@ class PersonModifyActivity : AppCompatActivity() {
         val id = intent.getIntExtra("id", 0)
         viewModel.loadItem(id)
         viewModel.item.observe(this, { person = it })
+        viewModel.loadItemsStatesAndTypes()
 
         binding.btnModify.setOnClickListener {
             person.type_id = if (binding.radioButtonManager.isChecked) 1 else 2

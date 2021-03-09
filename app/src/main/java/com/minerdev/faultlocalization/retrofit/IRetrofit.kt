@@ -24,6 +24,9 @@ interface IRetrofit {
     fun initialize(@Header("authorization") token: String): Call<JsonObject>
 
 
+    @GET("$API_PERSON/list")
+    fun getAllPersonStatesAndTypes(@Header("authorization") token: String): Call<JsonObject>
+
     @GET(API_PERSON)
     fun getAllPerson(@Header("authorization") token: String): Call<JsonObject>
 
@@ -59,6 +62,9 @@ interface IRetrofit {
         @Path("id") id: Int
     ): Call<JsonObject>
 
+
+    @GET("$API_EQUIPMENT/list")
+    fun getAllEquipmentStatesAndTypes(@Header("authorization") token: String): Call<JsonObject>
 
     @GET(API_EQUIPMENT)
     fun getAllEquipment(@Header("authorization") token: String): Call<JsonObject>
@@ -96,6 +102,9 @@ interface IRetrofit {
     ): Call<JsonObject>
 
 
+    @GET("$API_SENSOR/list")
+    fun getAllSensorStatesAndTypes(@Header("authorization") token: String): Call<JsonObject>
+
     @GET(API_SENSOR)
     fun getAllSensor(@Header("authorization") token: String): Call<JsonObject>
 
@@ -131,6 +140,9 @@ interface IRetrofit {
         @Path("id") id: Int
     ): Call<JsonObject>
 
+
+    @GET("$API_MESSAGE/list")
+    fun getAllMessageStatesAndTypes(@Header("authorization") token: String): Call<JsonObject>
 
     @GET(API_MESSAGE)
     fun getAllMessage(@Header("authorization") token: String): Call<JsonObject>

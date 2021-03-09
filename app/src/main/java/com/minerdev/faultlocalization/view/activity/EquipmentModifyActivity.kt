@@ -2,8 +2,11 @@ package com.minerdev.faultlocalization.view.activity
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -14,22 +17,23 @@ import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.SensorModifyListAdapter
 import com.minerdev.faultlocalization.databinding.ActivityEquipModifyBinding
 import com.minerdev.faultlocalization.model.Equipment
-import com.minerdev.faultlocalization.model.EquipmentState
-import com.minerdev.faultlocalization.model.EquipmentType
+import com.minerdev.faultlocalization.utils.Constants
 import com.minerdev.faultlocalization.utils.Constants.CREATE
-import com.minerdev.faultlocalization.utils.Constants.DELETE
 import com.minerdev.faultlocalization.utils.Constants.UPDATE
 import com.minerdev.faultlocalization.viewmodel.EquipmentModifyViewModel
 import com.minerdev.faultlocalization.viewmodel.factory.EquipmentModifyViewModelFactory
-import com.minerdev.faultlocalization.viewmodel.factory.EquipmentViewModelFactory
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 
 class EquipmentModifyActivity : AppCompatActivity() {
-    private val viewModel: EquipmentModifyViewModel by viewModels { EquipmentModifyViewModelFactory(this) }
+    private val viewModel: EquipmentModifyViewModel by viewModels {
+        EquipmentModifyViewModelFactory(this)
+    }
     private val adapter by lazy { SensorModifyListAdapter(SensorModifyListAdapter.DiffCallback()) }
 
     private lateinit var binding: ActivityEquipModifyBinding
-    private lateinit var equipment: Equipment
     private lateinit var mode: String
+    private var equipment = Equipment()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,14 +47,7 @@ class EquipmentModifyActivity : AppCompatActivity() {
         if (mode == "add") {
             supportActionBar?.title = "添加设备信息"
             binding.btnModify.text = "添加"
-
-            viewModel.item.postValue(
-                Equipment(
-                    EquipmentState = EquipmentState(),
-                    EquipmentType = EquipmentType(),
-                    Sensors = ArrayList()
-                )
-            )
+            viewModel.item.postValue(Equipment(type_id = 1))
 
         } else if (mode == "modify") {
             supportActionBar?.title = "设备信息"
@@ -59,6 +56,45 @@ class EquipmentModifyActivity : AppCompatActivity() {
             viewModel.loadItem(id)
         }
 
+        setupRecyclerView()
+
+        setupViewModel()
+
+        setupButtons()
+
+        binding.spinnerType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+                equipment.type_id = p2 + 1
+                Log.d(Constants.TAG, "equipment type : ${p2 + 1}")
+            }
+
+            override fun onNothingSelected(p0: AdapterView<*>?) {
+                equipment.type_id = 1
+            }
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> finish()
+            else -> {
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun finish() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("友情提示")
+        builder.setIcon(R.drawable.ic_round_warning_24)
+        builder.setMessage("您确认不保存所输入内容吗？")
+        builder.setPositiveButton("确认") { _: DialogInterface?, _: Int -> super.finish() }
+        builder.setNegativeButton("取消") { dialog: DialogInterface, _: Int -> dialog.dismiss() }
+        val alertDialog = builder.create()
+        alertDialog.show()
+    }
+
+    private fun setupRecyclerView() {
         val manager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.layoutManager = manager
         binding.recyclerView.addItemDecoration(
@@ -85,12 +121,41 @@ class EquipmentModifyActivity : AppCompatActivity() {
             val alertDialog = builder.create()
             alertDialog.show()
         }
+    }
 
+    private fun setupViewModel() {
         viewModel.item.observe(this, {
             equipment = it
+            adapter.parentId = it.id
             adapter.submitList(equipment.Sensors)
         })
 
+        viewModel.itemTypes.observe(this, {
+            val names = ArrayList<String>()
+            for (item in it) {
+                names.add(item.name)
+            }
+            val arrayAdapter =
+                ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item)
+            arrayAdapter.addAll(names)
+            binding.spinnerType.adapter = arrayAdapter
+            binding.spinnerType.setSelection(equipment.type_id - 1)
+        })
+
+        viewModel.sensorTypes.observe(this, {
+            val names = ArrayList<String>()
+            for (item in it) {
+                names.add(item.name)
+            }
+            adapter.types.addAll(names)
+            adapter.notifyDataSetChanged()
+        })
+
+        viewModel.loadItemsStatesAndTypes()
+        viewModel.loadSensorStatesAndTypes()
+    }
+
+    private fun setupButtons() {
         binding.materialBtnAdd.setOnClickListener {
             adapter.addEmptyItem()
         }
@@ -105,21 +170,26 @@ class EquipmentModifyActivity : AppCompatActivity() {
             }
 
             if (mode == "add") {
-                viewModel.addItem(equipment)
-                for (sensor in equipment.Sensors) {
-                    viewModel.addSensor(sensor)
+                viewModel.addItem(equipment) {
+                    val equipment = Json.decodeFromString<Equipment>(it)
+                    for (sensor in adapter.currentList) {
+                        sensor.parent_id = equipment.id
+                        viewModel.addSensor(sensor)
+                    }
                 }
 
             } else if (mode == "modify") {
                 viewModel.modifyItem(equipment)
-                for (sensor in equipment.Sensors) {
+                for (sensor in adapter.currentList) {
                     when (sensor.state) {
                         CREATE -> viewModel.addSensor(sensor)
                         UPDATE -> viewModel.modifySensor(sensor)
-                        DELETE -> viewModel.deleteSensor(sensor.id)
                         else -> {
                         }
                     }
+                }
+                for (sensor in adapter.deleteList) {
+                    viewModel.deleteSensor(sensor.id)
                 }
             }
 
@@ -127,25 +197,5 @@ class EquipmentModifyActivity : AppCompatActivity() {
         }
 
         binding.btnCancel.setOnClickListener { finish() }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> finish()
-            else -> {
-            }
-        }
-        return super.onOptionsItemSelected(item)
-    }
-
-    override fun finish() {
-        val builder = AlertDialog.Builder(this)
-        builder.setTitle("友情提示")
-        builder.setIcon(R.drawable.ic_round_warning_24)
-        builder.setMessage("您确认不保存所输入内容吗？")
-        builder.setPositiveButton("确认") { _: DialogInterface?, _: Int -> super.finish() }
-        builder.setNegativeButton("取消") { dialog: DialogInterface, _: Int -> dialog.dismiss() }
-        val alertDialog = builder.create()
-        alertDialog.show()
     }
 }

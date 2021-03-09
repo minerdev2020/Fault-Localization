@@ -1,6 +1,5 @@
 package com.minerdev.faultlocalization.view.activity
 
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -10,8 +9,8 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.databinding.ActivityDataHistoryBinding
-import com.minerdev.faultlocalization.viewmodel.factory.EquipmentViewModelFactory
 import com.minerdev.faultlocalization.viewmodel.EquipmentViewModel
+import com.minerdev.faultlocalization.viewmodel.factory.EquipmentViewModelFactory
 
 class DataHistoryActivity : AppCompatActivity() {
     private val binding by lazy { ActivityDataHistoryBinding.inflate(layoutInflater) }

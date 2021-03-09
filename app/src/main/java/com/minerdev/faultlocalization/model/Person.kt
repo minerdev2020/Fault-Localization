@@ -11,7 +11,7 @@ data class Person(
     override var state_id: Int = 0,
     var name: String = "",
     var phone: String = "",
-    var User: User,
-    var PersonState: PersonState,
-    var PersonType: PersonType
+    var User: User = User(),
+    var PersonState: ItemState = ItemState(),
+    var PersonType: ItemType = ItemType()
 ) : Item

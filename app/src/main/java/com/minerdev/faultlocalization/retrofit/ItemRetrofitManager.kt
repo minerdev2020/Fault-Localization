@@ -21,6 +21,36 @@ class ItemRetrofitManager {
     private val iRetrofit: IRetrofit? =
         RetrofitClient.getClient(BASE_URL)?.create(IRetrofit::class.java)
 
+    fun getAllItemsStatesAndTypes(
+        itemType: KClass<*>,
+        onResponse: (response: String) -> Unit,
+        onFailure: (error: Throwable) -> Unit
+    ) {
+        val call = run {
+            when (itemType.simpleName) {
+                "Person" -> iRetrofit?.getAllPersonStatesAndTypes(TOKEN)
+                "Equipment" -> iRetrofit?.getAllEquipmentStatesAndTypes(TOKEN)
+                "Sensor" -> iRetrofit?.getAllSensorStatesAndTypes(TOKEN)
+                "Message" -> iRetrofit?.getAllMessageStatesAndTypes(TOKEN)
+                else -> {
+                    return
+                }
+            }
+        }
+
+        call?.enqueue(object : Callback<JsonObject> {
+            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
+                if (response.isSuccessful && response.body() != null) {
+                    onResponse(response.body().toString())
+                }
+            }
+
+            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
+                onFailure(t)
+            }
+        })
+    }
+
     fun getAllItems(
         itemType: KClass<*>,
         onResponse: (response: String) -> Unit,

@@ -11,7 +11,7 @@ data class Message(
     override var state_id: Int = 0,
     var contents: String = "",
     var from_id: Int = 0,
-    var MessageState: MessageState,
-    var MessageType: MessageType,
-    var From: From
+    var MessageState: ItemState = ItemState(),
+    var MessageType: ItemType = ItemType(),
+    var Person: From = From()
 ) : Item

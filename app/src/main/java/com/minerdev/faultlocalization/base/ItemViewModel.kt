@@ -1,12 +1,18 @@
 package com.minerdev.faultlocalization.base
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.minerdev.faultlocalization.model.Item
 
 open class ItemViewModel<T : Item>(private val repository: Repository<T>) : ViewModel() {
-    val allItems: MutableLiveData<List<T>> = repository.allItems
-    val item: MutableLiveData<T> = repository.item
+    val allItems = repository.allItems
+    val item = repository.item
+
+    val itemStates = repository.itemStates
+    val itemTypes = repository.itemTypes
+
+    fun loadItemsStatesAndTypes() {
+        repository.loadItemsStatesAndTypes()
+    }
 
     fun loadItem(id: Int) {
         repository.loadItem(id)
@@ -16,8 +22,8 @@ open class ItemViewModel<T : Item>(private val repository: Repository<T>) : View
         repository.loadItems()
     }
 
-    fun addItem(item: T) {
-        repository.addItem(item)
+    fun addItem(item: T, onResponse: (response: String) -> Unit) {
+        repository.addItem(item, onResponse)
     }
 
     fun modifyItem(item: T) {

@@ -11,8 +11,15 @@ class EquipmentModifyViewModel(
     repository: EquipmentRepository
 ) :
     ItemViewModel<Equipment>(repository) {
+    val sensorStates = sensorRepository.itemStates
+    val sensorTypes = sensorRepository.itemTypes
+
+    fun loadSensorStatesAndTypes() {
+        sensorRepository.loadItemsStatesAndTypes()
+    }
+
     fun addSensor(sensor: Sensor) {
-        sensorRepository.addItem(sensor)
+        sensorRepository.addItem(sensor) {}
     }
 
     fun modifySensor(sensor: Sensor) {

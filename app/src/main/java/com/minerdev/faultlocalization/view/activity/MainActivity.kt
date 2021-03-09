@@ -40,11 +40,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        setViewPager()
+        setupViewPager()
 
-        setBottomNavigationView()
-
-        loadStatesAndTypes()
+        setupBottomNavigationView()
 
         // 설정이 끝나고 타이틀 바꿔야 오류가 안 남
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
@@ -83,7 +81,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun setViewPager() {
+    private fun setupViewPager() {
         binding.viewPager.addOnPageChangeListener(object : OnPageChangeListener {
             override fun onPageScrolled(
                 position: Int,
@@ -110,7 +108,7 @@ class MainActivity : AppCompatActivity() {
         binding.viewPager.adapter = adapter
     }
 
-    private fun setBottomNavigationView() {
+    private fun setupBottomNavigationView() {
         binding.bottomNav.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.tab_person -> binding.viewPager.currentItem = 0
@@ -122,50 +120,5 @@ class MainActivity : AppCompatActivity() {
             }
             true
         }
-    }
-
-    private fun loadStatesAndTypes() {
-        AuthRetrofitManager.instance.initialize(
-            { response: String ->
-                run {
-                    val data = JSONObject(response)
-                    Log.d(Constants.TAG, "instance response : " + data.getString("message"))
-                    when (data.getInt("code")) {
-                        200 -> {
-                            PERSON_STATE.addAll()
-                            PERSON_TYPE.addAll()
-
-                            EQUIPMENT_STATE.addAll()
-                            EQUIPMENT_TYPE.addAll()
-
-                            SENSOR_STATE.addAll()
-                            SENSOR_TYPE.addAll()
-
-                            MESSAGE_STATE.addAll()
-                            MESSAGE_TYPE.addAll()
-                        }
-                        401 -> {
-                            Toast.makeText(this@MainActivity, "无效的Token！", Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                        419 -> {
-                            Toast.makeText(
-                                this@MainActivity,
-                                "该Token已过期！请重新登录！",
-                                Toast.LENGTH_SHORT
-                            )
-                                .show()
-                        }
-                        else -> {
-                        }
-                    }
-                }
-            },
-            { error: Throwable ->
-                run {
-                    Log.d(Constants.TAG, "instance error : " + error.localizedMessage)
-                }
-            }
-        )
     }
 }

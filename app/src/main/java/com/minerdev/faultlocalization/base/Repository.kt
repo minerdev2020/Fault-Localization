@@ -5,8 +5,12 @@ import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.minerdev.faultlocalization.model.Item
+import com.minerdev.faultlocalization.model.ItemState
+import com.minerdev.faultlocalization.model.ItemType
 import com.minerdev.faultlocalization.retrofit.ItemRetrofitManager
 import com.minerdev.faultlocalization.utils.Constants.TAG
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 import org.json.JSONObject
 import kotlin.reflect.KClass
 
@@ -19,16 +23,47 @@ open class Repository<T : Item>(
     val allItems = MutableLiveData<List<T>>()
     val item = MutableLiveData<T>()
 
+    val itemStates = MutableLiveData<List<ItemState>>()
+    val itemTypes = MutableLiveData<List<ItemType>>()
+
+    fun loadItemsStatesAndTypes() {
+        ItemRetrofitManager.instance.getAllItemsStatesAndTypes(itemType,
+            { response: String ->
+                run {
+                    val jsonResponse = JSONObject(response)
+                    Log.d(
+                        TAG,
+                        "loadItemsStatesAndTypes response : " + jsonResponse.getString("message")
+                    )
+                    Log.d(
+                        TAG,
+                        "loadItemsStatesAndTypes response : " + jsonResponse.getString("data")
+                    )
+
+                    if (checkTokenResponse(jsonResponse.getInt("code"))) {
+                        val statesAndTypes = JSONObject(jsonResponse.getString("data"))
+                        itemStates.postValue(Json.decodeFromString(statesAndTypes.getString("states")))
+                        itemTypes.postValue(Json.decodeFromString(statesAndTypes.getString("types")))
+                    }
+                }
+            },
+            { error: Throwable ->
+                run {
+                    Log.d(TAG, "loadItems error : " + error.localizedMessage)
+                }
+            })
+    }
+
     fun loadItem(id: Int) {
         ItemRetrofitManager.instance.getItem(itemType, id,
             { response: String ->
                 run {
-                    val data = JSONObject(response)
-                    Log.d(TAG, "loadItem response : " + data.getString("message"))
-                    Log.d(TAG, "loadItem response : " + data.getString("data"))
+                    val jsonResponse = JSONObject(response)
+                    Log.d(TAG, "loadItem response : " + jsonResponse.getString("message"))
+                    Log.d(TAG, "loadItem response : " + jsonResponse.getString("data"))
 
-                    if (checkTokenResponse(data.getInt("code"))) {
-                        item.postValue(onItemResponse(data.getString("data")))
+                    if (checkTokenResponse(jsonResponse.getInt("code"))) {
+                        item.postValue(onItemResponse(jsonResponse.getString("data")))
                     }
                 }
             },
@@ -43,12 +78,12 @@ open class Repository<T : Item>(
         ItemRetrofitManager.instance.getAllItems(itemType,
             { response: String ->
                 run {
-                    val data = JSONObject(response)
-                    Log.d(TAG, "loadItems response : " + data.getString("message"))
-                    Log.d(TAG, "loadItems response : " + data.getString("data"))
+                    val jsonResponse = JSONObject(response)
+                    Log.d(TAG, "loadItems response : " + jsonResponse.getString("message"))
+                    Log.d(TAG, "loadItems response : " + jsonResponse.getString("data"))
 
-                    if (checkTokenResponse(data.getInt("code"))) {
-                        allItems.postValue(onItemsResponse(data.getString("data")))
+                    if (checkTokenResponse(jsonResponse.getInt("code"))) {
+                        allItems.postValue(onItemsResponse(jsonResponse.getString("data")))
                     }
                 }
             },
@@ -59,13 +94,14 @@ open class Repository<T : Item>(
             })
     }
 
-    fun addItem(item: T) {
+    fun addItem(item: T, onResponse: (response: String) -> Unit) {
         ItemRetrofitManager.instance.createItem(itemType, item,
             { response: String ->
                 run {
-                    val data = JSONObject(response)
-                    Log.d(TAG, "addItem response : " + data.getString("message"))
-                    Log.d(TAG, "addItem response : " + data.getString("data"))
+                    val jsonResponse = JSONObject(response)
+                    Log.d(TAG, "addItem response : " + jsonResponse.getString("message"))
+                    Log.d(TAG, "addItem response : " + jsonResponse.getString("data"))
+                    onResponse(jsonResponse.getString("data"))
                 }
             },
             { error: Throwable ->
@@ -79,8 +115,8 @@ open class Repository<T : Item>(
         ItemRetrofitManager.instance.updateItem(itemType, item.id, item,
             { response: String ->
                 run {
-                    val data = JSONObject(response)
-                    Log.d(TAG, "modifyItem response : " + data.getString("message"))
+                    val jsonResponse = JSONObject(response)
+                    Log.d(TAG, "modifyItem response : " + jsonResponse.getString("message"))
                 }
             },
             { error: Throwable ->
@@ -94,8 +130,8 @@ open class Repository<T : Item>(
         ItemRetrofitManager.instance.updateItem(itemType, id, state,
             { response: String ->
                 run {
-                    val data = JSONObject(response)
-                    Log.d(TAG, "modifyItemState response : " + data.getString("message"))
+                    val jsonResponse = JSONObject(response)
+                    Log.d(TAG, "modifyItemState response : " + jsonResponse.getString("message"))
                 }
             },
             { error: Throwable ->
@@ -109,8 +145,8 @@ open class Repository<T : Item>(
         ItemRetrofitManager.instance.deleteItem(itemType, id,
             { response: String ->
                 run {
-                    val data = JSONObject(response)
-                    Log.d(TAG, "deleteItem response : " + data.getString("message"))
+                    val jsonResponse = JSONObject(response)
+                    Log.d(TAG, "deleteItem response : " + jsonResponse.getString("message"))
                 }
             },
             { error: Throwable ->
