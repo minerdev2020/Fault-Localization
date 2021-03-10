@@ -23,7 +23,8 @@ class ItemRetrofitManager {
 
     fun getAllItemsStatesAndTypes(
         itemType: KClass<*>,
-        onResponse: (response: String) -> Unit,
+        onResponse: (code: Int, response: String) -> Unit,
+        onError: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val call = run {
@@ -40,8 +41,15 @@ class ItemRetrofitManager {
 
         call?.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful && response.body() != null) {
-                    onResponse(response.body().toString())
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        onResponse(response.code(), it.toString())
+                    }
+
+                } else {
+                    response.errorBody()?.let {
+                        onError(response.code(), it.string())
+                    }
                 }
             }
 
@@ -53,7 +61,8 @@ class ItemRetrofitManager {
 
     fun getAllItems(
         itemType: KClass<*>,
-        onResponse: (response: String) -> Unit,
+        onResponse: (code: Int, response: String) -> Unit,
+        onError: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val call = run {
@@ -69,8 +78,15 @@ class ItemRetrofitManager {
 
         call?.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful && response.body() != null) {
-                    onResponse(response.body().toString())
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        onResponse(response.code(), it.toString())
+                    }
+
+                } else {
+                    response.errorBody()?.let {
+                        onError(response.code(), it.string())
+                    }
                 }
             }
 
@@ -83,7 +99,8 @@ class ItemRetrofitManager {
     fun getItem(
         itemType: KClass<*>,
         id: Int,
-        onResponse: (response: String) -> Unit,
+        onResponse: (code: Int, response: String) -> Unit,
+        onError: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val call = run {
@@ -99,8 +116,15 @@ class ItemRetrofitManager {
 
         call?.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful && response.body() != null) {
-                    onResponse(response.body().toString())
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        onResponse(response.code(), it.toString())
+                    }
+
+                } else {
+                    response.errorBody()?.let {
+                        onError(response.code(), it.string())
+                    }
                 }
             }
 
@@ -113,7 +137,8 @@ class ItemRetrofitManager {
     fun <T : Item> createItem(
         itemType: KClass<*>,
         item: T,
-        onResponse: (response: String) -> Unit,
+        onResponse: (code: Int, response: String) -> Unit,
+        onError: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val call = run {
@@ -136,8 +161,15 @@ class ItemRetrofitManager {
 
         call?.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful && response.body() != null) {
-                    onResponse(response.body().toString())
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        onResponse(response.code(), it.toString())
+                    }
+
+                } else {
+                    response.errorBody()?.let {
+                        onError(response.code(), it.string())
+                    }
                 }
             }
 
@@ -151,7 +183,8 @@ class ItemRetrofitManager {
         itemType: KClass<*>,
         id: Int,
         item: T,
-        onResponse: (response: String) -> Unit,
+        onResponse: (code: Int, response: String) -> Unit,
+        onError: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val call = run {
@@ -181,8 +214,15 @@ class ItemRetrofitManager {
         Log.d(Constants.TAG, item.toString())
         call?.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful && response.body() != null) {
-                    onResponse(response.body().toString())
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        onResponse(response.code(), it.toString())
+                    }
+
+                } else {
+                    response.errorBody()?.let {
+                        onError(response.code(), it.string())
+                    }
                 }
             }
 
@@ -196,7 +236,8 @@ class ItemRetrofitManager {
         itemType: KClass<*>,
         id: Int,
         state: Byte,
-        onResponse: (response: String) -> Unit,
+        onResponse: (code: Int, response: String) -> Unit,
+        onError: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val call = run {
@@ -214,8 +255,15 @@ class ItemRetrofitManager {
         Log.d(Constants.TAG, "state : $state")
         call?.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful && response.body() != null) {
-                    onResponse(response.body().toString())
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        onResponse(response.code(), it.toString())
+                    }
+
+                } else {
+                    response.errorBody()?.let {
+                        onError(response.code(), it.string())
+                    }
                 }
             }
 
@@ -228,7 +276,8 @@ class ItemRetrofitManager {
     fun deleteItem(
         itemType: KClass<*>,
         id: Int,
-        onResponse: (response: String) -> Unit,
+        onResponse: (code: Int, response: String) -> Unit,
+        onError: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val call = run {
@@ -245,8 +294,15 @@ class ItemRetrofitManager {
 
         call?.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful && response.body() != null) {
-                    onResponse(response.body().toString())
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        onResponse(response.code(), it.toString())
+                    }
+
+                } else {
+                    response.errorBody()?.let {
+                        onError(response.code(), it.string())
+                    }
                 }
             }
 

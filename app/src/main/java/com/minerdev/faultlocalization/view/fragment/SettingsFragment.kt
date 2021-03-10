@@ -55,42 +55,40 @@ class SettingsFragment : Fragment() {
         Log.d(TAG, "logout : $id")
 
         AuthRetrofitManager.instance.logout(id,
-            { response: String ->
-                run {
-                    val data = JSONObject(response)
-                    Log.d(TAG, "logout response : " + data.getString("message"))
-                    when (data.getInt("code")) {
-                        200 -> {
-                            val editor = sharedPreferences?.edit()
-                            editor?.clear()
-                            editor?.apply()
-                            activity?.finish()
-                        }
-                        401 -> {
-                            Toast.makeText(context, "该账号已注销！", Toast.LENGTH_SHORT)
-                                .show()
-                            val editor = sharedPreferences?.edit()
-                            editor?.clear()
-                            editor?.apply()
-                            activity?.finish()
-                        }
-                        404 -> {
-                            Toast.makeText(context, "该账号不存在！", Toast.LENGTH_SHORT)
-                                .show()
-                            val editor = sharedPreferences?.edit()
-                            editor?.clear()
-                            editor?.apply()
-                            activity?.finish()
-                        }
-                        else -> {
-                        }
+            { _: Int, response: String ->
+                val data = JSONObject(response)
+                Log.d(TAG, "logout response : " + data.getString("message"))
+                val editor = sharedPreferences?.edit()
+                editor?.clear()
+                editor?.apply()
+                activity?.finish()
+            },
+            { code: Int, response: String ->
+                val data = JSONObject(response)
+                Log.d(TAG, "logout response : " + data.getString("message"))
+                when (code) {
+                    401 -> {
+                        Toast.makeText(context, "该账号已注销！", Toast.LENGTH_SHORT)
+                            .show()
+                        val editor = sharedPreferences?.edit()
+                        editor?.clear()
+                        editor?.apply()
+                        activity?.finish()
+                    }
+                    404 -> {
+                        Toast.makeText(context, "该账号不存在！", Toast.LENGTH_SHORT)
+                            .show()
+                        val editor = sharedPreferences?.edit()
+                        editor?.clear()
+                        editor?.apply()
+                        activity?.finish()
+                    }
+                    else -> {
                     }
                 }
             },
             { error: Throwable ->
-                run {
-                    Log.d(TAG, "logout error : " + error.localizedMessage)
-                }
+                Log.d(TAG, "logout error : " + error.localizedMessage)
             }
         )
     }

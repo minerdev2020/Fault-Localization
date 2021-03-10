@@ -44,50 +44,49 @@ class LoginActivity : AppCompatActivity() {
     private fun tryLogin(view: View, id: String, pw: String) {
         if (id.isNotEmpty() && pw.isNotEmpty()) {
             AuthRetrofitManager.instance.login(id, pw,
-                { response: String ->
-                    run {
-                        val data = JSONObject(response)
-                        Log.d(TAG, "tryLogin response : " + data.getString("message"))
-                        when (data.getInt("code")) {
-                            200 -> {
-                                val sharedPreferences =
-                                    getSharedPreferences("login", MODE_PRIVATE)
-                                val editor = sharedPreferences.edit()
-                                editor.putString("id", id)
-                                editor.putString("token", data.getString("token"))
-                                editor.apply()
+                { _: Int, response: String ->
+                    val data = JSONObject(response)
+                    Log.d(TAG, "tryLogin response : " + data.getString("message"))
 
-                                TOKEN = data.getString("token")
-                                Log.d(TAG, "tryLogin response : " + data.getString("token"))
+                    val sharedPreferences =
+                        getSharedPreferences("login", MODE_PRIVATE)
+                    val editor = sharedPreferences.edit()
+                    editor.putString("id", id)
+                    editor.putString("token", data.getString("token"))
+                    editor.apply()
 
-                                val intent = Intent(this@LoginActivity, MainActivity::class.java)
-                                startActivity(intent)
-                                finish()
-                            }
-                            400 -> {
-                                Toast.makeText(this@LoginActivity, "账号或密码有误！", Toast.LENGTH_SHORT)
-                                    .show()
-                                binding.textInputEtPw.setText("")
-                            }
-                            401 -> {
-                                Toast.makeText(this@LoginActivity, "该账号已登录！", Toast.LENGTH_SHORT)
-                                    .show()
-                                binding.textInputEtPw.setText("")
-                            }
-                            404 -> {
-                                Toast.makeText(this@LoginActivity, "账号不存在！", Toast.LENGTH_SHORT)
-                                    .show()
-                                binding.textInputEtPw.setText("")
-                            }
-                            else -> {
-                            }
+                    TOKEN = data.getString("token")
+                    Log.d(TAG, "tryLogin response : " + data.getString("token"))
+
+                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                    startActivity(intent)
+                    finish()
+                },
+                { code: Int, response: String ->
+                    val data = JSONObject(response)
+                    Log.d(TAG, "tryLogin response : " + data.getString("message"))
+                    when (code) {
+                        400 -> {
+                            Toast.makeText(this@LoginActivity, "账号或密码有误！", Toast.LENGTH_SHORT)
+                                .show()
+                            binding.textInputEtPw.setText("")
+                        }
+                        401 -> {
+                            Toast.makeText(this@LoginActivity, "该账号已登录！", Toast.LENGTH_SHORT)
+                                .show()
+                            binding.textInputEtPw.setText("")
+                        }
+                        404 -> {
+                            Toast.makeText(this@LoginActivity, "账号不存在！", Toast.LENGTH_SHORT)
+                                .show()
+                            binding.textInputEtPw.setText("")
+                        }
+                        else -> {
                         }
                     }
                 },
                 { error: Throwable ->
-                    run {
-                        Log.d(TAG, "tryLogin error : " + error.localizedMessage)
-                    }
+                    Log.d(TAG, "tryLogin error : " + error.localizedMessage)
                 }
             )
         } else {

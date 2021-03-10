@@ -45,27 +45,25 @@ class RegisterActivity : AppCompatActivity() {
     ) {
         if (id.isNotEmpty() && pw.isNotEmpty() && name.isNotEmpty() && phone.isNotEmpty()) {
             AuthRetrofitManager.instance.register(id, pw, name, phone, typeId,
-                { response: String ->
-                    run {
-                        val data = JSONObject(response)
-                        Log.d(Constants.TAG, "tryRegister response : " + data.getString("message"))
-                        when (data.getInt("code")) {
-                            201 -> {
-                                finish()
-                            }
-                            409 -> {
-                                Toast.makeText(this@RegisterActivity, "该用户已存在！", Toast.LENGTH_SHORT)
-                                    .show()
-                            }
-                            else -> {
-                            }
+                { _: Int, response: String ->
+                    val data = JSONObject(response)
+                    Log.d(Constants.TAG, "tryRegister response : " + data.getString("message"))
+                    finish()
+                },
+                { code: Int, response: String ->
+                    val data = JSONObject(response)
+                    Log.d(Constants.TAG, "tryRegister response : " + data.getString("message"))
+                    when (code) {
+                        409 -> {
+                            Toast.makeText(this@RegisterActivity, "该用户已存在！", Toast.LENGTH_SHORT)
+                                .show()
+                        }
+                        else -> {
                         }
                     }
                 },
                 { error: Throwable ->
-                    run {
-                        Log.d(Constants.TAG, "tryRegister error : " + error.localizedMessage)
-                    }
+                    Log.d(Constants.TAG, "tryRegister error : " + error.localizedMessage)
                 }
             )
         } else {

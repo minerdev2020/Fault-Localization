@@ -20,7 +20,8 @@ class AuthRetrofitManager {
     fun login(
         id: String,
         pw: String,
-        onResponse: (response: String) -> Unit,
+        onResponse: (code: Int, response: String) -> Unit,
+        onError: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val user = buildJsonObject {
@@ -30,8 +31,15 @@ class AuthRetrofitManager {
         val call = iRetrofit?.login(user) ?: return
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful && response.body() != null) {
-                    onResponse(response.body().toString())
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        onResponse(response.code(), it.toString())
+                    }
+
+                } else {
+                    response.errorBody()?.let {
+                        onError(response.code(), it.string())
+                    }
                 }
             }
 
@@ -43,7 +51,8 @@ class AuthRetrofitManager {
 
     fun logout(
         id: String,
-        onResponse: (response: String) -> Unit,
+        onResponse: (code: Int, response: String) -> Unit,
+        onError: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val user = buildJsonObject {
@@ -52,8 +61,15 @@ class AuthRetrofitManager {
         val call = iRetrofit?.logout(TOKEN, user) ?: return
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful && response.body() != null) {
-                    onResponse(response.body().toString())
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        onResponse(response.code(), it.toString())
+                    }
+
+                } else {
+                    response.errorBody()?.let {
+                        onError(response.code(), it.string())
+                    }
                 }
             }
 
@@ -69,7 +85,8 @@ class AuthRetrofitManager {
         name: String,
         phone: String,
         typeId: Int,
-        onResponse: (response: String) -> Unit,
+        onResponse: (code: Int, response: String) -> Unit,
+        onError: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val user = buildJsonObject {
@@ -82,26 +99,15 @@ class AuthRetrofitManager {
         val call = iRetrofit?.register(user) ?: return
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful && response.body() != null) {
-                    onResponse(response.body().toString())
-                }
-            }
+                if (response.isSuccessful) {
+                    response.body()?.let {
+                        onResponse(response.code(), it.toString())
+                    }
 
-            override fun onFailure(call: Call<JsonObject>, t: Throwable) {
-                onFailure(t)
-            }
-        })
-    }
-
-    fun initialize(
-        onResponse: (response: String) -> Unit,
-        onFailure: (error: Throwable) -> Unit
-    ) {
-        val call = iRetrofit?.initialize(TOKEN) ?: return
-        call.enqueue(object : Callback<JsonObject> {
-            override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
-                if (response.isSuccessful && response.body() != null) {
-                    onResponse(response.body().toString())
+                } else {
+                    response.errorBody()?.let {
+                        onError(response.code(), it.string())
+                    }
                 }
             }
 

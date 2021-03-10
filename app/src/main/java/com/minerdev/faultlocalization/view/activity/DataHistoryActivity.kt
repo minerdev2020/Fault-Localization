@@ -4,16 +4,22 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
+import com.minerdev.faultlocalization.adapter.SensorDataListAdapter
+import com.minerdev.faultlocalization.adapter.SensorModifyListAdapter
 import com.minerdev.faultlocalization.databinding.ActivityDataHistoryBinding
 import com.minerdev.faultlocalization.viewmodel.EquipmentViewModel
 import com.minerdev.faultlocalization.viewmodel.factory.EquipmentViewModelFactory
 
 class DataHistoryActivity : AppCompatActivity() {
     private val binding by lazy { ActivityDataHistoryBinding.inflate(layoutInflater) }
+    private val adapter by lazy { SensorDataListAdapter(SensorDataListAdapter.DiffCallback()) }
     private val viewModel: EquipmentViewModel by viewModels { EquipmentViewModelFactory(this) }
 
     private var id = 0
@@ -26,8 +32,12 @@ class DataHistoryActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         id = intent.getIntExtra("id", 0)
-        viewModel.item.observe(this, {})
+        viewModel.item.observe(this, {
+            adapter.submitList(it.Sensors)
+        })
         viewModel.loadItem(id)
+
+        setupRecyclerView()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -65,5 +75,17 @@ class DataHistoryActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun setupRecyclerView() {
+        val manager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
+        binding.recyclerView.layoutManager = manager
+        binding.recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                this,
+                DividerItemDecoration.VERTICAL
+            )
+        )
+        binding.recyclerView.adapter = adapter
     }
 }
