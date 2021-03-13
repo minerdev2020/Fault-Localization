@@ -61,15 +61,18 @@ class ItemRetrofitManager {
 
     fun getAllItems(
         itemType: KClass<*>,
+        keyword: String = "",
+        group1: Int = 0,
+        group2: Int = 0,
         onResponse: (code: Int, response: String) -> Unit,
         onError: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val call = run {
             when (itemType.simpleName) {
-                "Person" -> iRetrofit?.getAllPerson(TOKEN)
-                "Equipment" -> iRetrofit?.getAllEquipment(TOKEN)
-                "Message" -> iRetrofit?.getAllMessage(TOKEN)
+                "Person" -> iRetrofit?.getAllPerson(TOKEN, keyword, group1, group2)
+                "Equipment" -> iRetrofit?.getAllEquipment(TOKEN, keyword, group1, group2)
+                "Message" -> iRetrofit?.getAllMessage(TOKEN, keyword, group1, group2)
                 else -> {
                     return
                 }

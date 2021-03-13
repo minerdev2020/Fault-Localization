@@ -13,21 +13,22 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.MessageListAdapter
 import com.minerdev.faultlocalization.databinding.FragmentMessageBinding
-import com.minerdev.faultlocalization.viewmodel.factory.MessageViewModelFactory
 import com.minerdev.faultlocalization.viewmodel.MessageViewModel
+import com.minerdev.faultlocalization.viewmodel.factory.MessageViewModelFactory
+import java.util.*
+import kotlin.concurrent.timer
 
 class MessageFragment : Fragment() {
-    private val items1 = listOf("全部", "未完成", "进行中", "已完成")
-    private val items2 = listOf("全部", "注册", "维修申请", "维修完成")
-
     private val binding by lazy { FragmentMessageBinding.inflate(layoutInflater) }
     private val adapter by lazy { MessageListAdapter(MessageListAdapter.DiffCallback()) }
     private val viewModel: MessageViewModel by viewModels { MessageViewModelFactory(requireContext()) }
 
+    private var keyword = ""
     private var group1 = 0
     private var group2 = 0
 
     private lateinit var searchView: SearchView
+    private lateinit var timer: Timer
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -48,22 +49,22 @@ class MessageFragment : Fragment() {
         adapter.listener = { _: MessageListAdapter.ViewHolder?,
                              _: View?,
                              _: Int ->
-            val builder = context?.let { AlertDialog.Builder(it) }
-            builder?.setTitle("友情提示")
-            builder?.setMessage("是否允许该请求？")
-            builder?.setIcon(R.drawable.ic_round_notification_important_24)
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("友情提示")
+            builder.setMessage("是否允许该请求？")
+            builder.setIcon(R.drawable.ic_round_notification_important_24)
 
-            builder?.setPositiveButton("允许") { _, _ ->
+            builder.setPositiveButton("允许") { _, _ ->
             }
 
-            builder?.setNegativeButton("拒绝") { _, _ ->
+            builder.setNegativeButton("拒绝") { _, _ ->
             }
 
-            builder?.setNeutralButton("取消") { _, _ ->
+            builder.setNeutralButton("取消") { _, _ ->
             }
 
-            val alertDialog = builder?.create()
-            alertDialog?.show()
+            val alertDialog = builder.create()
+            alertDialog.show()
         }
 
         return binding.root
@@ -71,21 +72,28 @@ class MessageFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        viewModel.loadItems()
+        timer = timer(period = 1000) {
+            viewModel.loadItems(keyword, group1, group2)
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        timer.cancel()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
 
-        searchView = activity?.findViewById(R.id.searchView) ?: return
+        searchView = requireActivity().findViewById(R.id.searchView)
         searchView.visibility = View.VISIBLE
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                rearrangeList(query, group1, group2)
-
-                val manager = activity?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                keyword = query
+                val manager =
+                    requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 manager.hideSoftInputFromWindow(
-                    activity?.currentFocus?.windowToken,
+                    requireActivity().currentFocus?.windowToken,
                     InputMethodManager.HIDE_NOT_ALWAYS
                 )
                 return true
@@ -98,6 +106,7 @@ class MessageFragment : Fragment() {
 
         searchView.setOnCloseListener {
             searchView.onActionViewCollapsed()
+            keyword = ""
             true
         }
 
@@ -113,14 +122,26 @@ class MessageFragment : Fragment() {
                 }
 
                 val dialog = SelectDialogFragment()
-                dialog.items1 = items1
-                dialog.items2 = items2
+                viewModel.loadItemsStatesAndTypes()
+                viewModel.itemStates.observe(viewLifecycleOwner, {
+                    val names = ArrayList<String>().apply { add("全部") }
+                    for (i in it) {
+                        names.add(i.name)
+                    }
+                    dialog.items1.postValue(names)
+                })
+                viewModel.itemTypes.observe(viewLifecycleOwner, {
+                    val names = ArrayList<String>().apply { add("全部") }
+                    for (i in it) {
+                        names.add(i.name)
+                    }
+                    dialog.items2.postValue(names)
+                })
                 dialog.listener = View.OnClickListener {
                     group1 = dialog.spinner1ItemPosition
                     group2 = dialog.spinner2ItemPosition
-                    rearrangeList("", group1, group2)
                 }
-                activity?.supportFragmentManager?.let { dialog.show(it, "SampleDialog") }
+                dialog.show(requireActivity().supportFragmentManager, "SampleDialog")
             }
 
             else -> {
@@ -128,9 +149,5 @@ class MessageFragment : Fragment() {
         }
 
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun rearrangeList(keyword: String, group1: Int, group2: Int) {
-
     }
 }

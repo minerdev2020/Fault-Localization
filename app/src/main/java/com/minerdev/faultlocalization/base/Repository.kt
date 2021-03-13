@@ -75,8 +75,8 @@ open class Repository<T : Item>(
             })
     }
 
-    fun loadItems() {
-        ItemRetrofitManager.instance.getAllItems(itemType,
+    fun loadItems(keyword: String = "", group1: Int = 0, group2: Int = 0) {
+        ItemRetrofitManager.instance.getAllItems(itemType, keyword, group1, group2,
             { _: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "loadItems response : " + jsonResponse.getString("message"))

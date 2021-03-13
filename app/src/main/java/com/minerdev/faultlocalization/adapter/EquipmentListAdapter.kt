@@ -40,7 +40,7 @@ class EquipmentListAdapter(private val context: Context, diffCallback: DiffCallb
             parent,
             false
         )
-        
+
         return ViewHolder(binding, listener, context, expandListener)
     }
 
@@ -55,7 +55,8 @@ class EquipmentListAdapter(private val context: Context, diffCallback: DiffCallb
     }
 
     interface OnItemClickListener {
-        fun onItemClick(viewHolder: ViewHolder?, view: View?, position: Int)
+        fun onDetailButtonClick(viewHolder: ViewHolder?, view: View?, position: Int)
+        fun onModifyButtonClick(viewHolder: ViewHolder?, view: View?, position: Int)
         fun onItemLongClick(viewHolder: ViewHolder?, view: View?, position: Int)
     }
 
@@ -74,7 +75,19 @@ class EquipmentListAdapter(private val context: Context, diffCallback: DiffCallb
             }
 
             binding.btnDetail.setOnClickListener {
-                clickListener?.onItemClick(this@ViewHolder, itemView, bindingAdapterPosition)
+                clickListener?.onDetailButtonClick(
+                    this@ViewHolder,
+                    itemView,
+                    bindingAdapterPosition
+                )
+            }
+
+            binding.btnModify.setOnClickListener {
+                clickListener?.onModifyButtonClick(
+                    this@ViewHolder,
+                    itemView,
+                    bindingAdapterPosition
+                )
             }
 
             binding.shownLayout.setOnLongClickListener {

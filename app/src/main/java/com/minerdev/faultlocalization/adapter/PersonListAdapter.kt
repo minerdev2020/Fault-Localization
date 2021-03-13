@@ -11,9 +11,7 @@ import com.minerdev.faultlocalization.model.Person
 import java.util.*
 
 class PersonListAdapter(diffCallback: DiffCallback) :
-    ListAdapter<Person, PersonListAdapter.ViewHolder>(
-        diffCallback
-    ) {
+    ListAdapter<Person, PersonListAdapter.ViewHolder>(diffCallback) {
     var listener: OnItemClickListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

@@ -1,7 +1,6 @@
 package com.minerdev.faultlocalization.view.fragment
 
 import android.content.Context.INPUT_METHOD_SERVICE
-import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -18,21 +17,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.PersonListAdapter
 import com.minerdev.faultlocalization.databinding.FragmentPersonBinding
-import com.minerdev.faultlocalization.viewmodel.factory.PersonViewModelFactory
 import com.minerdev.faultlocalization.view.activity.LoginLogActivity
 import com.minerdev.faultlocalization.view.activity.PersonModifyActivity
 import com.minerdev.faultlocalization.viewmodel.PersonViewModel
+import com.minerdev.faultlocalization.viewmodel.factory.PersonViewModelFactory
 import java.util.*
 import kotlin.concurrent.timer
 
 class PersonFragment : Fragment() {
-    private val items1 = listOf("全部", "上线", "下线")
-    private val items2 = listOf("全部", "管理", "维修")
-
     private val binding by lazy { FragmentPersonBinding.inflate(layoutInflater) }
     private val adapter by lazy { PersonListAdapter(PersonListAdapter.DiffCallback()) }
     private val viewModel: PersonViewModel by viewModels { PersonViewModelFactory(requireContext()) }
 
+    private var keyword = ""
     private var group1 = 0
     private var group2 = 0
 
@@ -83,7 +80,7 @@ class PersonFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         timer = timer(period = 1000) {
-            viewModel.loadItems()
+            viewModel.loadItems(keyword, group1, group2)
         }
     }
 
@@ -95,15 +92,15 @@ class PersonFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
 
-        searchView = activity?.findViewById(R.id.searchView) ?: return
+        searchView = requireActivity().findViewById(R.id.searchView)
         searchView.visibility = View.VISIBLE
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                rearrangeList(query, group1, group2)
+                keyword = query
                 val manager =
-                    activity?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                    requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 manager.hideSoftInputFromWindow(
-                    activity?.currentFocus?.windowToken,
+                    requireActivity().currentFocus?.windowToken,
                     InputMethodManager.HIDE_NOT_ALWAYS
                 )
                 return true
@@ -116,6 +113,7 @@ class PersonFragment : Fragment() {
 
         searchView.setOnCloseListener {
             searchView.onActionViewCollapsed()
+            keyword = ""
             true
         }
 
@@ -131,14 +129,26 @@ class PersonFragment : Fragment() {
                 }
 
                 val dialog = SelectDialogFragment()
-                dialog.items1 = items1
-                dialog.items2 = items2
+                viewModel.loadItemsStatesAndTypes()
+                viewModel.itemStates.observe(viewLifecycleOwner, {
+                    val names = ArrayList<String>().apply { add("全部") }
+                    for (i in it) {
+                        names.add(i.name)
+                    }
+                    dialog.items1.postValue(names)
+                })
+                viewModel.itemTypes.observe(viewLifecycleOwner, {
+                    val names = ArrayList<String>().apply { add("全部") }
+                    for (i in it) {
+                        names.add(i.name)
+                    }
+                    dialog.items2.postValue(names)
+                })
                 dialog.listener = View.OnClickListener {
                     group1 = dialog.spinner1ItemPosition
                     group2 = dialog.spinner2ItemPosition
-                    rearrangeList("", group1, group2)
                 }
-                activity?.supportFragmentManager?.let { dialog.show(it, "SampleDialog") }
+                dialog.show(requireActivity().supportFragmentManager, "SampleDialog")
             }
 
             else -> {
@@ -148,22 +158,22 @@ class PersonFragment : Fragment() {
     }
 
     private fun tryCall(phone: String) {
-        val builder = context?.let { AlertDialog.Builder(it) }
-        builder?.setTitle("友情提示")
-        builder?.setMessage("您要转到通话画面吗？")
-        builder?.setIcon(R.drawable.ic_round_notification_important_24)
+        val builder = AlertDialog.Builder(requireContext())
+        builder.setTitle("友情提示")
+        builder.setMessage("您要转到通话画面吗？")
+        builder.setIcon(R.drawable.ic_round_notification_important_24)
 
-        builder?.setPositiveButton("确认") { _, _ ->
+        builder.setPositiveButton("确认") { _, _ ->
             val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:$phone"))
             startActivity(intent)
         }
 
-        builder?.setNegativeButton("取消") { _, _ ->
+        builder.setNegativeButton("取消") { _, _ ->
             return@setNegativeButton
         }
 
-        val alertDialog = builder?.create()
-        alertDialog?.show()
+        val alertDialog = builder.create()
+        alertDialog.show()
     }
 
     private fun showPopupMenu(view: View, position: Int) {
@@ -208,9 +218,5 @@ class PersonFragment : Fragment() {
         }
 
         popupMenu.show()
-    }
-
-    private fun rearrangeList(keyword: String, group1: Int, group2: Int) {
-
     }
 }

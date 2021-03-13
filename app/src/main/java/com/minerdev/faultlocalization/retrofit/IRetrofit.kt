@@ -28,7 +28,12 @@ interface IRetrofit {
     fun getAllPersonStatesAndTypes(@Header("authorization") token: String): Call<JsonObject>
 
     @GET(API_PERSON)
-    fun getAllPerson(@Header("authorization") token: String): Call<JsonObject>
+    fun getAllPerson(
+        @Header("authorization") token: String,
+        @Query("keyword") keyword: String = "",
+        @Query("group1") group1: Int = 0,
+        @Query("group2") group2: Int = 0,
+    ): Call<JsonObject>
 
     @GET("$API_PERSON/{id}")
     fun getPerson(
@@ -67,7 +72,12 @@ interface IRetrofit {
     fun getAllEquipmentStatesAndTypes(@Header("authorization") token: String): Call<JsonObject>
 
     @GET(API_EQUIPMENT)
-    fun getAllEquipment(@Header("authorization") token: String): Call<JsonObject>
+    fun getAllEquipment(
+        @Header("authorization") token: String,
+        @Query("keyword") keyword: String = "",
+        @Query("group1") group1: Int = 0,
+        @Query("group2") group2: Int = 0,
+    ): Call<JsonObject>
 
     @GET("$API_EQUIPMENT/{id}")
     fun getEquipment(
@@ -106,7 +116,12 @@ interface IRetrofit {
     fun getAllSensorStatesAndTypes(@Header("authorization") token: String): Call<JsonObject>
 
     @GET(API_SENSOR)
-    fun getAllSensor(@Header("authorization") token: String): Call<JsonObject>
+    fun getAllSensor(
+        @Header("authorization") token: String,
+        @Query("keyword") keyword: String = "",
+        @Query("group1") group1: Int = 0,
+        @Query("group2") group2: Int = 0,
+    ): Call<JsonObject>
 
     @GET("$API_SENSOR/{id}")
     fun getSensor(
@@ -145,7 +160,12 @@ interface IRetrofit {
     fun getAllMessageStatesAndTypes(@Header("authorization") token: String): Call<JsonObject>
 
     @GET(API_MESSAGE)
-    fun getAllMessage(@Header("authorization") token: String): Call<JsonObject>
+    fun getAllMessage(
+        @Header("authorization") token: String,
+        @Query("keyword") keyword: String = "",
+        @Query("group1") group1: Int = 0,
+        @Query("group2") group2: Int = 0,
+    ): Call<JsonObject>
 
     @GET("$API_MESSAGE/{id}")
     fun getMessage(

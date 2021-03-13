@@ -24,7 +24,7 @@ class SettingsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val arrayAdapter =
-            context?.let { ArrayAdapter(it, android.R.layout.simple_list_item_1, listMenu) }
+            ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, listMenu)
         binding.listView.adapter = arrayAdapter
         binding.listView.onItemClickListener = OnItemClickListener { _, _, i, _ ->
             when (i) {
@@ -40,7 +40,7 @@ class SettingsFragment : Fragment() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        val searchView: SearchView = activity?.findViewById(R.id.searchView) ?: return
+        val searchView: SearchView = requireActivity().findViewById(R.id.searchView)
         searchView.visibility = View.INVISIBLE
         var item = menu.findItem(R.id.toolbar_menu_add)
         item.isVisible = false
@@ -50,17 +50,17 @@ class SettingsFragment : Fragment() {
     }
 
     private fun logout() {
-        val sharedPreferences = activity?.getSharedPreferences("login", MODE_PRIVATE)
-        val id = sharedPreferences?.getString("id", "") ?: ""
+        val sharedPreferences = requireActivity().getSharedPreferences("login", MODE_PRIVATE)
+        val id = sharedPreferences.getString("id", "") ?: ""
         Log.d(TAG, "logout : $id")
 
         AuthRetrofitManager.instance.logout(id,
             { _: Int, response: String ->
                 val data = JSONObject(response)
                 Log.d(TAG, "logout response : " + data.getString("message"))
-                val editor = sharedPreferences?.edit()
-                editor?.clear()
-                editor?.apply()
+                val editor = sharedPreferences.edit()
+                editor.clear()
+                editor.apply()
                 activity?.finish()
             },
             { code: Int, response: String ->
@@ -70,17 +70,17 @@ class SettingsFragment : Fragment() {
                     401 -> {
                         Toast.makeText(context, "该账号已注销！", Toast.LENGTH_SHORT)
                             .show()
-                        val editor = sharedPreferences?.edit()
-                        editor?.clear()
-                        editor?.apply()
+                        val editor = sharedPreferences.edit()
+                        editor.clear()
+                        editor.apply()
                         activity?.finish()
                     }
                     404 -> {
                         Toast.makeText(context, "该账号不存在！", Toast.LENGTH_SHORT)
                             .show()
-                        val editor = sharedPreferences?.edit()
-                        editor?.clear()
-                        editor?.apply()
+                        val editor = sharedPreferences.edit()
+                        editor.clear()
+                        editor.apply()
                         activity?.finish()
                     }
                     else -> {

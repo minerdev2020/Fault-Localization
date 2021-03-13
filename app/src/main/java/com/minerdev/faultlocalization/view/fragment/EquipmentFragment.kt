@@ -14,17 +14,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.EquipmentListAdapter
 import com.minerdev.faultlocalization.databinding.FragmentEquipBinding
-import com.minerdev.faultlocalization.viewmodel.factory.EquipmentViewModelFactory
 import com.minerdev.faultlocalization.view.activity.DataHistoryActivity
 import com.minerdev.faultlocalization.view.activity.EquipmentModifyActivity
 import com.minerdev.faultlocalization.viewmodel.EquipmentViewModel
+import com.minerdev.faultlocalization.viewmodel.factory.EquipmentViewModelFactory
 import java.util.*
 import kotlin.concurrent.timer
 
 class EquipmentFragment : Fragment() {
-    private val items1 = listOf("全部", "正常", "维修中", "停用")
-    private val items2 = listOf("全部", "工程1", "工程2", "工程3", "工程4")
-
     private val binding by lazy { FragmentEquipBinding.inflate(layoutInflater) }
     private val adapter by lazy {
         EquipmentListAdapter(
@@ -32,8 +29,13 @@ class EquipmentFragment : Fragment() {
             EquipmentListAdapter.DiffCallback()
         )
     }
-    private val viewModel: EquipmentViewModel by viewModels { EquipmentViewModelFactory(requireContext()) }
+    private val viewModel: EquipmentViewModel by viewModels {
+        EquipmentViewModelFactory(
+            requireContext()
+        )
+    }
 
+    private var keyword = ""
     private var group1 = 0
     private var group2 = 0
 
@@ -57,7 +59,7 @@ class EquipmentFragment : Fragment() {
         binding.recyclerView.adapter = adapter
 
         adapter.listener = object : EquipmentListAdapter.OnItemClickListener {
-            override fun onItemClick(
+            override fun onDetailButtonClick(
                 viewHolder: EquipmentListAdapter.ViewHolder?,
                 view: View?,
                 position: Int
@@ -67,23 +69,34 @@ class EquipmentFragment : Fragment() {
                 startActivity(intent)
             }
 
+            override fun onModifyButtonClick(
+                viewHolder: EquipmentListAdapter.ViewHolder?,
+                view: View?,
+                position: Int
+            ) {
+                val intent = Intent(context, EquipmentModifyActivity::class.java)
+                intent.putExtra("id", adapter[position].id)
+                intent.putExtra("mode", "modify")
+                startActivity(intent)
+            }
+
             override fun onItemLongClick(
                 viewHolder: EquipmentListAdapter.ViewHolder?,
                 view: View?,
                 position: Int
             ) {
-                val builder = context?.let { AlertDialog.Builder(it) }
-                builder?.setTitle("友情提示")
-                builder?.setMessage("您真的要删除吗？")
-                builder?.setIcon(R.drawable.ic_round_warning_24)
-                builder?.setPositiveButton("确认") { _, _ ->
+                val builder = AlertDialog.Builder(requireContext())
+                builder.setTitle("友情提示")
+                builder.setMessage("您真的要删除吗？")
+                builder.setIcon(R.drawable.ic_round_warning_24)
+                builder.setPositiveButton("确认") { _, _ ->
                     viewModel.deleteItem(adapter[position].id)
                 }
-                builder?.setNegativeButton("取消") { _, _ ->
+                builder.setNegativeButton("取消") { _, _ ->
                     return@setNegativeButton
                 }
-                val alertDialog = builder?.create()
-                alertDialog?.show()
+                val alertDialog = builder.create()
+                alertDialog.show()
             }
         }
 
@@ -93,7 +106,7 @@ class EquipmentFragment : Fragment() {
     override fun onResume() {
         super.onResume()
         timer = timer(period = 1000) {
-            viewModel.loadItems()
+            viewModel.loadItems(keyword, group1, group2)
         }
     }
 
@@ -105,18 +118,17 @@ class EquipmentFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         super.onCreateOptionsMenu(menu, inflater)
 
-        searchView = activity?.findViewById(R.id.searchView) ?: return
+        searchView = requireActivity().findViewById(R.id.searchView)
         searchView.visibility = View.VISIBLE
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String): Boolean {
-                rearrangeList(query, group1, group2)
-
-                val manager = activity?.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+                keyword = query
+                val manager =
+                    requireActivity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
                 manager.hideSoftInputFromWindow(
-                    activity?.currentFocus?.windowToken,
+                    requireActivity().currentFocus?.windowToken,
                     InputMethodManager.HIDE_NOT_ALWAYS
                 )
-
                 return true
             }
 
@@ -127,6 +139,7 @@ class EquipmentFragment : Fragment() {
 
         searchView.setOnCloseListener {
             searchView.onActionViewCollapsed()
+            keyword = ""
             true
         }
     }
@@ -149,23 +162,31 @@ class EquipmentFragment : Fragment() {
                 }
 
                 val dialog = SelectDialogFragment()
-                dialog.items1 = items1
-                dialog.items2 = items2
+                viewModel.loadItemsStatesAndTypes()
+                viewModel.itemStates.observe(viewLifecycleOwner, {
+                    val names = ArrayList<String>().apply { add("全部") }
+                    for (i in it) {
+                        names.add(i.name)
+                    }
+                    dialog.items1.postValue(names)
+                })
+                viewModel.itemTypes.observe(viewLifecycleOwner, {
+                    val names = ArrayList<String>().apply { add("全部") }
+                    for (i in it) {
+                        names.add(i.name)
+                    }
+                    dialog.items2.postValue(names)
+                })
                 dialog.listener = View.OnClickListener {
                     group1 = dialog.spinner1ItemPosition
                     group2 = dialog.spinner2ItemPosition
-                    rearrangeList("", group1, group2)
                 }
-                activity?.supportFragmentManager?.let { dialog.show(it, "SampleDialog") }
+                dialog.show(requireActivity().supportFragmentManager, "SampleDialog")
             }
 
             else -> {
             }
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun rearrangeList(keyword: String, group1: Int, group2: Int) {
-
     }
 }

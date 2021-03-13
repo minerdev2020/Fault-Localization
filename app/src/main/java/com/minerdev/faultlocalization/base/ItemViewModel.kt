@@ -18,8 +18,8 @@ open class ItemViewModel<T : Item>(private val repository: Repository<T>) : View
         repository.loadItem(id)
     }
 
-    fun loadItems() {
-        repository.loadItems()
+    fun loadItems(keyword: String = "", group1: Int = 0, group2: Int = 0) {
+        repository.loadItems(keyword, group1, group2)
     }
 
     fun addItem(item: T, onResponse: (response: String) -> Unit) {

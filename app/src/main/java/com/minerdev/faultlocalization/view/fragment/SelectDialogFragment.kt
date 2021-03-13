@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.MutableLiveData
 import com.minerdev.faultlocalization.databinding.SelectDialogBinding
 
 class SelectDialogFragment : DialogFragment() {
@@ -15,9 +16,23 @@ class SelectDialogFragment : DialogFragment() {
     val spinner2ItemPosition: Int
         get() = binding.spn2.selectedItemPosition
 
+    val items1 = MutableLiveData<ArrayList<String>>()
+    val items2 = MutableLiveData<ArrayList<String>>()
+
+    private val adapter1 by lazy {
+        ArrayAdapter<String>(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item
+        )
+    }
+    private val adapter2 by lazy {
+        ArrayAdapter<String>(
+            requireContext(),
+            android.R.layout.simple_spinner_dropdown_item
+        )
+    }
+
     var listener: View.OnClickListener? = null
-    var items1: List<String>? = null
-    var items2: List<String>? = null
 
     private val binding by lazy { SelectDialogBinding.inflate(layoutInflater) }
 
@@ -37,25 +52,17 @@ class SelectDialogFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter1 = context?.let {
-            ArrayAdapter<String>(
-                it,
-                android.R.layout.simple_spinner_dropdown_item
-            )
-        }
-
-        items1?.let { adapter1?.addAll(it) }
         binding.spn1.adapter = adapter1
-
-        val adapter2 = context?.let {
-            ArrayAdapter<String>(
-                it,
-                android.R.layout.simple_spinner_dropdown_item
-            )
-        }
-
-        items2?.let { adapter2?.addAll(it) }
         binding.spn2.adapter = adapter2
+
+        items1.observe(viewLifecycleOwner, {
+            adapter1.clear()
+            adapter1.addAll(it)
+        })
+        items2.observe(viewLifecycleOwner, {
+            adapter2.clear()
+            adapter2.addAll(it)
+        })
 
         binding.btnOk.setOnClickListener {
             listener?.onClick(it)
