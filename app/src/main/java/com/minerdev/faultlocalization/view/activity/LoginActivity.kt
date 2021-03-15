@@ -15,6 +15,9 @@ import com.minerdev.faultlocalization.databinding.ActivityLoginBinding
 import com.minerdev.faultlocalization.retrofit.AuthRetrofitManager
 import com.minerdev.faultlocalization.utils.Constants.TAG
 import com.minerdev.faultlocalization.utils.Constants.TOKEN
+import com.minerdev.faultlocalization.utils.Constants.TYPE_ID
+import com.minerdev.faultlocalization.utils.Constants.USER_ID
+import kotlinx.serialization.json.Json
 import org.json.JSONObject
 import java.util.regex.Pattern
 
@@ -45,18 +48,23 @@ class LoginActivity : AppCompatActivity() {
         if (id.isNotEmpty() && pw.isNotEmpty()) {
             AuthRetrofitManager.instance.login(id, pw,
                 { _: Int, response: String ->
-                    val data = JSONObject(response)
-                    Log.d(TAG, "tryLogin response : " + data.getString("message"))
+                    val jsonResponse = JSONObject(response)
+                    Log.d(TAG, "tryLogin response : " + jsonResponse.getString("message"))
+
+                    val data = JSONObject(jsonResponse.getString("data"))
+                    Log.d(TAG, "tryLogin response : " + jsonResponse.getString("data"))
 
                     val sharedPreferences =
                         getSharedPreferences("login", MODE_PRIVATE)
                     val editor = sharedPreferences.edit()
-                    editor.putString("id", id)
+                    editor.putString("user_id", data.getString("user_id"))
+                    editor.putString("type_id", data.getString("type_id"))
                     editor.putString("token", data.getString("token"))
                     editor.apply()
 
+                    USER_ID = data.getString("user_id")
+                    TYPE_ID = data.getString("type_id")
                     TOKEN = data.getString("token")
-                    Log.d(TAG, "tryLogin response : " + data.getString("token"))
 
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     startActivity(intent)

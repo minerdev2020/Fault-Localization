@@ -13,6 +13,8 @@ import com.minerdev.faultlocalization.databinding.ActivitySplashBinding
 import com.minerdev.faultlocalization.utils.Constants.BASE_URL
 import com.minerdev.faultlocalization.utils.Constants.TAG
 import com.minerdev.faultlocalization.utils.Constants.TOKEN
+import com.minerdev.faultlocalization.utils.Constants.TYPE_ID
+import com.minerdev.faultlocalization.utils.Constants.USER_ID
 
 class SplashActivity : AppCompatActivity() {
     private val binding by lazy { ActivitySplashBinding.inflate(layoutInflater) }
@@ -43,10 +45,16 @@ class SplashActivity : AppCompatActivity() {
 
         } else if (checkLoginStatus()) {
             val sharedPreferences = getSharedPreferences("login", AppCompatActivity.MODE_PRIVATE)
-            val id = sharedPreferences.getString("id", "") ?: ""
+            val userId = sharedPreferences.getString("user_id", "") ?: ""
+            val typeId = sharedPreferences.getString("type_id", "") ?: ""
             val token = sharedPreferences.getString("token", "") ?: ""
+
+            USER_ID = userId
+            TYPE_ID = typeId
             TOKEN = token
-            Log.d(TAG, "login : $id")
+
+            Log.d(TAG, "login : $userId")
+            Log.d(TAG, "login : $typeId")
             Log.d(TAG, "login : $token")
 
             Handler().postDelayed({
@@ -62,7 +70,7 @@ class SplashActivity : AppCompatActivity() {
 
     private fun checkLoginStatus(): Boolean {
         val sharedPreferences = getSharedPreferences("login", MODE_PRIVATE)
-        return sharedPreferences != null && sharedPreferences.contains("id")
+        return sharedPreferences != null && sharedPreferences.contains("user_id")
     }
 
     private fun checkInternetConnection(): Boolean {

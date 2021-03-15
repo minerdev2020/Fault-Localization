@@ -51,10 +51,10 @@ class SettingsFragment : Fragment() {
 
     private fun logout() {
         val sharedPreferences = requireActivity().getSharedPreferences("login", MODE_PRIVATE)
-        val id = sharedPreferences.getString("id", "") ?: ""
-        Log.d(TAG, "logout : $id")
+        val userId = sharedPreferences.getString("user_id", "") ?: ""
+        Log.d(TAG, "logout : $userId")
 
-        AuthRetrofitManager.instance.logout(id,
+        AuthRetrofitManager.instance.logout(userId,
             { _: Int, response: String ->
                 val data = JSONObject(response)
                 Log.d(TAG, "logout response : " + data.getString("message"))

@@ -14,6 +14,8 @@ object Constants {
     const val API_SENSOR = "/api/sensors"
     const val API_MESSAGE = "/api/messages"
 
+    lateinit var USER_ID: String
+    lateinit var TYPE_ID: String
     lateinit var TOKEN: String
 
     const val FINISH_INTERVAL_TIME = 2000

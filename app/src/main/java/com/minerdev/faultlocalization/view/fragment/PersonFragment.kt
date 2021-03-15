@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.PersonListAdapter
 import com.minerdev.faultlocalization.databinding.FragmentPersonBinding
+import com.minerdev.faultlocalization.utils.Constants.TYPE_ID
 import com.minerdev.faultlocalization.view.activity.LoginLogActivity
 import com.minerdev.faultlocalization.view.activity.PersonModifyActivity
 import com.minerdev.faultlocalization.viewmodel.PersonViewModel
@@ -62,7 +63,12 @@ class PersonFragment : Fragment() {
                     searchView.onActionViewCollapsed()
                 }
 
-                showPopupMenu(view, position)
+                if (TYPE_ID == "1") {
+                    showPopupMenu(view, position)
+
+                } else if (TYPE_ID == "2") {
+                    tryCall(adapter[position].phone)
+                }
             }
 
             override fun onItemLongClick(
@@ -179,6 +185,7 @@ class PersonFragment : Fragment() {
     private fun showPopupMenu(view: View, position: Int) {
         val popupMenu = PopupMenu(requireContext(), view, Gravity.END)
         requireActivity().menuInflater.inflate(R.menu.menu_person, popupMenu.menu)
+
         popupMenu.setOnMenuItemClickListener { menuItem ->
             val intent: Intent
             when (menuItem.itemId) {

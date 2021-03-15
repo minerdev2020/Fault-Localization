@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.EquipmentListAdapter
 import com.minerdev.faultlocalization.databinding.FragmentEquipBinding
+import com.minerdev.faultlocalization.utils.Constants.TYPE_ID
 import com.minerdev.faultlocalization.view.activity.DataHistoryActivity
 import com.minerdev.faultlocalization.view.activity.EquipmentModifyActivity
 import com.minerdev.faultlocalization.viewmodel.EquipmentViewModel
@@ -74,10 +75,26 @@ class EquipmentFragment : Fragment() {
                 view: View?,
                 position: Int
             ) {
-                val intent = Intent(context, EquipmentModifyActivity::class.java)
-                intent.putExtra("id", adapter[position].id)
-                intent.putExtra("mode", "modify")
-                startActivity(intent)
+                if (TYPE_ID == "1") {
+                    val intent = Intent(context, EquipmentModifyActivity::class.java)
+                    intent.putExtra("id", adapter[position].id)
+                    intent.putExtra("mode", "modify")
+                    startActivity(intent)
+
+                } else if (TYPE_ID == "2") {
+                    val builder = AlertDialog.Builder(requireContext())
+                    builder.setTitle("友情提示")
+                    builder.setMessage("您真的要发送维修申请吗？")
+                    builder.setIcon(R.drawable.ic_round_warning_24)
+                    builder.setPositiveButton("确认") { _, _ ->
+                        TODO("수리 신청 메시지 발송")
+                    }
+                    builder.setNegativeButton("取消") { _, _ ->
+                        return@setNegativeButton
+                    }
+                    val alertDialog = builder.create()
+                    alertDialog.show()
+                }
             }
 
             override fun onItemLongClick(
@@ -85,18 +102,20 @@ class EquipmentFragment : Fragment() {
                 view: View?,
                 position: Int
             ) {
-                val builder = AlertDialog.Builder(requireContext())
-                builder.setTitle("友情提示")
-                builder.setMessage("您真的要删除吗？")
-                builder.setIcon(R.drawable.ic_round_warning_24)
-                builder.setPositiveButton("确认") { _, _ ->
-                    viewModel.deleteItem(adapter[position].id)
+                if (TYPE_ID == "1") {
+                    val builder = AlertDialog.Builder(requireContext())
+                    builder.setTitle("友情提示")
+                    builder.setMessage("您真的要删除吗？")
+                    builder.setIcon(R.drawable.ic_round_warning_24)
+                    builder.setPositiveButton("确认") { _, _ ->
+                        viewModel.deleteItem(adapter[position].id)
+                    }
+                    builder.setNegativeButton("取消") { _, _ ->
+                        return@setNegativeButton
+                    }
+                    val alertDialog = builder.create()
+                    alertDialog.show()
                 }
-                builder.setNegativeButton("取消") { _, _ ->
-                    return@setNegativeButton
-                }
-                val alertDialog = builder.create()
-                alertDialog.show()
             }
         }
 
@@ -141,6 +160,11 @@ class EquipmentFragment : Fragment() {
             searchView.onActionViewCollapsed()
             keyword = ""
             true
+        }
+
+        if (TYPE_ID != "1") {
+            val item = menu.findItem(R.id.toolbar_menu_add)
+            item.isVisible = false
         }
     }
 
