@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.MessageListAdapter
 import com.minerdev.faultlocalization.databinding.FragmentMessageBinding
+import com.minerdev.faultlocalization.utils.Constants.TYPE_ID
 import com.minerdev.faultlocalization.viewmodel.MessageViewModel
 import com.minerdev.faultlocalization.viewmodel.factory.MessageViewModelFactory
 import java.util.*
@@ -48,23 +49,32 @@ class MessageFragment : Fragment() {
 
         adapter.listener = { _: MessageListAdapter.ViewHolder?,
                              _: View?,
-                             _: Int ->
-            val builder = AlertDialog.Builder(requireContext())
-            builder.setTitle("友情提示")
-            builder.setMessage("是否允许该请求？")
-            builder.setIcon(R.drawable.ic_round_notification_important_24)
+                             position: Int ->
 
-            builder.setPositiveButton("允许") { _, _ ->
+            if (TYPE_ID == "1") {
+                val builder = AlertDialog.Builder(requireContext())
+                builder.setTitle("友情提示")
+                builder.setMessage("是否允许该请求？")
+                builder.setIcon(R.drawable.ic_round_notification_important_24)
+
+                builder.setPositiveButton("允许") { _, _ ->
+                    viewModel.addAcceptMessage(adapter[position].id)
+                }
+
+                builder.setNegativeButton("拒绝") { _, _ ->
+                    viewModel.addRefuseMessage(adapter[position].id)
+                }
+
+                builder.setNeutralButton("取消") { _, _ ->
+                    return@setNeutralButton
+                }
+
+                val alertDialog = builder.create()
+                alertDialog.show()
+
+            } else if (TYPE_ID == "2") {
+
             }
-
-            builder.setNegativeButton("拒绝") { _, _ ->
-            }
-
-            builder.setNeutralButton("取消") { _, _ ->
-            }
-
-            val alertDialog = builder.create()
-            alertDialog.show()
         }
 
         return binding.root

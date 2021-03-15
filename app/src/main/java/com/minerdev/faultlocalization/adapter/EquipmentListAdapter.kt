@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.*
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.databinding.EquipmentItemBinding
 import com.minerdev.faultlocalization.model.Equipment
+import com.minerdev.faultlocalization.utils.Constants.TYPE_ID
 
 
 class EquipmentListAdapter(private val context: Context, diffCallback: DiffCallback) :
@@ -80,6 +81,10 @@ class EquipmentListAdapter(private val context: Context, diffCallback: DiffCallb
                     itemView,
                     bindingAdapterPosition
                 )
+            }
+
+            if (TYPE_ID == "2") {
+                binding.btnModify.text = "发送维修申请"
             }
 
             binding.btnModify.setOnClickListener {

@@ -1,7 +1,6 @@
 package com.minerdev.faultlocalization.view.activity
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.SearchView
@@ -13,22 +12,11 @@ import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.SectionPageAdapter
 import com.minerdev.faultlocalization.databinding.ActivityMainBinding
-import com.minerdev.faultlocalization.retrofit.AuthRetrofitManager
-import com.minerdev.faultlocalization.utils.Constants
-import com.minerdev.faultlocalization.utils.Constants.EQUIPMENT_STATE
-import com.minerdev.faultlocalization.utils.Constants.EQUIPMENT_TYPE
 import com.minerdev.faultlocalization.utils.Constants.FINISH_INTERVAL_TIME
-import com.minerdev.faultlocalization.utils.Constants.MESSAGE_STATE
-import com.minerdev.faultlocalization.utils.Constants.MESSAGE_TYPE
-import com.minerdev.faultlocalization.utils.Constants.PERSON_STATE
-import com.minerdev.faultlocalization.utils.Constants.PERSON_TYPE
-import com.minerdev.faultlocalization.utils.Constants.SENSOR_STATE
-import com.minerdev.faultlocalization.utils.Constants.SENSOR_TYPE
 import com.minerdev.faultlocalization.view.fragment.EquipmentFragment
 import com.minerdev.faultlocalization.view.fragment.MessageFragment
 import com.minerdev.faultlocalization.view.fragment.PersonFragment
 import com.minerdev.faultlocalization.view.fragment.SettingsFragment
-import org.json.JSONObject
 
 class MainActivity : AppCompatActivity() {
     private var backPressedTime: Long = 0
@@ -73,7 +61,7 @@ class MainActivity : AppCompatActivity() {
         val intervalTime = tempTime - backPressedTime
 
         if (intervalTime in 0..FINISH_INTERVAL_TIME) {
-            ActivityCompat.finishAffinity(this);
+            ActivityCompat.finishAffinity(this)
 
         } else {
             backPressedTime = tempTime

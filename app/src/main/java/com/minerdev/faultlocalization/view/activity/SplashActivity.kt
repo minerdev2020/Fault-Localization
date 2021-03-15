@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.databinding.ActivitySplashBinding
 import com.minerdev.faultlocalization.utils.Constants.BASE_URL
+import com.minerdev.faultlocalization.utils.Constants.ID
 import com.minerdev.faultlocalization.utils.Constants.TAG
 import com.minerdev.faultlocalization.utils.Constants.TOKEN
 import com.minerdev.faultlocalization.utils.Constants.TYPE_ID
@@ -44,11 +45,13 @@ class SplashActivity : AppCompatActivity() {
             alertDialog.show()
 
         } else if (checkLoginStatus()) {
-            val sharedPreferences = getSharedPreferences("login", AppCompatActivity.MODE_PRIVATE)
+            val sharedPreferences = getSharedPreferences("login", MODE_PRIVATE)
+            val id = sharedPreferences.getString("id", "") ?: ""
             val userId = sharedPreferences.getString("user_id", "") ?: ""
             val typeId = sharedPreferences.getString("type_id", "") ?: ""
             val token = sharedPreferences.getString("token", "") ?: ""
 
+            ID = id
             USER_ID = userId
             TYPE_ID = typeId
             TOKEN = token

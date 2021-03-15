@@ -13,11 +13,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.minerdev.faultlocalization.databinding.ActivityLoginBinding
 import com.minerdev.faultlocalization.retrofit.AuthRetrofitManager
+import com.minerdev.faultlocalization.utils.Constants.ID
 import com.minerdev.faultlocalization.utils.Constants.TAG
 import com.minerdev.faultlocalization.utils.Constants.TOKEN
 import com.minerdev.faultlocalization.utils.Constants.TYPE_ID
 import com.minerdev.faultlocalization.utils.Constants.USER_ID
-import kotlinx.serialization.json.Json
 import org.json.JSONObject
 import java.util.regex.Pattern
 
@@ -62,6 +62,7 @@ class LoginActivity : AppCompatActivity() {
                     editor.putString("token", data.getString("token"))
                     editor.apply()
 
+                    ID = data.getInt("id").toString()
                     USER_ID = data.getString("user_id")
                     TYPE_ID = data.getString("type_id")
                     TOKEN = data.getString("token")

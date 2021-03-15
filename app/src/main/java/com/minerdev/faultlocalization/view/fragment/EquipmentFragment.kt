@@ -87,7 +87,7 @@ class EquipmentFragment : Fragment() {
                     builder.setMessage("您真的要发送维修申请吗？")
                     builder.setIcon(R.drawable.ic_round_warning_24)
                     builder.setPositiveButton("确认") { _, _ ->
-                        TODO("수리 신청 메시지 발송")
+                        viewModel.addMessage("维修申请")
                     }
                     builder.setNegativeButton("取消") { _, _ ->
                         return@setNegativeButton
