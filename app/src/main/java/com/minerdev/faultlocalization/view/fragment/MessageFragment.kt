@@ -50,7 +50,6 @@ class MessageFragment : Fragment() {
         adapter.listener = { _: MessageListAdapter.ViewHolder?,
                              _: View?,
                              position: Int ->
-
             if (TYPE_ID == "1") {
                 val builder = AlertDialog.Builder(requireContext())
                 builder.setTitle("友情提示")
@@ -58,11 +57,11 @@ class MessageFragment : Fragment() {
                 builder.setIcon(R.drawable.ic_round_notification_important_24)
 
                 builder.setPositiveButton("允许") { _, _ ->
-                    viewModel.addAcceptMessage(adapter[position].id)
+                    viewModel.acceptRequest(adapter[position])
                 }
 
                 builder.setNegativeButton("拒绝") { _, _ ->
-                    viewModel.addRefuseMessage(adapter[position].id)
+                    viewModel.refuseRequest(adapter[position])
                 }
 
                 builder.setNeutralButton("取消") { _, _ ->

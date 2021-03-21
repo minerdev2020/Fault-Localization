@@ -50,8 +50,8 @@ class SensorModifyListAdapter(diffCallback: DiffCallback) :
     }
 
     fun removeItem(position: Int) {
-        if (getItem(position).state == UPDATE) {
-            getItem(position).state = DELETE
+        if (getItem(position).editState == UPDATE) {
+            getItem(position).editState = DELETE
             deleteList.add(getItem(position))
         }
 
@@ -66,7 +66,7 @@ class SensorModifyListAdapter(diffCallback: DiffCallback) :
     fun addEmptyItem() {
         val newList = mutableListOf<Sensor>().apply {
             addAll(currentList)
-            add(Sensor(type_id = 1, parent_id = parentId, state = CREATE))
+            add(Sensor(type_id = 1, parent_id = parentId, editState = CREATE))
         }
 
         submitList(newList)

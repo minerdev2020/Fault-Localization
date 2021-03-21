@@ -23,8 +23,8 @@ class ItemRetrofitManager {
 
     fun getAllItemsStatesAndTypes(
         itemType: KClass<*>,
-        onResponse: (code: Int, response: String) -> Unit,
-        onError: (code: Int, response: String) -> Unit,
+        onAcceptance: (code: Int, response: String) -> Unit,
+        onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val call = run {
@@ -43,12 +43,12 @@ class ItemRetrofitManager {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     response.body()?.let {
-                        onResponse(response.code(), it.toString())
+                        onAcceptance(response.code(), it.toString())
                     }
 
                 } else {
                     response.errorBody()?.let {
-                        onError(response.code(), it.string())
+                        onRejection(response.code(), it.string())
                     }
                 }
             }
@@ -64,8 +64,8 @@ class ItemRetrofitManager {
         keyword: String = "",
         group1: Int = 0,
         group2: Int = 0,
-        onResponse: (code: Int, response: String) -> Unit,
-        onError: (code: Int, response: String) -> Unit,
+        onAcceptance: (code: Int, response: String) -> Unit,
+        onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val call = run {
@@ -83,12 +83,12 @@ class ItemRetrofitManager {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     response.body()?.let {
-                        onResponse(response.code(), it.toString())
+                        onAcceptance(response.code(), it.toString())
                     }
 
                 } else {
                     response.errorBody()?.let {
-                        onError(response.code(), it.string())
+                        onRejection(response.code(), it.string())
                     }
                 }
             }
@@ -102,8 +102,8 @@ class ItemRetrofitManager {
     fun getItem(
         itemType: KClass<*>,
         id: Int,
-        onResponse: (code: Int, response: String) -> Unit,
-        onError: (code: Int, response: String) -> Unit,
+        onAcceptance: (code: Int, response: String) -> Unit,
+        onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val call = run {
@@ -121,12 +121,12 @@ class ItemRetrofitManager {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     response.body()?.let {
-                        onResponse(response.code(), it.toString())
+                        onAcceptance(response.code(), it.toString())
                     }
 
                 } else {
                     response.errorBody()?.let {
-                        onError(response.code(), it.string())
+                        onRejection(response.code(), it.string())
                     }
                 }
             }
@@ -140,8 +140,8 @@ class ItemRetrofitManager {
     fun <T : Item> createItem(
         itemType: KClass<*>,
         item: T,
-        onResponse: (code: Int, response: String) -> Unit,
-        onError: (code: Int, response: String) -> Unit,
+        onAcceptance: (code: Int, response: String) -> Unit,
+        onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val call = run {
@@ -166,12 +166,12 @@ class ItemRetrofitManager {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     response.body()?.let {
-                        onResponse(response.code(), it.toString())
+                        onAcceptance(response.code(), it.toString())
                     }
 
                 } else {
                     response.errorBody()?.let {
-                        onError(response.code(), it.string())
+                        onRejection(response.code(), it.string())
                     }
                 }
             }
@@ -186,8 +186,8 @@ class ItemRetrofitManager {
         itemType: KClass<*>,
         id: Int,
         item: T,
-        onResponse: (code: Int, response: String) -> Unit,
-        onError: (code: Int, response: String) -> Unit,
+        onAcceptance: (code: Int, response: String) -> Unit,
+        onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val call = run {
@@ -219,12 +219,12 @@ class ItemRetrofitManager {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     response.body()?.let {
-                        onResponse(response.code(), it.toString())
+                        onAcceptance(response.code(), it.toString())
                     }
 
                 } else {
                     response.errorBody()?.let {
-                        onError(response.code(), it.string())
+                        onRejection(response.code(), it.string())
                     }
                 }
             }
@@ -239,8 +239,8 @@ class ItemRetrofitManager {
         itemType: KClass<*>,
         id: Int,
         state: Byte,
-        onResponse: (code: Int, response: String) -> Unit,
-        onError: (code: Int, response: String) -> Unit,
+        onAcceptance: (code: Int, response: String) -> Unit,
+        onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val call = run {
@@ -260,12 +260,12 @@ class ItemRetrofitManager {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     response.body()?.let {
-                        onResponse(response.code(), it.toString())
+                        onAcceptance(response.code(), it.toString())
                     }
 
                 } else {
                     response.errorBody()?.let {
-                        onError(response.code(), it.string())
+                        onRejection(response.code(), it.string())
                     }
                 }
             }
@@ -279,8 +279,8 @@ class ItemRetrofitManager {
     fun deleteItem(
         itemType: KClass<*>,
         id: Int,
-        onResponse: (code: Int, response: String) -> Unit,
-        onError: (code: Int, response: String) -> Unit,
+        onAcceptance: (code: Int, response: String) -> Unit,
+        onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val call = run {
@@ -299,12 +299,12 @@ class ItemRetrofitManager {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     response.body()?.let {
-                        onResponse(response.code(), it.toString())
+                        onAcceptance(response.code(), it.toString())
                     }
 
                 } else {
                     response.errorBody()?.let {
-                        onError(response.code(), it.string())
+                        onRejection(response.code(), it.string())
                     }
                 }
             }

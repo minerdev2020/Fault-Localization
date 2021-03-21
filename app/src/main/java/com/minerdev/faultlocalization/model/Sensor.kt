@@ -14,7 +14,7 @@ data class Sensor(
     var name: String = "",
     var model_number: String = "",
     var parent_id: Int = 0,
-    var SensorState: ItemState = ItemState(),
-    var SensorType: ItemType = ItemType(),
-    @Transient var state: Int = UPDATE
+    var state: ItemState = ItemState(),
+    var type: ItemType = ItemType(),
+    @Transient var editState: Int = UPDATE
 ) : Item

@@ -8,6 +8,7 @@ import com.minerdev.faultlocalization.model.Item
 import com.minerdev.faultlocalization.model.ItemState
 import com.minerdev.faultlocalization.model.ItemType
 import com.minerdev.faultlocalization.retrofit.ItemRetrofitManager
+import com.minerdev.faultlocalization.utils.AppHelper
 import com.minerdev.faultlocalization.utils.Constants.TAG
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
@@ -17,8 +18,8 @@ import kotlin.reflect.KClass
 open class Repository<T : Item>(
     private val context: Context,
     private val itemType: KClass<T>,
-    private val onItemResponse: (response: String) -> T,
-    private val onItemsResponse: (response: String) -> List<T>,
+    private val jsonToItemConverter: (response: String) -> T,
+    private val jsonToItemListConverter: (response: String) -> List<T>,
     private val onInvalidToken: () -> Unit = {}
 ) {
     val allItems = MutableLiveData<List<T>>()
@@ -63,7 +64,7 @@ open class Repository<T : Item>(
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "loadItem response : " + jsonResponse.getString("message"))
                 Log.d(TAG, "loadItem response : " + jsonResponse.getString("data"))
-                item.postValue(onItemResponse(jsonResponse.getString("data")))
+                item.postValue(jsonToItemConverter(jsonResponse.getString("data")))
             },
             { code: Int, response: String ->
                 val jsonResponse = JSONObject(response)
@@ -81,7 +82,7 @@ open class Repository<T : Item>(
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "loadItems response : " + jsonResponse.getString("message"))
                 Log.d(TAG, "loadItems response : " + jsonResponse.getString("data"))
-                allItems.postValue(onItemsResponse(jsonResponse.getString("data")))
+                allItems.postValue(jsonToItemListConverter(jsonResponse.getString("data")))
             },
             { code: Int, response: String ->
                 val jsonResponse = JSONObject(response)
@@ -169,18 +170,16 @@ open class Repository<T : Item>(
         when (code) {
             401 -> {
                 Log.d(TAG, "无效的Token！")
-                Toast.makeText(context, "无效的Token！", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(context, "无效的Token！请重新登录！", Toast.LENGTH_SHORT).show()
             }
             419 -> {
                 Log.d(TAG, "该Token已过期！请重新登录！")
-                Toast.makeText(context, "该Token已过期！请重新登录！", Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(context, "该Token已过期！请重新登录！", Toast.LENGTH_SHORT).show()
             }
             else -> {
             }
         }
 
-        onInvalidToken()
+        AppHelper.logout(onInvalidToken, onInvalidToken)
     }
 }

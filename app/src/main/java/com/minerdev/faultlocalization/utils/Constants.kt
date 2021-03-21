@@ -1,6 +1,10 @@
 package com.minerdev.faultlocalization.utils
 
+import android.app.Application
+
 object Constants {
+    lateinit var APPLICATION: Application
+
     const val TAG = "DEBUG_TAG"
 
     lateinit var BASE_URL: String

@@ -11,7 +11,7 @@ data class Equipment(
     override var state_id: Int = 0,
     var name: String = "",
     var model_number: String = "",
-    var EquipmentState: ItemState = ItemState(),
-    var EquipmentType: ItemType = ItemType(),
-    var Sensors: List<Sensor> = ArrayList()
+    var state: ItemState = ItemState(),
+    var type: ItemType = ItemType(),
+    var sensor_info: List<Sensor> = ArrayList()
 ) : Item

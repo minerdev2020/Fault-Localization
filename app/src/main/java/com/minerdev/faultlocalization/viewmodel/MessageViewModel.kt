@@ -3,28 +3,15 @@ package com.minerdev.faultlocalization.viewmodel
 import com.minerdev.faultlocalization.base.ItemViewModel
 import com.minerdev.faultlocalization.model.Message
 import com.minerdev.faultlocalization.repository.MessageRepository
-import com.minerdev.faultlocalization.utils.Constants
 
 open class MessageViewModel(repository: MessageRepository) : ItemViewModel<Message>(repository) {
-    fun addAcceptMessage(id: Int) {
-        addItem(
-            Message(
-                type_id = 1,
-                state_id = 1,
-                contents = "contents",
-                from_id = Constants.ID.toInt()
-            )
-        ) {}
+    fun acceptRequest(message: Message) {
+        message.state_id = 2
+        modifyItem(message)
     }
 
-    fun addRefuseMessage(id: Int) {
-        addItem(
-            Message(
-                type_id = 1,
-                state_id = 1,
-                contents = "contents",
-                from_id = Constants.ID.toInt()
-            )
-        ) {}
+    fun refuseRequest(message: Message) {
+        message.state_id = 4
+        modifyItem(message)
     }
 }

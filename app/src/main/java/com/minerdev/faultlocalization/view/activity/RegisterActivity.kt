@@ -3,14 +3,11 @@ package com.minerdev.faultlocalization.view.activity
 import android.os.Bundle
 import android.text.InputFilter
 import android.text.InputFilter.LengthFilter
-import android.util.Log
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.minerdev.faultlocalization.databinding.ActivityRegisterBinding
-import com.minerdev.faultlocalization.retrofit.AuthRetrofitManager
-import com.minerdev.faultlocalization.utils.Constants
-import org.json.JSONObject
+import com.minerdev.faultlocalization.utils.AppHelper
 import java.util.regex.Pattern
 
 class RegisterActivity : AppCompatActivity() {
@@ -37,35 +34,15 @@ class RegisterActivity : AppCompatActivity() {
     }
 
     private fun tryRegister(
-        id: String,
-        pw: String,
+        userId: String,
+        userPw: String,
         name: String,
         phone: String,
         typeId: Int
     ) {
-        if (id.isNotEmpty() && pw.isNotEmpty() && name.isNotEmpty() && phone.isNotEmpty()) {
-            AuthRetrofitManager.instance.register(id, pw, name, phone, typeId,
-                { _: Int, response: String ->
-                    val data = JSONObject(response)
-                    Log.d(Constants.TAG, "tryRegister response : " + data.getString("message"))
-                    finish()
-                },
-                { code: Int, response: String ->
-                    val data = JSONObject(response)
-                    Log.d(Constants.TAG, "tryRegister response : " + data.getString("message"))
-                    when (code) {
-                        409 -> {
-                            Toast.makeText(this@RegisterActivity, "该用户已存在！", Toast.LENGTH_SHORT)
-                                .show()
-                        }
-                        else -> {
-                        }
-                    }
-                },
-                { error: Throwable ->
-                    Log.d(Constants.TAG, "tryRegister error : " + error.localizedMessage)
-                }
-            )
+        if (userId.isNotEmpty() && userPw.isNotEmpty() && name.isNotEmpty() && phone.isNotEmpty()) {
+            AppHelper.register(userId, userPw, name, phone, typeId, { finish() }, {})
+
         } else {
             Toast.makeText(this, "所输入的用户信息不全！", Toast.LENGTH_SHORT).show()
         }
@@ -73,12 +50,12 @@ class RegisterActivity : AppCompatActivity() {
 
     private fun setupButtons() {
         binding.btnRegister.setOnClickListener {
-            val id = binding.etId.text.toString()
-            val pw = binding.etPw.text.toString()
+            val userId = binding.etId.text.toString()
+            val userPw = binding.etPw.text.toString()
             val name = binding.etName.text.toString()
             val phone = binding.etPhone.text.toString()
             val typeId = if (binding.radioButtonManager.isChecked) 1 else 2
-            tryRegister(id, pw, name, phone, typeId)
+            tryRegister(userId, userPw, name, phone, typeId)
         }
 
         binding.btnBack.setOnClickListener {

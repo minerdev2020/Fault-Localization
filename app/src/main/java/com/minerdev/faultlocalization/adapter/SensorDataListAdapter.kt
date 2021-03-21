@@ -34,7 +34,7 @@ class SensorDataListAdapter(diffCallback: DiffCallback) :
 
         fun bind(sensor: Sensor) {
             binding.tvName.text = sensor.name
-            binding.tvState.text = sensor.SensorState.name
+            binding.tvState.text = sensor.state.name
         }
     }
 

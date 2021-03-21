@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.InputFilter
 import android.text.InputFilter.LengthFilter
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
@@ -12,13 +11,7 @@ import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.minerdev.faultlocalization.databinding.ActivityLoginBinding
-import com.minerdev.faultlocalization.retrofit.AuthRetrofitManager
-import com.minerdev.faultlocalization.utils.Constants.ID
-import com.minerdev.faultlocalization.utils.Constants.TAG
-import com.minerdev.faultlocalization.utils.Constants.TOKEN
-import com.minerdev.faultlocalization.utils.Constants.TYPE_ID
-import com.minerdev.faultlocalization.utils.Constants.USER_ID
-import org.json.JSONObject
+import com.minerdev.faultlocalization.utils.AppHelper
 import java.util.regex.Pattern
 
 class LoginActivity : AppCompatActivity() {
@@ -44,69 +37,31 @@ class LoginActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun tryLogin(view: View, id: String, pw: String) {
-        if (id.isNotEmpty() && pw.isNotEmpty()) {
-            AuthRetrofitManager.instance.login(id, pw,
-                { _: Int, response: String ->
-                    val jsonResponse = JSONObject(response)
-                    Log.d(TAG, "tryLogin response : " + jsonResponse.getString("message"))
-
-                    val data = JSONObject(jsonResponse.getString("data"))
-                    Log.d(TAG, "tryLogin response : " + jsonResponse.getString("data"))
-
-                    val sharedPreferences =
-                        getSharedPreferences("login", MODE_PRIVATE)
-                    val editor = sharedPreferences.edit()
-                    editor.putString("user_id", data.getString("user_id"))
-                    editor.putString("type_id", data.getString("type_id"))
-                    editor.putString("token", data.getString("token"))
-                    editor.apply()
-
-                    ID = data.getInt("id").toString()
-                    USER_ID = data.getString("user_id")
-                    TYPE_ID = data.getString("type_id")
-                    TOKEN = data.getString("token")
-
+    private fun tryLogin(userId: String, userPw: String) {
+        if (userId.isNotEmpty() && userPw.isNotEmpty()) {
+            AppHelper.login(
+                userId, userPw,
+                {
                     val intent = Intent(this@LoginActivity, MainActivity::class.java)
                     startActivity(intent)
                     finish()
                 },
-                { code: Int, response: String ->
-                    val data = JSONObject(response)
-                    Log.d(TAG, "tryLogin response : " + data.getString("message"))
-                    when (code) {
-                        400 -> {
-                            Toast.makeText(this@LoginActivity, "账号或密码有误！", Toast.LENGTH_SHORT)
-                                .show()
-                            binding.textInputEtPw.setText("")
-                        }
-                        401 -> {
-                            Toast.makeText(this@LoginActivity, "该账号已登录！", Toast.LENGTH_SHORT)
-                                .show()
-                            binding.textInputEtPw.setText("")
-                        }
-                        404 -> {
-                            Toast.makeText(this@LoginActivity, "账号不存在！", Toast.LENGTH_SHORT)
-                                .show()
-                            binding.textInputEtPw.setText("")
-                        }
-                        else -> {
-                        }
-                    }
+                {
+                    binding.textInputEtPw.setText("")
                 },
-                { error: Throwable ->
-                    Log.d(TAG, "tryLogin error : " + error.localizedMessage)
-                }
             )
+
         } else {
             Toast.makeText(this, "账号或密码有误！", Toast.LENGTH_SHORT).show()
         }
     }
 
     private fun setupButtons() {
-        binding.btnLogin.setOnClickListener { view ->
-            val id = binding.textInputEtId.text.toString()
-            tryLogin(view, id, binding.textInputEtPw.text.toString())
+        binding.btnLogin.setOnClickListener {
+            tryLogin(
+                binding.textInputEtId.text.toString(),
+                binding.textInputEtPw.text.toString()
+            )
         }
 
         binding.btnBack.setOnClickListener {

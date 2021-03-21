@@ -46,9 +46,9 @@ class MessageListAdapter(diffCallback: DiffCallback) :
         }
 
         fun bind(message: Message) {
-            binding.tvFrom.text = message.Person.name
-            binding.tvState.text = message.MessageState.name
-            binding.tvType.text = message.MessageType.name
+            binding.tvFrom.text = message.from.name
+            binding.tvState.text = message.state.name
+            binding.tvType.text = message.type.name
             binding.tvContents.text = message.contents
         }
     }

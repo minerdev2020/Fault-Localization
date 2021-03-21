@@ -20,8 +20,8 @@ class AuthRetrofitManager {
     fun login(
         id: String,
         pw: String,
-        onResponse: (code: Int, response: String) -> Unit,
-        onError: (code: Int, response: String) -> Unit,
+        onAcceptance: (code: Int, response: String) -> Unit,
+        onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val user = buildJsonObject {
@@ -33,12 +33,12 @@ class AuthRetrofitManager {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     response.body()?.let {
-                        onResponse(response.code(), it.toString())
+                        onAcceptance(response.code(), it.toString())
                     }
 
                 } else {
                     response.errorBody()?.let {
-                        onError(response.code(), it.string())
+                        onRejection(response.code(), it.string())
                     }
                 }
             }
@@ -51,8 +51,8 @@ class AuthRetrofitManager {
 
     fun logout(
         id: String,
-        onResponse: (code: Int, response: String) -> Unit,
-        onError: (code: Int, response: String) -> Unit,
+        onAcceptance: (code: Int, response: String) -> Unit,
+        onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val user = buildJsonObject {
@@ -63,12 +63,12 @@ class AuthRetrofitManager {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     response.body()?.let {
-                        onResponse(response.code(), it.toString())
+                        onAcceptance(response.code(), it.toString())
                     }
 
                 } else {
                     response.errorBody()?.let {
-                        onError(response.code(), it.string())
+                        onRejection(response.code(), it.string())
                     }
                 }
             }
@@ -85,8 +85,8 @@ class AuthRetrofitManager {
         name: String,
         phone: String,
         typeId: Int,
-        onResponse: (code: Int, response: String) -> Unit,
-        onError: (code: Int, response: String) -> Unit,
+        onAcceptance: (code: Int, response: String) -> Unit,
+        onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
         val user = buildJsonObject {
@@ -101,12 +101,12 @@ class AuthRetrofitManager {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     response.body()?.let {
-                        onResponse(response.code(), it.toString())
+                        onAcceptance(response.code(), it.toString())
                     }
 
                 } else {
                     response.errorBody()?.let {
-                        onError(response.code(), it.string())
+                        onRejection(response.code(), it.string())
                     }
                 }
             }

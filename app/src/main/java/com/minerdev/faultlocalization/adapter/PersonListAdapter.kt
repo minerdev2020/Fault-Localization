@@ -58,8 +58,8 @@ class PersonListAdapter(diffCallback: DiffCallback) :
 
         fun bind(person: Person) {
             binding.tvName.text = person.name
-            binding.tvState.text = person.PersonState.name
-            binding.tvType.text = person.PersonType.name
+            binding.tvState.text = person.state.name
+            binding.tvType.text = person.type.name
             binding.tvPhone.text = person.phone
             binding.ivProfile.setBackgroundResource(R.drawable.ic_launcher_background)
             binding.ivProfile.setImageResource(R.drawable.ic_launcher_foreground)

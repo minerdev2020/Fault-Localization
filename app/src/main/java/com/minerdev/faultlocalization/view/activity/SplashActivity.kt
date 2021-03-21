@@ -10,6 +10,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.databinding.ActivitySplashBinding
+import com.minerdev.faultlocalization.utils.Constants.APPLICATION
 import com.minerdev.faultlocalization.utils.Constants.BASE_URL
 import com.minerdev.faultlocalization.utils.Constants.ID
 import com.minerdev.faultlocalization.utils.Constants.TAG
@@ -24,6 +25,7 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        APPLICATION = application
         BASE_URL = getString(R.string.local_server_dns)
 
         setupButtons()

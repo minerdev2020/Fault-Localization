@@ -114,10 +114,10 @@ class EquipmentListAdapter(private val context: Context, diffCallback: DiffCallb
 
         fun bind(equipment: Equipment) {
             binding.tvName.text = equipment.name
-            binding.tvState.text = equipment.EquipmentState.name
+            binding.tvState.text = equipment.state.name
             binding.ivProfile.setBackgroundResource(R.drawable.ic_launcher_background)
             binding.ivProfile.setImageResource(R.drawable.ic_launcher_foreground)
-            adapter.submitList(equipment.Sensors)
+            adapter.submitList(equipment.sensor_info)
         }
 
         fun setVisibility(isExpanded: Boolean) {

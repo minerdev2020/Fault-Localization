@@ -27,7 +27,7 @@ class DataHistoryActivity : AppCompatActivity() {
 
         id = intent.getIntExtra("id", 0)
         viewModel.item.observe(this, {
-            adapter.submitList(it.Sensors)
+            adapter.submitList(it.sensor_info)
         })
         viewModel.loadItem(id)
 

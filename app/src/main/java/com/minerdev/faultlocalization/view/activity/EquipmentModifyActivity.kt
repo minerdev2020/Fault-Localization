@@ -127,7 +127,7 @@ class EquipmentModifyActivity : AppCompatActivity() {
         viewModel.item.observe(this, {
             equipment = it
             adapter.parentId = it.id
-            adapter.submitList(equipment.Sensors)
+            adapter.submitList(equipment.sensor_info)
         })
 
         viewModel.itemTypes.observe(this, {
@@ -181,7 +181,7 @@ class EquipmentModifyActivity : AppCompatActivity() {
             } else if (mode == "modify") {
                 viewModel.modifyItem(equipment)
                 for (sensor in adapter.currentList) {
-                    when (sensor.state) {
+                    when (sensor.editState) {
                         CREATE -> viewModel.addSensor(sensor)
                         UPDATE -> viewModel.modifySensor(sensor)
                         else -> {
