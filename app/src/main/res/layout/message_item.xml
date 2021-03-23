@@ -20,17 +20,10 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/tv_from"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="from"
-                    android:textSize="30sp" />
-
-                <TextView
                     android:id="@+id/tv_state"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="1dp"
+                    android:layout_marginEnd="1dp"
                     android:text="state"
                     android:textColor="#FFFF0000"
                     android:textSize="15sp" />
@@ -39,9 +32,28 @@
                     android:id="@+id/tv_type"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="1dp"
+                    android:layout_marginEnd="1dp"
                     android:text="type"
                     android:textColor="#FF00FF00"
+                    android:textSize="15sp" />
+
+                <TextView
+                    android:id="@+id/tv_from"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="from"
+                    android:textSize="30sp" />
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/tv_updated_at"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="updated at"
                     android:textSize="15sp" />
             </LinearLayout>
 
@@ -49,9 +61,17 @@
                 android:id="@+id/tv_contents"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="phone number"
+                android:text="contents"
                 android:textColor="#FF0000FF"
                 android:textSize="25sp" />
+
+            <TextView
+                android:id="@+id/tv_replyer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:text="replyer"
+                android:textSize="15sp" />
         </LinearLayout>
 
         <ImageButton

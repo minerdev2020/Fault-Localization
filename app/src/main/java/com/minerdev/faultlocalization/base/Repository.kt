@@ -171,15 +171,15 @@ open class Repository<T : Item>(
             401 -> {
                 Log.d(TAG, "无效的Token！")
                 Toast.makeText(context, "无效的Token！请重新登录！", Toast.LENGTH_SHORT).show()
+                AppHelper.logout(onInvalidToken, onInvalidToken)
             }
             419 -> {
                 Log.d(TAG, "该Token已过期！请重新登录！")
                 Toast.makeText(context, "该Token已过期！请重新登录！", Toast.LENGTH_SHORT).show()
+                AppHelper.logout(onInvalidToken, onInvalidToken)
             }
             else -> {
             }
         }
-
-        AppHelper.logout(onInvalidToken, onInvalidToken)
     }
 }

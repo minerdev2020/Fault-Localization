@@ -51,25 +51,27 @@ class MessageFragment : Fragment() {
                              _: View?,
                              position: Int ->
             if (TYPE_ID == "1") {
-                val builder = AlertDialog.Builder(requireContext())
-                builder.setTitle("友情提示")
-                builder.setMessage("是否允许该请求？")
-                builder.setIcon(R.drawable.ic_round_notification_important_24)
+                if (adapter[position].state.name == "等待中") {
+                    val builder = AlertDialog.Builder(requireContext())
+                    builder.setTitle("友情提示")
+                    builder.setMessage("是否允许该请求？")
+                    builder.setIcon(R.drawable.ic_round_notification_important_24)
 
-                builder.setPositiveButton("允许") { _, _ ->
-                    viewModel.acceptRequest(adapter[position])
+                    builder.setPositiveButton("允许") { _, _ ->
+                        viewModel.acceptRequest(adapter[position])
+                    }
+
+                    builder.setNegativeButton("拒绝") { _, _ ->
+                        viewModel.refuseRequest(adapter[position])
+                    }
+
+                    builder.setNeutralButton("取消") { _, _ ->
+                        return@setNeutralButton
+                    }
+
+                    val alertDialog = builder.create()
+                    alertDialog.show()
                 }
-
-                builder.setNegativeButton("拒绝") { _, _ ->
-                    viewModel.refuseRequest(adapter[position])
-                }
-
-                builder.setNeutralButton("取消") { _, _ ->
-                    return@setNeutralButton
-                }
-
-                val alertDialog = builder.create()
-                alertDialog.show()
 
             } else if (TYPE_ID == "2") {
 

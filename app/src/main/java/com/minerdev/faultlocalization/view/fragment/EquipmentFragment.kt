@@ -87,13 +87,15 @@ class EquipmentFragment : Fragment() {
                     builder.setMessage("您真的要发送维修申请吗？")
                     builder.setIcon(R.drawable.ic_round_warning_24)
                     builder.setPositiveButton("确认") { _, _ ->
-                        viewModel.addMessage("维修申请")
+                        viewModel.addMessage(adapter[position].id, "维修申请")
                     }
                     builder.setNegativeButton("取消") { _, _ ->
                         return@setNegativeButton
                     }
                     val alertDialog = builder.create()
                     alertDialog.show()
+
+                    TODO("메시지 선택 대화상자 추가.")
                 }
             }
 

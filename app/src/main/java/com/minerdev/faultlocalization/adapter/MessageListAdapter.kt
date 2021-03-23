@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.minerdev.faultlocalization.databinding.MessageItemBinding
 import com.minerdev.faultlocalization.model.Message
+import com.minerdev.faultlocalization.utils.Time
 import java.util.*
 
 class MessageListAdapter(diffCallback: DiffCallback) :
@@ -46,10 +47,15 @@ class MessageListAdapter(diffCallback: DiffCallback) :
         }
 
         fun bind(message: Message) {
-            binding.tvFrom.text = message.from.name
             binding.tvState.text = message.state.name
             binding.tvType.text = message.type.name
-            binding.tvContents.text = message.contents
+            binding.tvFrom.text = message.from.name
+            binding.tvUpdatedAt.text = Time.getHMS(message.updatedAt)
+
+            val contents = message.equipment_info.name + " : " +  message.contents
+            binding.tvContents.text = contents
+
+            binding.tvReplyer.text = message.replyer?.name ?: ""
         }
     }
 

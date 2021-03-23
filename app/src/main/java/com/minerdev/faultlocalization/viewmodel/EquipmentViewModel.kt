@@ -12,11 +12,12 @@ open class EquipmentViewModel(
     repository: EquipmentRepository
 ) :
     ItemViewModel<Equipment>(repository) {
-    fun addMessage(contents: String) {
+    fun addMessage(equipmentId: Int, contents: String) {
         messageRepository.addItem(
             Message(
                 type_id = 1,
                 state_id = 1,
+                equipment_id = equipmentId,
                 contents = contents,
                 from_id = ID.toInt()
             )
