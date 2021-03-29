@@ -25,4 +25,5 @@ class PersonRepository(context: Context) : Repository<Person>(
         intent.addFlags(FLAG_ACTIVITY_SINGLE_TOP)
         intent.addFlags(FLAG_ACTIVITY_CLEAR_TOP)
         startActivity(context, intent, null)
-    })
+    }
+)

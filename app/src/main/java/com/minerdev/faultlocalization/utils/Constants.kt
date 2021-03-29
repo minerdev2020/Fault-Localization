@@ -13,6 +13,7 @@ object Constants {
     const val API_EQUIPMENT = "/api/equipments"
     const val API_SENSOR = "/api/sensors"
     const val API_MESSAGE = "/api/messages"
+    const val API_DATA = "/api/data"
 
     lateinit var ID: String
     lateinit var USER_ID: String
