@@ -6,16 +6,16 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.minerdev.faultlocalization.R
-import com.minerdev.faultlocalization.databinding.ItemPersonBinding
-import com.minerdev.faultlocalization.model.Person
+import com.minerdev.faultlocalization.databinding.ItemTaskBinding
+import com.minerdev.faultlocalization.model.Task
 import java.util.*
 
-class PersonListAdapter(diffCallback: DiffCallback) :
-    ListAdapter<Person, PersonListAdapter.ViewHolder>(diffCallback) {
+class TaskListAdapter(diffCallback: DiffCallback) :
+    ListAdapter<Task, TaskListAdapter.ViewHolder>(diffCallback) {
     lateinit var clickListener: OnItemClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemPersonBinding.inflate(
+        val binding = ItemTaskBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -29,24 +29,18 @@ class PersonListAdapter(diffCallback: DiffCallback) :
         holder.bind(item)
     }
 
-    operator fun get(position: Int): Person {
+    operator fun get(position: Int): Task {
         return getItem(position)
     }
 
     interface OnItemClickListener {
         fun onItemClick(viewHolder: ViewHolder, view: View, position: Int)
-        fun onItemLongClick(viewHolder: ViewHolder, view: View, position: Int)
     }
 
-    class ViewHolder(val binding: ItemPersonBinding, clickListener: OnItemClickListener) :
+    class ViewHolder(val binding: ItemTaskBinding, clickListener: OnItemClickListener) :
         RecyclerView.ViewHolder(binding.root) {
 
         init {
-            binding.personItemLayout.setOnLongClickListener {
-                clickListener.onItemLongClick(this@ViewHolder, itemView, bindingAdapterPosition)
-                true
-            }
-
             binding.imageBtn.setOnClickListener {
                 clickListener.onItemClick(
                     this@ViewHolder,
@@ -56,22 +50,20 @@ class PersonListAdapter(diffCallback: DiffCallback) :
             }
         }
 
-        fun bind(person: Person) {
-            binding.tvName.text = person.name
-            binding.tvState.text = person.state.name
-            binding.tvType.text = person.type.name
-            binding.tvPhone.text = person.phone
+        fun bind(task: Task) {
+            binding.tvName.text = task.target.name
+            binding.tvState.text = task.state.name
             binding.ivProfile.setBackgroundResource(R.drawable.ic_launcher_background)
             binding.ivProfile.setImageResource(R.drawable.ic_launcher_foreground)
         }
     }
 
-    class DiffCallback : DiffUtil.ItemCallback<Person>() {
-        override fun areItemsTheSame(oldItem: Person, newItem: Person): Boolean {
+    class DiffCallback : DiffUtil.ItemCallback<Task>() {
+        override fun areItemsTheSame(oldItem: Task, newItem: Task): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: Person, newItem: Person): Boolean {
+        override fun areContentsTheSame(oldItem: Task, newItem: Task): Boolean {
             return oldItem == newItem
         }
     }

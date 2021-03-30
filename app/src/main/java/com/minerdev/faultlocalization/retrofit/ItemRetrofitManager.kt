@@ -6,8 +6,6 @@ import com.minerdev.faultlocalization.utils.Constants
 import com.minerdev.faultlocalization.utils.Constants.BASE_URL
 import com.minerdev.faultlocalization.utils.Constants.TOKEN
 import kotlinx.serialization.json.JsonObject
-import kotlinx.serialization.json.buildJsonObject
-import kotlinx.serialization.json.put
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -33,6 +31,7 @@ class ItemRetrofitManager {
                 "Equipment" -> iRetrofit?.getAllEquipmentStatesAndTypes(TOKEN)
                 "Sensor" -> iRetrofit?.getAllSensorStatesAndTypes(TOKEN)
                 "Message" -> iRetrofit?.getAllMessageStatesAndTypes(TOKEN)
+                "Task" -> iRetrofit?.getAllTaskStatesAndTypes(TOKEN)
                 else -> {
                     return
                 }
@@ -73,6 +72,7 @@ class ItemRetrofitManager {
                 "Person" -> iRetrofit?.getAllPerson(TOKEN, keyword, group1, group2)
                 "Equipment" -> iRetrofit?.getAllEquipment(TOKEN, keyword, group1, group2)
                 "Message" -> iRetrofit?.getAllMessage(TOKEN, keyword, group1, group2)
+                "Task" -> iRetrofit?.getAllTask(TOKEN, keyword.toInt(), group1, group2)
                 else -> {
                     return
                 }
@@ -146,16 +146,11 @@ class ItemRetrofitManager {
     ) {
         val call = run {
             when (itemType.simpleName) {
-                "Person" -> iRetrofit?.createPerson(TOKEN, personToJsonElement(item as Person))
-                "Equipment" -> iRetrofit?.createEquipment(
-                    TOKEN,
-                    equipmentToJsonElement(item as Equipment)
-                )
-                "Sensor" -> iRetrofit?.createSensor(
-                    TOKEN,
-                    sensorToJsonElement(item as Sensor)
-                )
-                "Message" -> iRetrofit?.createMessage(TOKEN, messageToJsonElement(item as Message))
+                "Person" -> iRetrofit?.createPerson(TOKEN, (item as Person).toJson())
+                "Equipment" -> iRetrofit?.createEquipment(TOKEN, (item as Equipment).toJson())
+                "Sensor" -> iRetrofit?.createSensor(TOKEN, (item as Sensor).toJson())
+                "Message" -> iRetrofit?.createMessage(TOKEN, (item as Message).toJson())
+                "Task" -> iRetrofit?.createTask(TOKEN, (item as Task).toJson())
                 else -> {
                     return
                 }
@@ -192,22 +187,11 @@ class ItemRetrofitManager {
     ) {
         val call = run {
             when (itemType.simpleName) {
-                "Person" -> iRetrofit?.updatePerson(TOKEN, id, personToJsonElement(item as Person))
-                "Equipment" -> iRetrofit?.updateEquipment(
-                    TOKEN,
-                    id,
-                    equipmentToJsonElement(item as Equipment)
-                )
-                "Sensor" -> iRetrofit?.updateSensor(
-                    TOKEN,
-                    id,
-                    sensorToJsonElement(item as Sensor)
-                )
-                "Message" -> iRetrofit?.updateMessage(
-                    TOKEN,
-                    id,
-                    messageToJsonElement(item as Message)
-                )
+                "Person" -> iRetrofit?.updatePerson(TOKEN, id, (item as Person).toJson())
+                "Equipment" -> iRetrofit?.updateEquipment(TOKEN, id, (item as Equipment).toJson())
+                "Sensor" -> iRetrofit?.updateSensor(TOKEN, id, (item as Sensor).toJson())
+                "Message" -> iRetrofit?.updateMessage(TOKEN, id, (item as Message).toJson())
+                "Task" -> iRetrofit?.updateTask(TOKEN, id, (item as Task).toJson())
                 else -> {
                     return
                 }
@@ -249,6 +233,7 @@ class ItemRetrofitManager {
                 "Equipment" -> iRetrofit?.updateEquipment(TOKEN, id, state)
                 "Sensor" -> iRetrofit?.updateSensor(TOKEN, id, state)
                 "Message" -> iRetrofit?.updateMessage(TOKEN, id, state)
+                "Task" -> iRetrofit?.updateTask(TOKEN, id, state)
                 else -> {
                     return
                 }
@@ -289,6 +274,7 @@ class ItemRetrofitManager {
                 "Equipment" -> iRetrofit?.deleteEquipment(TOKEN, id)
                 "Sensor" -> iRetrofit?.deleteSensor(TOKEN, id)
                 "Message" -> iRetrofit?.deleteMessage(TOKEN, id)
+                "Task" -> iRetrofit?.deleteTask(TOKEN, id)
                 else -> {
                     return
                 }
@@ -313,37 +299,5 @@ class ItemRetrofitManager {
                 onFailure(t)
             }
         })
-    }
-
-    private fun personToJsonElement(person: Person) = buildJsonObject {
-        put("id", person.id)
-        put("name", person.name)
-        put("phone", person.phone)
-        put("type_id", person.type_id)
-    }
-
-    private fun equipmentToJsonElement(equipment: Equipment) = buildJsonObject {
-        put("id", equipment.id)
-        put("name", equipment.name)
-        put("model_number", equipment.model_number)
-        put("state_id", equipment.state_id)
-        put("type_id", equipment.type_id)
-    }
-
-    private fun sensorToJsonElement(sensor: Sensor) = buildJsonObject {
-        put("id", sensor.id)
-        put("name", sensor.name)
-        put("model_number", sensor.model_number)
-        put("state_id", sensor.state_id)
-        put("type_id", sensor.type_id)
-        put("parent_id", sensor.parent_id)
-    }
-
-    private fun messageToJsonElement(message: Message) = buildJsonObject {
-        put("id", message.id)
-        put("contents", message.contents)
-        put("state_id", message.state_id)
-        put("type_id", message.type_id)
-        put("from_id", message.from_id)
     }
 }

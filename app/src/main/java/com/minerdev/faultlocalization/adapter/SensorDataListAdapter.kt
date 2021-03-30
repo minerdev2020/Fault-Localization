@@ -5,13 +5,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.minerdev.faultlocalization.databinding.SensorDataItemBinding
+import com.minerdev.faultlocalization.databinding.ItemSensorDataBinding
 import com.minerdev.faultlocalization.model.Sensor
 
 class SensorDataListAdapter(diffCallback: DiffCallback) :
     ListAdapter<Sensor, SensorDataListAdapter.ViewHolder>(diffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = SensorDataItemBinding.inflate(
+        val binding = ItemSensorDataBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -29,7 +29,7 @@ class SensorDataListAdapter(diffCallback: DiffCallback) :
         return getItem(position)
     }
 
-    class ViewHolder(val binding: SensorDataItemBinding) :
+    class ViewHolder(val binding: ItemSensorDataBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(sensor: Sensor) {

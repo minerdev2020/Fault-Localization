@@ -7,7 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.*
 import com.minerdev.faultlocalization.R
-import com.minerdev.faultlocalization.databinding.EquipmentItemBinding
+import com.minerdev.faultlocalization.databinding.ItemEquipmentBinding
 import com.minerdev.faultlocalization.model.Equipment
 import com.minerdev.faultlocalization.utils.Constants.TYPE_ID
 
@@ -32,17 +32,17 @@ class EquipmentListAdapter(private val context: Context, diffCallback: DiffCallb
         prePosition = position
     }
 
-    lateinit var listener: OnItemClickListener
+    lateinit var clickListener: OnItemClickListener
     private var prePosition = -1
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = EquipmentItemBinding.inflate(
+        val binding = ItemEquipmentBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
         )
 
-        return ViewHolder(binding, listener, context, expandListener)
+        return ViewHolder(binding, clickListener, context, expandListener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -62,8 +62,8 @@ class EquipmentListAdapter(private val context: Context, diffCallback: DiffCallb
     }
 
     class ViewHolder(
-        val binding: EquipmentItemBinding,
-        clickListener: OnItemClickListener?,
+        val binding: ItemEquipmentBinding,
+        clickListener: OnItemClickListener,
         context: Context,
         expandListener: (position: Int) -> Unit
     ) :
@@ -76,7 +76,7 @@ class EquipmentListAdapter(private val context: Context, diffCallback: DiffCallb
             }
 
             binding.btnDetail.setOnClickListener {
-                clickListener?.onDetailButtonClick(
+                clickListener.onDetailButtonClick(
                     this@ViewHolder,
                     itemView,
                     bindingAdapterPosition
@@ -88,7 +88,7 @@ class EquipmentListAdapter(private val context: Context, diffCallback: DiffCallb
             }
 
             binding.btnModify.setOnClickListener {
-                clickListener?.onModifyButtonClick(
+                clickListener.onModifyButtonClick(
                     this@ViewHolder,
                     itemView,
                     bindingAdapterPosition
@@ -96,7 +96,7 @@ class EquipmentListAdapter(private val context: Context, diffCallback: DiffCallb
             }
 
             binding.shownLayout.setOnLongClickListener {
-                clickListener?.onItemLongClick(this@ViewHolder, itemView, bindingAdapterPosition)
+                clickListener.onItemLongClick(this@ViewHolder, itemView, bindingAdapterPosition)
                 true
             }
 

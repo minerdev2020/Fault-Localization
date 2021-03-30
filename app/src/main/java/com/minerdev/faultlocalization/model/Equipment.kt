@@ -1,6 +1,8 @@
 package com.minerdev.faultlocalization.model
 
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 
 @Serializable
 data class Equipment(
@@ -14,4 +16,12 @@ data class Equipment(
     var state: ItemState = ItemState(),
     var type: ItemType = ItemType(),
     var sensor_info: List<Sensor> = ArrayList()
-) : Item
+) : Item {
+    override fun toJson() = buildJsonObject {
+        put("id", id)
+        put("name", name)
+        put("model_number", model_number)
+        put("state_id", state_id)
+        put("type_id", type_id)
+    }
+}

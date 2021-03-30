@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.minerdev.faultlocalization.databinding.SensorModifyItemBinding
+import com.minerdev.faultlocalization.databinding.ItemSensorModifyBinding
 import com.minerdev.faultlocalization.model.Sensor
 import com.minerdev.faultlocalization.utils.Constants.CREATE
 import com.minerdev.faultlocalization.utils.Constants.DELETE
@@ -18,18 +18,14 @@ import com.minerdev.faultlocalization.utils.Constants.UPDATE
 
 class SensorModifyListAdapter(diffCallback: DiffCallback) :
     ListAdapter<Sensor, SensorModifyListAdapter.ViewHolder>(diffCallback) {
-    lateinit var listener: (
-        viewHolder: ViewHolder?,
-        view: View?,
-        position: Int
-    ) -> Unit
+    lateinit var clickListener: OnItemClickListener
 
     val types = ArrayList<String>()
     val deleteList = ArrayList<Sensor>()
     var parentId = 0
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = SensorModifyItemBinding.inflate(
+        val binding = ItemSensorModifyBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -37,7 +33,7 @@ class SensorModifyListAdapter(diffCallback: DiffCallback) :
 
         val arrayAdapter =
             ArrayAdapter<String>(parent.context, android.R.layout.simple_spinner_dropdown_item)
-        return ViewHolder(binding, arrayAdapter, listener)
+        return ViewHolder(binding, arrayAdapter, clickListener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -72,15 +68,19 @@ class SensorModifyListAdapter(diffCallback: DiffCallback) :
         submitList(newList)
     }
 
+    interface OnItemClickListener {
+        fun onItemClick(viewHolder: ViewHolder, view: View, position: Int)
+    }
+
     class ViewHolder(
-        val binding: SensorModifyItemBinding,
+        val binding: ItemSensorModifyBinding,
         private val arrayAdapter: ArrayAdapter<String>,
-        listener: (viewHolder: ViewHolder?, view: View?, position: Int) -> Unit
+        listener: OnItemClickListener
     ) :
         RecyclerView.ViewHolder(binding.root) {
         init {
             binding.imageBtnDelete.setOnClickListener {
-                listener(this@ViewHolder, itemView, bindingAdapterPosition)
+                listener.onItemClick(this@ViewHolder, itemView, bindingAdapterPosition)
             }
 
             binding.spinnerType.adapter = arrayAdapter

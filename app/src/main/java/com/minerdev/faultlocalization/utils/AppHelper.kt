@@ -30,6 +30,7 @@ object AppHelper {
                 val sharedPreferences =
                     APPLICATION.getSharedPreferences("login", MODE_PRIVATE)
                 val editor = sharedPreferences.edit()
+                editor.putString("id", data.getInt("id").toString())
                 editor.putString("user_id", data.getString("user_id"))
                 editor.putString("type_id", data.getString("type_id"))
                 editor.putString("token", data.getString("token"))

@@ -5,6 +5,7 @@ import com.minerdev.faultlocalization.utils.Constants.API_EQUIPMENT
 import com.minerdev.faultlocalization.utils.Constants.API_MESSAGE
 import com.minerdev.faultlocalization.utils.Constants.API_PERSON
 import com.minerdev.faultlocalization.utils.Constants.API_SENSOR
+import com.minerdev.faultlocalization.utils.Constants.API_TASK
 import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.JsonObject
 import retrofit2.Call
@@ -195,6 +196,50 @@ interface IRetrofit {
 
     @DELETE("$API_MESSAGE/{id}")
     fun deleteMessage(
+        @Header("authorization") token: String,
+        @Path("id") id: Int
+    ): Call<JsonObject>
+
+
+    @GET("$API_TASK/list")
+    fun getAllTaskStatesAndTypes(@Header("authorization") token: String): Call<JsonObject>
+
+    @GET(API_TASK)
+    fun getAllTask(
+        @Header("authorization") token: String,
+        @Query("person_id") person_id: Int = 0,
+        @Query("group1") group1: Int = 0,
+        @Query("group2") group2: Int = 0,
+    ): Call<JsonObject>
+
+    @GET("$API_TASK/{id}")
+    fun getTask(
+        @Header("authorization") token: String,
+        @Path("id") id: Int
+    ): Call<JsonObject>
+
+    @POST(API_TASK)
+    fun createTask(
+        @Header("authorization") token: String,
+        @Body message: JsonElement
+    ): Call<JsonObject>
+
+    @PUT("$API_TASK/{id}")
+    fun updateTask(
+        @Header("authorization") token: String,
+        @Path("id") id: Int,
+        @Body message: JsonElement
+    ): Call<JsonObject>
+
+    @PATCH("$API_TASK/{id}")
+    fun updateTask(
+        @Header("authorization") token: String,
+        @Path("id") id: Int,
+        @Query("state") state: Byte
+    ): Call<JsonObject>
+
+    @DELETE("$API_TASK/{id}")
+    fun deleteTask(
         @Header("authorization") token: String,
         @Path("id") id: Int
     ): Call<JsonObject>

@@ -26,6 +26,7 @@
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".view.activity.DataHistoryActivity" />
         <activity android:name=".view.activity.LoginLogActivity" />
+        <activity android:name=".view.activity.MyTaskActivity" />
         <activity
             android:name=".view.activity.PersonModifyActivity"
             android:windowSoftInputMode="adjustResize" />

@@ -5,22 +5,24 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
 @Serializable
-data class Person(
+data class Task(
     override var id: Int = 0,
     override var createdAt: String = "",
     override var updatedAt: String = "",
     override var type_id: Int = 0,
     override var state_id: Int = 0,
-    var name: String = "",
-    var phone: String = "",
-    var user_info: User = User(),
     var state: ItemState = ItemState(),
-    var type: ItemType = ItemType()
+    var type: ItemType = ItemType(),
+    var repairman_id: Int = 0,
+    var target_id: Int = 0,
+    var repairman: Person = Person(),
+    var target: Equipment = Equipment()
 ) : Item {
     override fun toJson() = buildJsonObject {
         put("id", id)
-        put("name", name)
-        put("phone", phone)
+        put("state_id", state_id)
         put("type_id", type_id)
+        put("repairman_id", repairman.id)
+        put("target_id", target.id)
     }
 }

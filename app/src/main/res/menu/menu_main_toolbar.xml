@@ -6,7 +6,13 @@
         android:id="@+id/toolbar_menu_add"
         android:icon="@drawable/ic_round_add_24"
         android:title="add"
-        app:showAsAction="always" />
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/toolbar_menu_list"
+        android:icon="@drawable/ic_round_format_list_bulleted_24"
+        android:title="list"
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/toolbar_menu_filter"

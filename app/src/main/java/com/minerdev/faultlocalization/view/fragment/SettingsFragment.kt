@@ -41,6 +41,8 @@ class SettingsFragment : Fragment() {
         item.isVisible = false
         item = menu.findItem(R.id.toolbar_menu_filter)
         item.isVisible = false
+        item = menu.findItem(R.id.toolbar_menu_list)
+        item.isVisible = false
         super.onCreateOptionsMenu(menu, inflater)
     }
 

@@ -17,6 +17,7 @@ import com.minerdev.faultlocalization.databinding.FragmentEquipBinding
 import com.minerdev.faultlocalization.utils.Constants.TYPE_ID
 import com.minerdev.faultlocalization.view.activity.DataHistoryActivity
 import com.minerdev.faultlocalization.view.activity.EquipmentModifyActivity
+import com.minerdev.faultlocalization.view.activity.MyTaskActivity
 import com.minerdev.faultlocalization.viewmodel.EquipmentViewModel
 import com.minerdev.faultlocalization.viewmodel.factory.EquipmentViewModelFactory
 import java.util.*
@@ -59,7 +60,7 @@ class EquipmentFragment : Fragment() {
         )
         binding.recyclerView.adapter = adapter
 
-        adapter.listener = object : EquipmentListAdapter.OnItemClickListener {
+        adapter.clickListener = object : EquipmentListAdapter.OnItemClickListener {
             override fun onDetailButtonClick(
                 viewHolder: EquipmentListAdapter.ViewHolder?,
                 view: View?,
@@ -82,20 +83,23 @@ class EquipmentFragment : Fragment() {
                     startActivity(intent)
 
                 } else if (TYPE_ID == "2") {
-                    val builder = AlertDialog.Builder(requireContext())
-                    builder.setTitle("友情提示")
-                    builder.setMessage("您真的要发送维修申请吗？")
-                    builder.setIcon(R.drawable.ic_round_warning_24)
-                    builder.setPositiveButton("确认") { _, _ ->
-                        viewModel.addMessage(adapter[position].id, "维修申请")
-                    }
-                    builder.setNegativeButton("取消") { _, _ ->
-                        return@setNegativeButton
-                    }
-                    val alertDialog = builder.create()
-                    alertDialog.show()
+                    val dialog = MessageDialogFragment(adapter[position].state.name)
+                    viewModel.loadMessageStatesAndTypes()
+                    viewModel.messageTypes.observe(viewLifecycleOwner, {
+                        val names = ArrayList<String>().apply { add("选择") }
+                        for (i in it) {
+                            names.add(i.name)
+                        }
+                        dialog.types.postValue(names)
+                    })
 
-                    TODO("메시지 선택 대화상자 추가.")
+                    dialog.listener = View.OnClickListener {
+                        val type = dialog.spinnerItem
+                        val typeId = dialog.spinnerItemPosition
+                        viewModel.addMessage(adapter[position].id, typeId, type)
+                    }
+
+                    dialog.show(requireActivity().supportFragmentManager, "MessageDialogFragment")
                 }
             }
 
@@ -164,7 +168,11 @@ class EquipmentFragment : Fragment() {
             true
         }
 
-        if (TYPE_ID != "1") {
+        if (TYPE_ID == "1") {
+            val item = menu.findItem(R.id.toolbar_menu_list)
+            item.isVisible = false
+
+        } else {
             val item = menu.findItem(R.id.toolbar_menu_add)
             item.isVisible = false
         }
@@ -182,12 +190,21 @@ class EquipmentFragment : Fragment() {
                 startActivity(intent)
             }
 
+            R.id.toolbar_menu_list -> {
+                if (searchView.hasFocus()) {
+                    searchView.onActionViewCollapsed()
+                }
+
+                val intent = Intent(context, MyTaskActivity::class.java)
+                startActivity(intent)
+            }
+
             R.id.toolbar_menu_filter -> {
                 if (searchView.hasFocus()) {
                     searchView.onActionViewCollapsed()
                 }
 
-                val dialog = SelectDialogFragment()
+                val dialog = FilterDialogFragment()
                 viewModel.loadItemsStatesAndTypes()
                 viewModel.itemStates.observe(viewLifecycleOwner, {
                     val names = ArrayList<String>().apply { add("全部") }
@@ -207,7 +224,7 @@ class EquipmentFragment : Fragment() {
                     group1 = dialog.spinner1ItemPosition
                     group2 = dialog.spinner2ItemPosition
                 }
-                dialog.show(requireActivity().supportFragmentManager, "SampleDialog")
+                dialog.show(requireActivity().supportFragmentManager, "FilterDialogFragment")
             }
 
             else -> {

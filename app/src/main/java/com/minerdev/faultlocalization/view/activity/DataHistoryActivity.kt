@@ -26,7 +26,6 @@ class DataHistoryActivity : AppCompatActivity() {
 
     private val onConnect = Emitter.Listener {
         Log.d(TAG, "Connected!")
-        Log.d(TAG, it[0].toString())
     }
 
     private val onReceived = Emitter.Listener {
@@ -42,6 +41,8 @@ class DataHistoryActivity : AppCompatActivity() {
 
         supportActionBar?.title = "详细信息"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        setupRecyclerView()
 
         id = intent.getIntExtra("id", 0)
         viewModel.item.observe(this, { it ->
@@ -64,8 +65,6 @@ class DataHistoryActivity : AppCompatActivity() {
             adapter.submitList(it.sensor_info)
         })
         viewModel.loadItem(id)
-
-        setupRecyclerView()
     }
 
     override fun onDestroy() {

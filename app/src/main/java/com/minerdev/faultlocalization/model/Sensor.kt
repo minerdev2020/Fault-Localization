@@ -3,6 +3,8 @@ package com.minerdev.faultlocalization.model
 import com.minerdev.faultlocalization.utils.Constants.UPDATE
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.Transient
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 
 @Serializable
 data class Sensor(
@@ -17,4 +19,13 @@ data class Sensor(
     var state: ItemState = ItemState(),
     var type: ItemType = ItemType(),
     @Transient var editState: Int = UPDATE
-) : Item
+) : Item {
+    override fun toJson() = buildJsonObject {
+        put("id", id)
+        put("name", name)
+        put("model_number", model_number)
+        put("state_id", state_id)
+        put("type_id", type_id)
+        put("parent_id", parent_id)
+    }
+}

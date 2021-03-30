@@ -47,34 +47,38 @@ class MessageFragment : Fragment() {
         )
         binding.recyclerView.adapter = adapter
 
-        adapter.listener = { _: MessageListAdapter.ViewHolder?,
-                             _: View?,
-                             position: Int ->
-            if (TYPE_ID == "1") {
-                if (adapter[position].state.name == "等待中") {
-                    val builder = AlertDialog.Builder(requireContext())
-                    builder.setTitle("友情提示")
-                    builder.setMessage("是否允许该请求？")
-                    builder.setIcon(R.drawable.ic_round_notification_important_24)
+        adapter.clickListener = object : MessageListAdapter.OnItemClickListener {
+            override fun onItemClick(
+                viewHolder: MessageListAdapter.ViewHolder,
+                view: View,
+                position: Int
+            ) {
+                if (TYPE_ID == "1") {
+                    if (adapter[position].state.name == "等待中") {
+                        val builder = AlertDialog.Builder(requireContext())
+                        builder.setTitle("友情提示")
+                        builder.setMessage("是否接受该请求？")
+                        builder.setIcon(R.drawable.ic_round_notification_important_24)
 
-                    builder.setPositiveButton("允许") { _, _ ->
-                        viewModel.acceptRequest(adapter[position])
+                        builder.setPositiveButton("接受") { _, _ ->
+                            viewModel.acceptRequest(adapter[position])
+                        }
+
+                        builder.setNegativeButton("拒绝") { _, _ ->
+                            viewModel.refuseRequest(adapter[position])
+                        }
+
+                        builder.setNeutralButton("取消") { _, _ ->
+                            return@setNeutralButton
+                        }
+
+                        val alertDialog = builder.create()
+                        alertDialog.show()
                     }
 
-                    builder.setNegativeButton("拒绝") { _, _ ->
-                        viewModel.refuseRequest(adapter[position])
-                    }
+                } else if (TYPE_ID == "2") {
 
-                    builder.setNeutralButton("取消") { _, _ ->
-                        return@setNeutralButton
-                    }
-
-                    val alertDialog = builder.create()
-                    alertDialog.show()
                 }
-
-            } else if (TYPE_ID == "2") {
-
             }
         }
 
@@ -121,7 +125,9 @@ class MessageFragment : Fragment() {
             true
         }
 
-        val item = menu.findItem(R.id.toolbar_menu_add)
+        var item = menu.findItem(R.id.toolbar_menu_add)
+        item.isVisible = false
+        item = menu.findItem(R.id.toolbar_menu_list)
         item.isVisible = false
     }
 
@@ -132,7 +138,7 @@ class MessageFragment : Fragment() {
                     searchView.onActionViewCollapsed()
                 }
 
-                val dialog = SelectDialogFragment()
+                val dialog = FilterDialogFragment()
                 viewModel.loadItemsStatesAndTypes()
                 viewModel.itemStates.observe(viewLifecycleOwner, {
                     val names = ArrayList<String>().apply { add("全部") }

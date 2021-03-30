@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.MutableLiveData
-import com.minerdev.faultlocalization.databinding.SelectDialogBinding
+import com.minerdev.faultlocalization.databinding.FragmentFilterDialogBinding
 
-class SelectDialogFragment : DialogFragment() {
+class FilterDialogFragment : DialogFragment() {
     val spinner1ItemPosition: Int
         get() = binding.spn1.selectedItemPosition
 
@@ -34,7 +34,7 @@ class SelectDialogFragment : DialogFragment() {
 
     var listener: View.OnClickListener? = null
 
-    private val binding by lazy { SelectDialogBinding.inflate(layoutInflater) }
+    private val binding by lazy { FragmentFilterDialogBinding.inflate(layoutInflater) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

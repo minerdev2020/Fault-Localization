@@ -11,30 +11,30 @@ open class ItemViewModel<T : Item>(private val repository: Repository<T>) : View
     val itemTypes = repository.itemTypes
 
     fun loadItemsStatesAndTypes() {
-        repository.loadItemsStatesAndTypes()
+        repository.loadItemStatesAndTypes()
     }
 
     fun loadItem(id: Int) {
         repository.loadItem(id)
     }
 
-    fun loadItems(keyword: String = "", group1: Int = 0, group2: Int = 0) {
-        repository.loadItems(keyword, group1, group2)
+    fun loadItems(personId: String = "0", group1: Int = 0, group2: Int = 0) {
+        repository.loadItems(personId, group1, group2)
     }
 
-    fun addItem(item: T, onResponse: (response: String) -> Unit) {
+    fun addItem(item: T, onResponse: (response: String) -> Unit = {}) {
         repository.addItem(item, onResponse)
     }
 
-    fun modifyItem(item: T) {
-        repository.modifyItem(item)
+    fun modifyItem(item: T, onResponse: (response: String) -> Unit = {}) {
+        repository.modifyItem(item, onResponse)
     }
 
-    fun modifyItemState(id: Int, state: Byte) {
-        repository.modifyItemState(id, state)
+    fun modifyItemState(id: Int, state: Byte, onResponse: (response: String) -> Unit = {}) {
+        repository.modifyItemState(id, state, onResponse)
     }
 
-    fun deleteItem(id: Int) {
-        repository.deleteItem(id)
+    fun deleteItem(id: Int, onResponse: (response: String) -> Unit = {}) {
+        repository.deleteItem(id, onResponse)
     }
 }

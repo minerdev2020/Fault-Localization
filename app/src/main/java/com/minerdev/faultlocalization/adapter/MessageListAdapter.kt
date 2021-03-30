@@ -6,23 +6,23 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.minerdev.faultlocalization.databinding.MessageItemBinding
+import com.minerdev.faultlocalization.databinding.ItemMessageBinding
 import com.minerdev.faultlocalization.model.Message
 import com.minerdev.faultlocalization.utils.Time
 import java.util.*
 
 class MessageListAdapter(diffCallback: DiffCallback) :
     ListAdapter<Message, MessageListAdapter.ViewHolder>(diffCallback) {
-    lateinit var listener: (viewHolder: ViewHolder?, view: View?, position: Int) -> Unit
+    lateinit var clickListener: OnItemClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = MessageItemBinding.inflate(
+        val binding = ItemMessageBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
         )
 
-        return ViewHolder(binding, listener)
+        return ViewHolder(binding, clickListener)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -34,15 +34,19 @@ class MessageListAdapter(diffCallback: DiffCallback) :
         return getItem(position)
     }
 
+    interface OnItemClickListener {
+        fun onItemClick(viewHolder: ViewHolder, view: View, position: Int)
+    }
+
     class ViewHolder(
-        val binding: MessageItemBinding,
-        listener: (viewHolder: ViewHolder?, view: View?, position: Int) -> Unit
+        val binding: ItemMessageBinding,
+        listener: OnItemClickListener
     ) :
         RecyclerView.ViewHolder(binding.root) {
 
         init {
             binding.imageBtn.setOnClickListener {
-                listener(this@ViewHolder, itemView, bindingAdapterPosition)
+                listener.onItemClick(this@ViewHolder, itemView, bindingAdapterPosition)
             }
         }
 
@@ -52,10 +56,11 @@ class MessageListAdapter(diffCallback: DiffCallback) :
             binding.tvFrom.text = message.from.name
             binding.tvUpdatedAt.text = Time.getHMS(message.updatedAt)
 
-            val contents = message.equipment_info.name + " : " +  message.contents
+            val contents = message.equipment_info.name + " : " + message.contents
             binding.tvContents.text = contents
 
-            binding.tvReplyer.text = message.replyer?.name ?: ""
+            val reply = message.replyer?.let { "由${it.name}处理" } ?: run { "未被处理" }
+            binding.tvReplyer.text = reply
         }
     }
 

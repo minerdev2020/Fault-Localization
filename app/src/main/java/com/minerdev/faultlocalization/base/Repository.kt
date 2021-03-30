@@ -28,29 +28,20 @@ open class Repository<T : Item>(
     val itemStates = MutableLiveData<List<ItemState>>()
     val itemTypes = MutableLiveData<List<ItemType>>()
 
-    fun loadItemsStatesAndTypes() {
+    fun loadItemStatesAndTypes() {
         ItemRetrofitManager.instance.getAllItemsStatesAndTypes(itemType,
             { _: Int, response: String ->
                 val jsonResponse = JSONObject(response)
-                Log.d(
-                    TAG,
-                    "loadItemsStatesAndTypes response : " + jsonResponse.getString("message")
-                )
+                Log.d(TAG, "loadItemStatesAndTypes response : " + jsonResponse.getString("message"))
+                Log.d(TAG, "loadItemStatesAndTypes response : " + jsonResponse.getString("data"))
 
-                Log.d(
-                    TAG,
-                    "loadItemsStatesAndTypes response : " + jsonResponse.getString("data")
-                )
                 val statesAndTypes = JSONObject(jsonResponse.getString("data"))
                 itemStates.postValue(Json.decodeFromString(statesAndTypes.getString("states")))
                 itemTypes.postValue(Json.decodeFromString(statesAndTypes.getString("types")))
             },
             { code: Int, response: String ->
                 val jsonResponse = JSONObject(response)
-                Log.d(
-                    TAG,
-                    "loadItemsStatesAndTypes response : " + jsonResponse.getString("message")
-                )
+                Log.d(TAG, "loadItemStatesAndTypes response : " + jsonResponse.getString("message"))
                 checkTokenResponse(code)
             },
             { error: Throwable ->
@@ -81,7 +72,7 @@ open class Repository<T : Item>(
             { _: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "loadItems response : " + jsonResponse.getString("message"))
-                Log.d(TAG, "loadItems response : " + jsonResponse.getString("data"))
+//                Log.d(TAG, "loadItems response : " + jsonResponse.getString("data"))
                 allItems.postValue(jsonToItemListConverter(jsonResponse.getString("data")))
             },
             { code: Int, response: String ->
@@ -94,7 +85,7 @@ open class Repository<T : Item>(
             })
     }
 
-    fun addItem(item: T, onResponse: (response: String) -> Unit) {
+    fun addItem(item: T, onResponse: (response: String) -> Unit = {}) {
         ItemRetrofitManager.instance.createItem(itemType, item,
             { _: Int, response: String ->
                 val jsonResponse = JSONObject(response)
@@ -112,11 +103,12 @@ open class Repository<T : Item>(
             })
     }
 
-    fun modifyItem(item: T) {
+    fun modifyItem(item: T, onResponse: (response: String) -> Unit = {}) {
         ItemRetrofitManager.instance.updateItem(itemType, item.id, item,
             { _: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "modifyItem response : " + jsonResponse.getString("message"))
+                onResponse(jsonResponse.getString("data"))
             },
             { code: Int, response: String ->
                 val jsonResponse = JSONObject(response)
@@ -128,21 +120,16 @@ open class Repository<T : Item>(
             })
     }
 
-    fun modifyItemState(id: Int, state: Byte) {
+    fun modifyItemState(id: Int, state: Byte, onResponse: (response: String) -> Unit = {}) {
         ItemRetrofitManager.instance.updateItem(itemType, id, state,
             { _: Int, response: String ->
                 val jsonResponse = JSONObject(response)
-                Log.d(
-                    TAG,
-                    "modifyItemState response : " + jsonResponse.getString("message")
-                )
+                Log.d(TAG, "modifyItemState response : " + jsonResponse.getString("message"))
+                onResponse(jsonResponse.getString("data"))
             },
             { code: Int, response: String ->
                 val jsonResponse = JSONObject(response)
-                Log.d(
-                    TAG,
-                    "modifyItemState response : " + jsonResponse.getString("message")
-                )
+                Log.d(TAG, "modifyItemState response : " + jsonResponse.getString("message"))
                 checkTokenResponse(code)
             },
             { error: Throwable ->
@@ -150,11 +137,12 @@ open class Repository<T : Item>(
             })
     }
 
-    fun deleteItem(id: Int) {
+    fun deleteItem(id: Int, onResponse: (response: String) -> Unit = {}) {
         ItemRetrofitManager.instance.deleteItem(itemType, id,
             { _: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "deleteItem response : " + jsonResponse.getString("message"))
+                onResponse(jsonResponse.getString("data"))
             },
             { code: Int, response: String ->
                 val jsonResponse = JSONObject(response)

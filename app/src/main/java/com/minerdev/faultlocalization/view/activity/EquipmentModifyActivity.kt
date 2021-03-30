@@ -105,21 +105,25 @@ class EquipmentModifyActivity : AppCompatActivity() {
         )
         binding.recyclerView.adapter = adapter
 
-        adapter.listener = { _: SensorModifyListAdapter.ViewHolder?,
-                             _: View?,
-                             position: Int ->
-            val builder = AlertDialog.Builder(this)
-            builder.setTitle("友情提示")
-            builder.setMessage("您真的要删除吗？")
-            builder.setIcon(R.drawable.ic_round_warning_24)
-            builder.setPositiveButton("确认") { _, _ ->
-                adapter.removeItem(position)
+        adapter.clickListener = object : SensorModifyListAdapter.OnItemClickListener {
+            override fun onItemClick(
+                viewHolder: SensorModifyListAdapter.ViewHolder,
+                view: View,
+                position: Int
+            ) {
+                val builder = AlertDialog.Builder(this@EquipmentModifyActivity)
+                builder.setTitle("友情提示")
+                builder.setMessage("您真的要删除吗？")
+                builder.setIcon(R.drawable.ic_round_warning_24)
+                builder.setPositiveButton("确认") { _, _ ->
+                    adapter.removeItem(position)
+                }
+                builder.setNegativeButton("取消") { _, _ ->
+                    return@setNegativeButton
+                }
+                val alertDialog = builder.create()
+                alertDialog.show()
             }
-            builder.setNegativeButton("取消") { _, _ ->
-                return@setNegativeButton
-            }
-            val alertDialog = builder.create()
-            alertDialog.show()
         }
     }
 

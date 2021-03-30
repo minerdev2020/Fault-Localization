@@ -15,7 +15,7 @@ class EquipmentModifyViewModel(
     val sensorTypes = sensorRepository.itemTypes
 
     fun loadSensorStatesAndTypes() {
-        sensorRepository.loadItemsStatesAndTypes()
+        sensorRepository.loadItemStatesAndTypes()
     }
 
     fun addSensor(sensor: Sensor) {
