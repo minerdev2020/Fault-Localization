@@ -51,6 +51,7 @@ class TaskListAdapter(diffCallback: DiffCallback) :
         }
 
         fun bind(task: Task) {
+            binding.tvType.text = task.type.name
             binding.tvName.text = task.target.name
             binding.tvState.text = task.state.name
             binding.ivProfile.setBackgroundResource(R.drawable.ic_launcher_background)

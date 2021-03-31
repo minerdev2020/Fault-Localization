@@ -174,11 +174,13 @@ class EquipmentModifyActivity : AppCompatActivity() {
             }
 
             if (mode == "add") {
-                viewModel.addItem(equipment) {
-                    val equipment = Json.decodeFromString<Equipment>(it)
-                    for (sensor in adapter.currentList) {
-                        sensor.parent_id = equipment.id
-                        viewModel.addSensor(sensor)
+                viewModel.addItem(equipment) { data ->
+                    data?.let {
+                        val equipment = Json.decodeFromString<Equipment>(it)
+                        for (sensor in adapter.currentList) {
+                            sensor.parent_id = equipment.id
+                            viewModel.addSensor(sensor)
+                        }
                     }
                 }
 

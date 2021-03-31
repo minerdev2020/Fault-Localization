@@ -85,7 +85,7 @@ open class Repository<T : Item>(
             })
     }
 
-    fun addItem(item: T, onResponse: (response: String) -> Unit = {}) {
+    fun addItem(item: T, onResponse: (response: String?) -> Unit = {}) {
         ItemRetrofitManager.instance.createItem(itemType, item,
             { _: Int, response: String ->
                 val jsonResponse = JSONObject(response)
@@ -103,12 +103,12 @@ open class Repository<T : Item>(
             })
     }
 
-    fun modifyItem(item: T, onResponse: (response: String) -> Unit = {}) {
+    fun modifyItem(item: T, onResponse: (response: String?) -> Unit = {}) {
         ItemRetrofitManager.instance.updateItem(itemType, item.id, item,
             { _: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "modifyItem response : " + jsonResponse.getString("message"))
-                onResponse(jsonResponse.getString("data"))
+                onResponse(null)
             },
             { code: Int, response: String ->
                 val jsonResponse = JSONObject(response)
@@ -120,12 +120,12 @@ open class Repository<T : Item>(
             })
     }
 
-    fun modifyItemState(id: Int, state: Byte, onResponse: (response: String) -> Unit = {}) {
+    fun modifyItemState(id: Int, state: Byte, onResponse: (response: String?) -> Unit = {}) {
         ItemRetrofitManager.instance.updateItem(itemType, id, state,
             { _: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "modifyItemState response : " + jsonResponse.getString("message"))
-                onResponse(jsonResponse.getString("data"))
+                onResponse(null)
             },
             { code: Int, response: String ->
                 val jsonResponse = JSONObject(response)
@@ -137,12 +137,12 @@ open class Repository<T : Item>(
             })
     }
 
-    fun deleteItem(id: Int, onResponse: (response: String) -> Unit = {}) {
+    fun deleteItem(id: Int, onResponse: (response: String?) -> Unit = {}) {
         ItemRetrofitManager.instance.deleteItem(itemType, id,
             { _: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "deleteItem response : " + jsonResponse.getString("message"))
-                onResponse(jsonResponse.getString("data"))
+                onResponse(null)
             },
             { code: Int, response: String ->
                 val jsonResponse = JSONObject(response)

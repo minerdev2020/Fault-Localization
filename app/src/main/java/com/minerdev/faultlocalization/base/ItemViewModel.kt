@@ -22,19 +22,19 @@ open class ItemViewModel<T : Item>(private val repository: Repository<T>) : View
         repository.loadItems(personId, group1, group2)
     }
 
-    fun addItem(item: T, onResponse: (response: String) -> Unit = {}) {
+    fun addItem(item: T, onResponse: (response: String?) -> Unit = {}) {
         repository.addItem(item, onResponse)
     }
 
-    fun modifyItem(item: T, onResponse: (response: String) -> Unit = {}) {
+    fun modifyItem(item: T, onResponse: (response: String?) -> Unit = {}) {
         repository.modifyItem(item, onResponse)
     }
 
-    fun modifyItemState(id: Int, state: Byte, onResponse: (response: String) -> Unit = {}) {
+    fun modifyItemState(id: Int, state: Byte, onResponse: (response: String?) -> Unit = {}) {
         repository.modifyItemState(id, state, onResponse)
     }
 
-    fun deleteItem(id: Int, onResponse: (response: String) -> Unit = {}) {
+    fun deleteItem(id: Int, onResponse: (response: String?) -> Unit = {}) {
         repository.deleteItem(id, onResponse)
     }
 }
