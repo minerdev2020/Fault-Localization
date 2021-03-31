@@ -82,7 +82,8 @@ class MyTaskActivity : AppCompatActivity() {
                     builder.setMessage("您真的要将任务状态改为已完成吗？")
                     builder.setIcon(R.drawable.ic_round_warning_24)
                     builder.setPositiveButton("确认") { _, _ ->
-                        viewModel.modifyItemState(adapter[position].id, 2) {
+                        adapter[position].state_id = 2
+                        viewModel.modifyItem(adapter[position]) {
                             viewModel.loadItems(ID)
                         }
                     }

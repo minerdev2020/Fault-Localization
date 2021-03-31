@@ -22,7 +22,7 @@ data class Task(
         put("id", id)
         put("state_id", state_id)
         put("type_id", type_id)
-        put("repairman_id", repairman.id)
-        put("target_id", target.id)
+        put("repairman_id", repairman_id)
+        put("target_id", target_id)
     }
 }
