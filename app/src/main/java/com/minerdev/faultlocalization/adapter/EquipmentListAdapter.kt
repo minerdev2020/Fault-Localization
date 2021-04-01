@@ -117,7 +117,7 @@ class EquipmentListAdapter(private val context: Context, diffCallback: DiffCallb
             binding.tvState.text = equipment.state.name
             binding.ivProfile.setBackgroundResource(R.drawable.ic_launcher_background)
             binding.ivProfile.setImageResource(R.drawable.ic_launcher_foreground)
-            adapter.submitList(equipment.sensor_info)
+            adapter.submitList(equipment.sensor_info.sortedBy { it.id })
         }
 
         fun setVisibility(isExpanded: Boolean) {

@@ -21,7 +21,6 @@ import io.socket.client.Socket
 import org.json.JSONObject
 import java.net.URISyntaxException
 
-
 class SensorDataListAdapter(diffCallback: DiffCallback) :
     ListAdapter<Sensor, SensorDataListAdapter.ViewHolder>(diffCallback) {
     val socketList = ArrayList<Socket>()
@@ -69,13 +68,10 @@ class SensorDataListAdapter(diffCallback: DiffCallback) :
                 Log.d(TAG, "Connected!")
                 socket.emit("start", sensor.id)
                 socket.on("onReceived") {
-                    Log.d(TAG, "New message has been received!")
-                    Log.d(TAG, it[0].toString())
-
                     val jsonResponse = JSONObject(it[0].toString())
                     addEntry(
                         binding.lineChart,
-                        jsonResponse.getDouble("IONGAUGEPRESSURE").toFloat()
+                        jsonResponse.getDouble(sensor.name).toFloat()
                     )
                 }
             }
