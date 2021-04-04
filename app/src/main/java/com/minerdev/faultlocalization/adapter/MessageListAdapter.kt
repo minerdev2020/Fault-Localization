@@ -59,7 +59,7 @@ class MessageListAdapter(diffCallback: DiffCallback) :
             val contents = message.equipment_info.name + " : " + message.contents
             binding.tvContents.text = contents
 
-            val reply = message.replyer?.let { "由${it.name}处理" } ?: run { "未被处理" }
+            val reply = message.replyer?.let { "${it.name}回答" } ?: run { "未被回答" }
             binding.tvReplyer.text = reply
         }
     }

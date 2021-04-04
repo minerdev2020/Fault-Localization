@@ -22,7 +22,7 @@ class DataHistoryActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        supportActionBar?.title = "详细信息"
+        supportActionBar?.title = "历史数据"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         setupRecyclerView()

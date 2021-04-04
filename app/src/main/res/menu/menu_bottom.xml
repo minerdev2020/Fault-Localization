@@ -19,7 +19,7 @@
         android:id="@+id/tab_message"
         android:enabled="true"
         android:icon="@drawable/ic_round_message_24"
-        android:title="通知"
+        android:title="消息"
         app:showAsAction="always" />
 
     <item

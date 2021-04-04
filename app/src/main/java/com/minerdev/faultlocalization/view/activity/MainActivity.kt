@@ -88,9 +88,9 @@ class MainActivity : AppCompatActivity() {
             override fun onPageScrollStateChanged(state: Int) {}
         })
 
-        adapter.addFragment(PersonFragment(), "人员管理")
-        adapter.addFragment(EquipmentFragment(), "设备管理")
-        adapter.addFragment(MessageFragment(), "通知管理")
+        adapter.addFragment(PersonFragment(), "人员")
+        adapter.addFragment(EquipmentFragment(), "设备")
+        adapter.addFragment(MessageFragment(), "消息")
         adapter.addFragment(SettingsFragment(), "设置")
 
         binding.viewPager.adapter = adapter

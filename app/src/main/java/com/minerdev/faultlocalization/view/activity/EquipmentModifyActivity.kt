@@ -50,7 +50,7 @@ class EquipmentModifyActivity : AppCompatActivity() {
             viewModel.item.postValue(Equipment(type_id = 1))
 
         } else if (mode == "modify") {
-            supportActionBar?.title = "设备信息"
+            supportActionBar?.title = "修改设备信息"
             binding.btnModify.text = "修改"
             val id = intent.getIntExtra("id", 0)
             viewModel.loadItem(id)
