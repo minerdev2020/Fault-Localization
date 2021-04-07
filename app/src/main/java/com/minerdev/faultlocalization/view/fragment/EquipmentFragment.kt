@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.EquipmentListAdapter
-import com.minerdev.faultlocalization.databinding.FragmentEquipBinding
+import com.minerdev.faultlocalization.databinding.FragmentEquipmentBinding
 import com.minerdev.faultlocalization.utils.Constants.TYPE_ID
 import com.minerdev.faultlocalization.view.activity.DataHistoryActivity
 import com.minerdev.faultlocalization.view.activity.EquipmentModifyActivity
@@ -24,7 +24,7 @@ import java.util.*
 import kotlin.concurrent.timer
 
 class EquipmentFragment : Fragment() {
-    private val binding by lazy { FragmentEquipBinding.inflate(layoutInflater) }
+    private val binding by lazy { FragmentEquipmentBinding.inflate(layoutInflater) }
     private val adapter by lazy {
         EquipmentListAdapter(
             requireContext(),

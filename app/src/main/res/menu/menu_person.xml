@@ -6,7 +6,7 @@
         android:title="查看登录记录" />
     <item
         android:id="@+id/popup_person_call"
-        android:title="通话" />
+        android:title="紧急呼叫" />
     <item
         android:id="@+id/popup_person_modify"
         android:title="修改" />
