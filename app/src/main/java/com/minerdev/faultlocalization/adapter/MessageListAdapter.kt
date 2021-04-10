@@ -36,6 +36,7 @@ class MessageListAdapter(diffCallback: DiffCallback) :
 
     interface OnItemClickListener {
         fun onItemClick(viewHolder: ViewHolder, view: View, position: Int)
+        fun onButtonClick(viewHolder: ViewHolder, view: View, position: Int)
     }
 
     class ViewHolder(
@@ -45,8 +46,12 @@ class MessageListAdapter(diffCallback: DiffCallback) :
         RecyclerView.ViewHolder(binding.root) {
 
         init {
-            binding.imageBtn.setOnClickListener {
+            binding.messageItemLayout.setOnClickListener {
                 listener.onItemClick(this@ViewHolder, itemView, bindingAdapterPosition)
+            }
+
+            binding.imageBtn.setOnClickListener {
+                listener.onButtonClick(this@ViewHolder, itemView, bindingAdapterPosition)
             }
         }
 
@@ -59,7 +64,7 @@ class MessageListAdapter(diffCallback: DiffCallback) :
             val contents = message.equipment_info.name + " : " + message.contents
             binding.tvContents.text = contents
 
-            val reply = message.replyer?.let { "${it.name}回答" } ?: run { "未被回答" }
+            val reply = message.replyer?.let { "${it.name}回答" } ?: "未被回答"
             binding.tvReplyer.text = reply
         }
     }

@@ -1,40 +1,19 @@
 package com.minerdev.faultlocalization.view.fragment
 
+import android.content.Context
+import android.graphics.Point
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import androidx.appcompat.app.AlertDialog
+import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.MutableLiveData
-import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.databinding.FragmentMessageDialogBinding
+import com.minerdev.faultlocalization.model.Message
 
-class MessageDialogFragment(private val state: String) : DialogFragment() {
-    val spinnerItem: String
-        get() = binding.spn1.selectedItem.toString()
-
-    val spinnerItemPosition: Int
-        get() = binding.spn1.selectedItemPosition
-
-    val types = MutableLiveData<ArrayList<String>>()
-
-    private val adapter by lazy {
-        ArrayAdapter<String>(
-            requireContext(),
-            android.R.layout.simple_spinner_dropdown_item
-        )
-    }
-
-    var listener: View.OnClickListener? = null
-
+class MessageDialogFragment(private val message: Message) : DialogFragment() {
     private val binding by lazy { FragmentMessageDialogBinding.inflate(layoutInflater) }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        isCancelable = false
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,62 +26,53 @@ class MessageDialogFragment(private val state: String) : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.spn1.adapter = adapter
+        binding.tvState.text = message.state.name
+        binding.tvFrom.text = message.from.name
+        binding.tvType.text = message.type.name
+        binding.tvReplyer.text = message.replyer?.name ?: "未被回答"
 
-        types.observe(viewLifecycleOwner, {
-            adapter.clear()
-            adapter.addAll(it)
-        })
+        binding.textInputEtContents.setText(message.contents)
 
-        binding.btnOk.setOnClickListener {
-            if (spinnerItemPosition == 0) {
-                return@setOnClickListener
-            }
-
-            val builder = AlertDialog.Builder(requireContext())
-            builder.setTitle("友情提示")
-            builder.setMessage("无效的动作！")
-            builder.setIcon(R.drawable.ic_round_warning_24)
-            builder.setPositiveButton("返回") { _, _ ->
-                return@setPositiveButton
-            }
-            val alertDialog = builder.create()
-
-            val type = spinnerItem
-            when (state) {
-                "运行中" -> {
-                    if (type != "启动申请") {
-                        listener?.onClick(it)
-                        dismiss()
-
-                    } else {
-                        alertDialog.show()
-                    }
-                }
-                "维修中" -> {
-                    if (type != "维修申请") {
-                        listener?.onClick(it)
-                        dismiss()
-
-                    } else {
-                        alertDialog.show()
-                    }
-                }
-                "停用中" -> {
-                    if (type != "停用申请") {
-                        listener?.onClick(it)
-                        dismiss()
-
-                    } else {
-                        alertDialog.show()
-                    }
-                }
-                else -> {
-                    alertDialog.show()
-                }
-            }
+        binding.btnBack.setOnClickListener {
+            dismiss()
         }
+    }
 
-        binding.btnCancel.setOnClickListener { dismiss() }
+    override fun onResume() {
+        super.onResume()
+        context?.dialogFragmentResize(this, 0.9f, null)
+    }
+
+    // 확장 함수
+    private fun Context.dialogFragmentResize(
+        dialogFragment: DialogFragment,
+        width: Float?,
+        height: Float?
+    ) {
+        val windowManager = getSystemService(Context.WINDOW_SERVICE) as WindowManager
+
+        if (Build.VERSION.SDK_INT < 30) {
+            val display = windowManager.defaultDisplay
+            val size = Point()
+
+            display.getSize(size)
+
+            val window = dialogFragment.dialog?.window
+            val params = dialogFragment.dialog?.window?.attributes
+
+            val x = width?.let { (size.x * it).toInt() } ?: params?.width ?: 0
+            val y = height?.let { (size.y * it).toInt() } ?: params?.height ?: 0
+            window?.setLayout(x, y)
+
+        } else {
+            val rect = windowManager.currentWindowMetrics.bounds
+            val window = dialogFragment.dialog?.window
+            val params = dialogFragment.dialog?.window?.attributes
+
+            val x = width?.let { (rect.width() * it).toInt() } ?: params?.width ?: 0
+            val y = height?.let { (rect.width() * it).toInt() } ?: params?.height ?: 0
+
+            window?.setLayout(x, y)
+        }
     }
 }

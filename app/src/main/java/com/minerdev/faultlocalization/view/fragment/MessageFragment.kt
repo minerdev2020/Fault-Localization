@@ -53,6 +53,15 @@ class MessageFragment : Fragment() {
                 view: View,
                 position: Int
             ) {
+                val dialog = MessageDialogFragment(adapter[position])
+                dialog.show(requireActivity().supportFragmentManager, "MessageDialogFragment")
+            }
+
+            override fun onButtonClick(
+                viewHolder: MessageListAdapter.ViewHolder,
+                view: View,
+                position: Int
+            ) {
                 if (TYPE_ID == "1") {
                     if (adapter[position].state.name == "等待中") {
                         val builder = AlertDialog.Builder(requireContext())
@@ -75,9 +84,6 @@ class MessageFragment : Fragment() {
                         val alertDialog = builder.create()
                         alertDialog.show()
                     }
-
-                } else if (TYPE_ID == "2") {
-
                 }
             }
         }
