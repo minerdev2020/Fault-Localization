@@ -108,7 +108,6 @@ class EquipmentListAdapter(private val context: Context, diffCallback: DiffCallb
                     DividerItemDecoration.VERTICAL
                 )
             )
-
             binding.recyclerView.adapter = adapter
         }
 

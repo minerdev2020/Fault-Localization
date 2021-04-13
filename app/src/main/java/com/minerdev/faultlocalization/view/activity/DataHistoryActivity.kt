@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.adapter.SensorDataListAdapter
 import com.minerdev.faultlocalization.databinding.ActivityDataHistoryBinding
@@ -53,12 +52,6 @@ class DataHistoryActivity : AppCompatActivity() {
     private fun setupRecyclerView() {
         val manager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.layoutManager = manager
-        binding.recyclerView.addItemDecoration(
-            DividerItemDecoration(
-                this,
-                DividerItemDecoration.VERTICAL
-            )
-        )
         binding.recyclerView.adapter = adapter
     }
 }
