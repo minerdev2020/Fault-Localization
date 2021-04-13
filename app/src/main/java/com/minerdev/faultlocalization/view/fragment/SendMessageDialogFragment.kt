@@ -1,7 +1,9 @@
 package com.minerdev.faultlocalization.view.fragment
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Point
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.*
@@ -42,6 +44,7 @@ class SendMessageDialogFragment(private val state: String) : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         return binding.root
     }
 

@@ -1,7 +1,9 @@
 package com.minerdev.faultlocalization.view.fragment
 
 import android.content.Context
+import android.graphics.Color
 import android.graphics.Point
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -20,6 +22,7 @@ class MessageDialogFragment(private val message: Message) : DialogFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         return binding.root
     }
 
@@ -30,6 +33,7 @@ class MessageDialogFragment(private val message: Message) : DialogFragment() {
         binding.tvFrom.text = message.from.name
         binding.tvType.text = message.type.name
         binding.tvReplyer.text = message.replyer?.name ?: "未被回答"
+        binding.tvTarget.text = message.equipment_info.name
 
         binding.textInputEtContents.setText(message.contents)
 

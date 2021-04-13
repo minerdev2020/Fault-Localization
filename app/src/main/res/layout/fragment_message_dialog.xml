@@ -3,8 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginHorizontal="5dp"
-    android:orientation="vertical">
+    android:background="@drawable/layout_background_round"
+    android:orientation="vertical"
+    android:padding="5dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,10 +13,10 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="@dimen/table_text_width"
+            android:layout_width="@dimen/dialog_text_width"
             android:layout_height="wrap_content"
             android:paddingHorizontal="5dp"
-            android:text="申请状态"
+            android:text="申请状态："
             android:textSize="20sp" />
 
         <TextView
@@ -34,10 +35,10 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="@dimen/table_text_width"
+            android:layout_width="@dimen/dialog_text_width"
             android:layout_height="wrap_content"
             android:paddingHorizontal="5dp"
-            android:text="申请人"
+            android:text="申请人："
             android:textSize="20sp" />
 
         <TextView
@@ -56,10 +57,10 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="@dimen/table_text_width"
+            android:layout_width="@dimen/dialog_text_width"
             android:layout_height="wrap_content"
             android:paddingHorizontal="5dp"
-            android:text="申请类型"
+            android:text="申请类型："
             android:textSize="20sp" />
 
         <TextView
@@ -72,12 +73,33 @@
             android:textSize="20sp" />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="@dimen/dialog_text_width"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="5dp"
+            android:text="对象设备："
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tv_target"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:paddingHorizontal="5dp"
+            android:textSize="20sp" />
+    </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="5dp"
-        android:text="申请内容"
+        android:text="申请内容："
         android:textSize="20sp" />
 
     <com.google.android.material.textfield.TextInputLayout
@@ -91,8 +113,10 @@
             android:id="@+id/textInput_et_contents"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:text="test test"
             android:enabled="false"
-            android:gravity="start|top" />
+            android:gravity="start|top"
+            android:textColor="@color/black" />
     </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
@@ -101,10 +125,10 @@
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="@dimen/table_text_width"
+            android:layout_width="@dimen/dialog_text_width"
             android:layout_height="wrap_content"
             android:paddingHorizontal="5dp"
-            android:text="回答人"
+            android:text="回答人："
             android:textSize="20sp" />
 
         <TextView
