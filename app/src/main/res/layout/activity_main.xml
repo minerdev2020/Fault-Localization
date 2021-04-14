@@ -11,7 +11,6 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
         android:theme="?attr/actionBarTheme">
 
@@ -32,5 +31,7 @@
         android:id="@+id/bottom_nav"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:itemIconTint="@color/black"
+        app:itemTextColor="@color/black"
         app:menu="@menu/menu_bottom" />
 </LinearLayout>

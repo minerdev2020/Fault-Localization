@@ -15,152 +15,145 @@
         android:layout_height="match_parent"
         tools:context=".view.activity.PersonModifyActivity">
 
-        <androidx.cardview.widget.CardView xmlns:card_view="http://schemas.android.com/apk/res-auto"
+        <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.3"
-            card_view:cardCornerRadius="10dp"
-            card_view:cardElevation="5dp">
+            app:layout_constraintVertical_bias="0.3">
+
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:stretchColumns="1">
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="@dimen/table_text_width"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="账号"
+                        android:textSize="20sp" />
+
+                    <EditText
+                        android:id="@+id/et_id"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:enabled="false"
+                        android:hint="输入6到8个英文字符或数字"
+                        android:inputType="textShortMessage"
+                        android:privateImeOptions="defaultInputmode=english"
+                        android:text="@={viewModel.item.user_info.user_id}" />
+
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="@dimen/table_text_width"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="姓名"
+                        android:textSize="20sp" />
+
+                    <EditText
+                        android:id="@+id/et_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:hint="输入姓名"
+                        android:inputType="textShortMessage"
+                        android:text="@={viewModel.item.name}" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="@dimen/table_text_width"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="手机号码"
+                        android:textSize="20sp" />
+
+
+                    <EditText
+                        android:id="@+id/et_phone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:hint="输入手机号码"
+                        android:inputType="phone"
+                        android:maxLength="11"
+                        android:text="@={viewModel.item.phone}" />
+                </TableRow>
+
+                <TableRow>
+
+                    <TextView
+                        android:layout_width="@dimen/table_text_width"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="业务"
+                        android:textSize="20sp" />
+
+                    <RadioGroup
+                        android:id="@+id/radioGroup_job"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="20dp">
+
+                        <RadioButton
+                            android:id="@+id/radioButton_manager"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:checked="@{viewModel.item.type_id == 1}"
+                            android:text="管理" />
+
+                        <RadioButton
+                            android:id="@+id/radioButton_repairman"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:checked="@{viewModel.item.type_id == 2}"
+                            android:text="维修" />
+                    </RadioGroup>
+                </TableRow>
+            </TableLayout>
 
             <LinearLayout
-                android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
-                <TableLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:stretchColumns="1">
-
-                    <TableRow>
-
-                        <TextView
-                            android:layout_width="@dimen/table_text_width"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="账号"
-                            android:textSize="20sp" />
-
-                        <EditText
-                            android:id="@+id/et_id"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:enabled="false"
-                            android:hint="输入6到8个英文字符或数字"
-                            android:inputType="textShortMessage"
-                            android:privateImeOptions="defaultInputmode=english"
-                            android:text="@={viewModel.item.user_info.user_id}" />
-
-                    </TableRow>
-
-                    <TableRow>
-
-                        <TextView
-                            android:layout_width="@dimen/table_text_width"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="姓名"
-                            android:textSize="20sp" />
-
-                        <EditText
-                            android:id="@+id/et_name"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:hint="输入姓名"
-                            android:inputType="textShortMessage"
-                            android:text="@={viewModel.item.name}" />
-                    </TableRow>
-
-                    <TableRow>
-
-                        <TextView
-                            android:layout_width="@dimen/table_text_width"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="手机号码"
-                            android:textSize="20sp" />
-
-
-                        <EditText
-                            android:id="@+id/et_phone"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:ems="10"
-                            android:hint="输入手机号码"
-                            android:inputType="phone"
-                            android:maxLength="11"
-                            android:text="@={viewModel.item.phone}" />
-                    </TableRow>
-
-                    <TableRow>
-
-                        <TextView
-                            android:layout_width="@dimen/table_text_width"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="center"
-                            android:text="业务"
-                            android:textSize="20sp" />
-
-                        <RadioGroup
-                            android:id="@+id/radioGroup_job"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:paddingHorizontal="20dp">
-
-                            <RadioButton
-                                android:id="@+id/radioButton_manager"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:checked="@{viewModel.item.type_id == 1}"
-                                android:text="管理" />
-
-                            <RadioButton
-                                android:id="@+id/radioButton_repairman"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="1"
-                                android:checked="@{viewModel.item.type_id == 2}"
-                                android:text="维修" />
-                        </RadioGroup>
-                    </TableRow>
-                </TableLayout>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
+                <Button
+                    android:id="@+id/btn_modify"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_weight="1"
+                    android:text="修改"
+                    android:textSize="20sp" />
 
-                    <Button
-                        android:id="@+id/btn_modify"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="10dp"
-                        android:layout_weight="1"
-                        android:text="修改"
-                        android:textSize="20sp" />
-
-                    <Button
-                        android:id="@+id/btn_cancel"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="10dp"
-                        android:layout_weight="1"
-                        android:text="取消"
-                        android:textSize="20sp" />
-                </LinearLayout>
+                <Button
+                    android:id="@+id/btn_cancel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="10dp"
+                    android:layout_weight="1"
+                    android:text="取消"
+                    android:textSize="20sp" />
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

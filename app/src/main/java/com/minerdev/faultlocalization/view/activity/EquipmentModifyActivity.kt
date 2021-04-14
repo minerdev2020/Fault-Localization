@@ -11,6 +11,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.SensorModifyListAdapter
@@ -97,6 +98,12 @@ class EquipmentModifyActivity : AppCompatActivity() {
         val manager = LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         binding.recyclerView.layoutManager = manager
         binding.recyclerView.adapter = adapter
+        binding.recyclerView.addItemDecoration(
+            DividerItemDecoration(
+                this,
+                LinearLayoutManager.VERTICAL
+            )
+        )
 
         adapter.clickListener = object : SensorModifyListAdapter.OnItemClickListener {
             override fun onItemClick(
