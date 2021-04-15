@@ -1,44 +1,26 @@
-package com.minerdev.faultlocalization.retrofit
+package com.minerdev.faultlocalization.retrofit.service
 
 import android.util.Log
-import com.minerdev.faultlocalization.model.*
+import com.minerdev.faultlocalization.model.Item
+import com.minerdev.faultlocalization.retrofit.RetrofitClient
+import com.minerdev.faultlocalization.retrofit.api.ItemApi
 import com.minerdev.faultlocalization.utils.Constants
-import com.minerdev.faultlocalization.utils.Constants.BASE_URL
 import com.minerdev.faultlocalization.utils.Constants.TOKEN
 import kotlinx.serialization.json.JsonObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import kotlin.reflect.KClass
 
-class ItemRetrofitManager {
-    companion object {
-        val instance = ItemRetrofitManager()
-    }
+open class ItemServiceImpl<T : Item>(apiUrl: String) : ItemService {
+    private val client = RetrofitClient.getClient(apiUrl)?.create(ItemApi::class.java)
 
-    private val iRetrofit: IRetrofit? =
-        RetrofitClient.getClient(BASE_URL)?.create(IRetrofit::class.java)
-
-    fun getAllItemsStatesAndTypes(
-        itemType: KClass<*>,
+    override fun getStatesAndTypes(
         onAcceptance: (code: Int, response: String) -> Unit,
         onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
-        val call = run {
-            when (itemType.simpleName) {
-                "Person" -> iRetrofit?.getAllPersonStatesAndTypes(TOKEN)
-                "Equipment" -> iRetrofit?.getAllEquipmentStatesAndTypes(TOKEN)
-                "Sensor" -> iRetrofit?.getAllSensorStatesAndTypes(TOKEN)
-                "Message" -> iRetrofit?.getAllMessageStatesAndTypes(TOKEN)
-                "Task" -> iRetrofit?.getAllTaskStatesAndTypes(TOKEN)
-                else -> {
-                    return
-                }
-            }
-        }
-
-        call?.enqueue(object : Callback<JsonObject> {
+        val call = client?.getStatesAndTypes(TOKEN) ?: return
+        call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     response.body()?.let {
@@ -58,28 +40,16 @@ class ItemRetrofitManager {
         })
     }
 
-    fun getAllItems(
-        itemType: KClass<*>,
-        keyword: String = "",
-        group1: Int = 0,
-        group2: Int = 0,
+    override fun getAllItems(
+        keyword: String,
+        group1: Int,
+        group2: Int,
         onAcceptance: (code: Int, response: String) -> Unit,
         onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
-        val call = run {
-            when (itemType.simpleName) {
-                "Person" -> iRetrofit?.getAllPerson(TOKEN, keyword, group1, group2)
-                "Equipment" -> iRetrofit?.getAllEquipment(TOKEN, keyword, group1, group2)
-                "Message" -> iRetrofit?.getAllMessage(TOKEN, keyword, group1, group2)
-                "Task" -> iRetrofit?.getAllTask(TOKEN, keyword.toInt(), group1, group2)
-                else -> {
-                    return
-                }
-            }
-        }
-
-        call?.enqueue(object : Callback<JsonObject> {
+        val call = client?.getAll(TOKEN, keyword, group1, group2) ?: return
+        call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     response.body()?.let {
@@ -99,25 +69,14 @@ class ItemRetrofitManager {
         })
     }
 
-    fun getItem(
-        itemType: KClass<*>,
+    override fun getItem(
         id: Int,
         onAcceptance: (code: Int, response: String) -> Unit,
         onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
-        val call = run {
-            when (itemType.simpleName) {
-                "Person" -> iRetrofit?.getPerson(TOKEN, id)
-                "Equipment" -> iRetrofit?.getEquipment(TOKEN, id)
-                "Message" -> iRetrofit?.getMessage(TOKEN, id)
-                else -> {
-                    return
-                }
-            }
-        }
-
-        call?.enqueue(object : Callback<JsonObject> {
+        val call = client?.get(TOKEN, id) ?: return
+        call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     response.body()?.let {
@@ -137,27 +96,14 @@ class ItemRetrofitManager {
         })
     }
 
-    fun <T : Item> createItem(
-        itemType: KClass<*>,
-        item: T,
+    override fun create(
+        item: Item,
         onAcceptance: (code: Int, response: String) -> Unit,
         onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
-        val call = run {
-            when (itemType.simpleName) {
-                "Person" -> iRetrofit?.createPerson(TOKEN, (item as Person).toJson())
-                "Equipment" -> iRetrofit?.createEquipment(TOKEN, (item as Equipment).toJson())
-                "Sensor" -> iRetrofit?.createSensor(TOKEN, (item as Sensor).toJson())
-                "Message" -> iRetrofit?.createMessage(TOKEN, (item as Message).toJson())
-                "Task" -> iRetrofit?.createTask(TOKEN, (item as Task).toJson())
-                else -> {
-                    return
-                }
-            }
-        }
-
-        call?.enqueue(object : Callback<JsonObject> {
+        val call = client?.create(TOKEN, (item as T).toJson()) ?: return
+        call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     response.body()?.let {
@@ -177,29 +123,16 @@ class ItemRetrofitManager {
         })
     }
 
-    fun <T : Item> updateItem(
-        itemType: KClass<*>,
+    override fun update(
         id: Int,
-        item: T,
+        item: Item,
         onAcceptance: (code: Int, response: String) -> Unit,
         onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
-        val call = run {
-            when (itemType.simpleName) {
-                "Person" -> iRetrofit?.updatePerson(TOKEN, id, (item as Person).toJson())
-                "Equipment" -> iRetrofit?.updateEquipment(TOKEN, id, (item as Equipment).toJson())
-                "Sensor" -> iRetrofit?.updateSensor(TOKEN, id, (item as Sensor).toJson())
-                "Message" -> iRetrofit?.updateMessage(TOKEN, id, (item as Message).toJson())
-                "Task" -> iRetrofit?.updateTask(TOKEN, id, (item as Task).toJson())
-                else -> {
-                    return
-                }
-            }
-        }
-
+        val call = client?.update(TOKEN, id, (item as T).toJson()) ?: return
         Log.d(Constants.TAG, item.toString())
-        call?.enqueue(object : Callback<JsonObject> {
+        call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     response.body()?.let {
@@ -219,29 +152,16 @@ class ItemRetrofitManager {
         })
     }
 
-    fun updateItem(
-        itemType: KClass<*>,
+    override fun update(
         id: Int,
         state: Byte,
         onAcceptance: (code: Int, response: String) -> Unit,
         onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
-        val call = run {
-            when (itemType.simpleName) {
-                "Person" -> iRetrofit?.updatePerson(TOKEN, id, state)
-                "Equipment" -> iRetrofit?.updateEquipment(TOKEN, id, state)
-                "Sensor" -> iRetrofit?.updateSensor(TOKEN, id, state)
-                "Message" -> iRetrofit?.updateMessage(TOKEN, id, state)
-                "Task" -> iRetrofit?.updateTask(TOKEN, id, state)
-                else -> {
-                    return
-                }
-            }
-        }
-
+        val call = client?.update(TOKEN, id, state) ?: return
         Log.d(Constants.TAG, "state : $state")
-        call?.enqueue(object : Callback<JsonObject> {
+        call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     response.body()?.let {
@@ -261,27 +181,14 @@ class ItemRetrofitManager {
         })
     }
 
-    fun deleteItem(
-        itemType: KClass<*>,
+    override fun delete(
         id: Int,
         onAcceptance: (code: Int, response: String) -> Unit,
         onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
-        val call = run {
-            when (itemType.simpleName) {
-                "Person" -> iRetrofit?.deletePerson(TOKEN, id)
-                "Equipment" -> iRetrofit?.deleteEquipment(TOKEN, id)
-                "Sensor" -> iRetrofit?.deleteSensor(TOKEN, id)
-                "Message" -> iRetrofit?.deleteMessage(TOKEN, id)
-                "Task" -> iRetrofit?.deleteTask(TOKEN, id)
-                else -> {
-                    return
-                }
-            }
-        }
-
-        call?.enqueue(object : Callback<JsonObject> {
+        val call = client?.delete(TOKEN, id) ?: return
+        call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
                     response.body()?.let {

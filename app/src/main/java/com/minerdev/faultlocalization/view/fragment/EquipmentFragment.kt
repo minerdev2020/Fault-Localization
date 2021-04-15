@@ -30,11 +30,7 @@ class EquipmentFragment : Fragment() {
             EquipmentListAdapter.DiffCallback()
         )
     }
-    private val viewModel: EquipmentViewModel by viewModels {
-        EquipmentViewModelFactory(
-            requireContext()
-        )
-    }
+    private val viewModel: EquipmentViewModel by viewModels { EquipmentViewModelFactory() }
 
     private var keyword = ""
     private var group1 = 0
@@ -92,7 +88,10 @@ class EquipmentFragment : Fragment() {
                         viewModel.addMessage(adapter[position].id, typeId, contents)
                     }
 
-                    dialog.show(requireActivity().supportFragmentManager, "SendMessageDialogFragment")
+                    dialog.show(
+                        requireActivity().supportFragmentManager,
+                        "SendMessageDialogFragment"
+                    )
                 }
             }
 

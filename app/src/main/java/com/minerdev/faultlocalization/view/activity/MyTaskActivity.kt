@@ -19,7 +19,7 @@ import java.util.*
 class MyTaskActivity : AppCompatActivity() {
     private val binding by lazy { ActivityMyTaskBinding.inflate(layoutInflater) }
     private val adapter by lazy { TaskListAdapter(TaskListAdapter.DiffCallback()) }
-    private val viewModel: TaskViewModel by viewModels { TaskViewModelFactory(this) }
+    private val viewModel: TaskViewModel by viewModels { TaskViewModelFactory() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

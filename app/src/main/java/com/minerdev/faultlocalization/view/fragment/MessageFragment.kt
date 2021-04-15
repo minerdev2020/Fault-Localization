@@ -21,7 +21,7 @@ import kotlin.concurrent.timer
 class MessageFragment : Fragment() {
     private val binding by lazy { FragmentMessageBinding.inflate(layoutInflater) }
     private val adapter by lazy { MessageListAdapter(MessageListAdapter.DiffCallback()) }
-    private val viewModel: MessageViewModel by viewModels { MessageViewModelFactory(requireContext()) }
+    private val viewModel: MessageViewModel by viewModels { MessageViewModelFactory() }
 
     private var keyword = ""
     private var group1 = 0

@@ -3,7 +3,7 @@ package com.minerdev.faultlocalization.base
 import androidx.lifecycle.ViewModel
 import com.minerdev.faultlocalization.model.Item
 
-open class ItemViewModel<T : Item>(private val repository: Repository<T>) : ViewModel() {
+open class ItemViewModel<T : Item>(private val repository: ItemRepository<T>) : ViewModel() {
     val allItems = repository.allItems
     val item = repository.item
 

@@ -1,15 +1,18 @@
 package com.minerdev.faultlocalization.utils
 
 import android.content.Context.MODE_PRIVATE
+import android.content.Intent
 import android.util.Log
 import android.widget.Toast
-import com.minerdev.faultlocalization.retrofit.AuthRetrofitManager
+import androidx.core.content.ContextCompat.startActivity
+import com.minerdev.faultlocalization.retrofit.service.AuthService
 import com.minerdev.faultlocalization.utils.Constants.APPLICATION
 import com.minerdev.faultlocalization.utils.Constants.ID
 import com.minerdev.faultlocalization.utils.Constants.TAG
 import com.minerdev.faultlocalization.utils.Constants.TOKEN
 import com.minerdev.faultlocalization.utils.Constants.TYPE_ID
 import com.minerdev.faultlocalization.utils.Constants.USER_ID
+import com.minerdev.faultlocalization.view.activity.SplashActivity
 import org.json.JSONObject
 
 object AppHelper {
@@ -19,7 +22,7 @@ object AppHelper {
         onAcceptance: () -> Unit,
         onRejection: () -> Unit
     ) {
-        AuthRetrofitManager.instance.login(userId, userPw,
+        AuthService.login(userId, userPw,
             { _: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "tryLogin response : " + jsonResponse.getString("message"))
@@ -67,7 +70,7 @@ object AppHelper {
         val userId = sharedPreferences.getString("user_id", "") ?: ""
         Log.d(TAG, "logout : $userId")
 
-        AuthRetrofitManager.instance.logout(userId,
+        AuthService.logout(userId,
             { _: Int, response: String ->
                 val data = JSONObject(response)
                 Log.d(TAG, "logout response : " + data.getString("message"))
@@ -114,7 +117,7 @@ object AppHelper {
         onAcceptance: () -> Unit,
         onRejection: () -> Unit
     ) {
-        AuthRetrofitManager.instance.register(userId, userPw, name, phone, typeId,
+        AuthService.register(userId, userPw, name, phone, typeId,
             { _: Int, response: String ->
                 val data = JSONObject(response)
                 Log.d(TAG, "tryRegister response : " + data.getString("message"))
@@ -136,5 +139,29 @@ object AppHelper {
                 Log.d(TAG, "tryRegister error : " + error.localizedMessage)
             }
         )
+    }
+
+    fun checkTokenResponse(code: Int) {
+        val onInvalidToken = {
+            val intent = Intent(APPLICATION, SplashActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            startActivity(APPLICATION, intent, null)
+        }
+
+        when (code) {
+            401 -> {
+                Log.d(TAG, "无效的Token！")
+                Toast.makeText(APPLICATION, "无效的Token！请重新登录！", Toast.LENGTH_SHORT).show()
+                logout(onInvalidToken, onInvalidToken)
+            }
+            419 -> {
+                Log.d(TAG, "该Token已过期！请重新登录！")
+                Toast.makeText(APPLICATION, "该Token已过期！请重新登录！", Toast.LENGTH_SHORT).show()
+                logout(onInvalidToken, onInvalidToken)
+            }
+            else -> {
+            }
+        }
     }
 }

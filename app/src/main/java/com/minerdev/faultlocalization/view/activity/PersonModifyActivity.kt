@@ -8,13 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.databinding.ActivityPersonModifyBinding
-import com.minerdev.faultlocalization.viewmodel.factory.PersonViewModelFactory
 import com.minerdev.faultlocalization.model.Person
-import com.minerdev.faultlocalization.repository.EquipmentRepository
 import com.minerdev.faultlocalization.viewmodel.PersonViewModel
+import com.minerdev.faultlocalization.viewmodel.factory.PersonViewModelFactory
 
 class PersonModifyActivity : AppCompatActivity() {
-    private val viewModel: PersonViewModel by viewModels { PersonViewModelFactory(this) }
+    private val viewModel: PersonViewModel by viewModels { PersonViewModelFactory() }
     private lateinit var binding: ActivityPersonModifyBinding
     private lateinit var person: Person
 

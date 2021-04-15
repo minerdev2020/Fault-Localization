@@ -5,7 +5,7 @@ import com.minerdev.faultlocalization.model.Message
 import com.minerdev.faultlocalization.repository.MessageRepository
 import com.minerdev.faultlocalization.utils.Constants.ID
 
-open class MessageViewModel(repository: MessageRepository) : ItemViewModel<Message>(repository) {
+class MessageViewModel(repository: MessageRepository) : ItemViewModel<Message>(repository) {
     fun acceptRequest(message: Message) {
         message.reply_id = ID.toInt()
         message.state_id = 2

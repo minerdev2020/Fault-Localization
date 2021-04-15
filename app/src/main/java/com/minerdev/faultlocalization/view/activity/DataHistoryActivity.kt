@@ -13,7 +13,7 @@ import com.minerdev.faultlocalization.viewmodel.factory.EquipmentViewModelFactor
 class DataHistoryActivity : AppCompatActivity() {
     private val binding by lazy { ActivityDataHistoryBinding.inflate(layoutInflater) }
     private val adapter by lazy { SensorDataListAdapter(SensorDataListAdapter.DiffCallback()) }
-    private val viewModel: EquipmentViewModel by viewModels { EquipmentViewModelFactory(this) }
+    private val viewModel: EquipmentViewModel by viewModels { EquipmentViewModelFactory() }
 
     private var id = 0
 

@@ -1,26 +1,21 @@
 package com.minerdev.faultlocalization.base
 
-import android.content.Context
 import android.util.Log
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import com.minerdev.faultlocalization.model.Item
 import com.minerdev.faultlocalization.model.ItemState
 import com.minerdev.faultlocalization.model.ItemType
-import com.minerdev.faultlocalization.retrofit.ItemRetrofitManager
+import com.minerdev.faultlocalization.retrofit.service.ItemService
 import com.minerdev.faultlocalization.utils.AppHelper
 import com.minerdev.faultlocalization.utils.Constants.TAG
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import org.json.JSONObject
-import kotlin.reflect.KClass
 
-open class Repository<T : Item>(
-    private val context: Context,
-    private val itemType: KClass<T>,
+open class ItemRepository<T : Item>(
     private val jsonToItemConverter: (response: String) -> T,
     private val jsonToItemListConverter: (response: String) -> List<T>,
-    private val onInvalidToken: () -> Unit = {}
+    private val service: ItemService
 ) {
     val allItems = MutableLiveData<List<T>>()
     val item = MutableLiveData<T>()
@@ -29,7 +24,7 @@ open class Repository<T : Item>(
     val itemTypes = MutableLiveData<List<ItemType>>()
 
     fun loadItemStatesAndTypes() {
-        ItemRetrofitManager.instance.getAllItemsStatesAndTypes(itemType,
+        service.getStatesAndTypes(
             { _: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "loadItemStatesAndTypes response : " + jsonResponse.getString("message"))
@@ -42,7 +37,7 @@ open class Repository<T : Item>(
             { code: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "loadItemStatesAndTypes response : " + jsonResponse.getString("message"))
-                checkTokenResponse(code)
+                AppHelper.checkTokenResponse(code)
             },
             { error: Throwable ->
                 Log.d(TAG, "loadItems error : " + error.localizedMessage)
@@ -50,7 +45,7 @@ open class Repository<T : Item>(
     }
 
     fun loadItem(id: Int) {
-        ItemRetrofitManager.instance.getItem(itemType, id,
+        service.getItem(id,
             { _: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "loadItem response : " + jsonResponse.getString("message"))
@@ -60,7 +55,7 @@ open class Repository<T : Item>(
             { code: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "loadItem response : " + jsonResponse.getString("message"))
-                checkTokenResponse(code)
+                AppHelper.checkTokenResponse(code)
             },
             { error: Throwable ->
                 Log.d(TAG, "loadItem error : " + error.localizedMessage)
@@ -68,7 +63,7 @@ open class Repository<T : Item>(
     }
 
     fun loadItems(keyword: String = "", group1: Int = 0, group2: Int = 0) {
-        ItemRetrofitManager.instance.getAllItems(itemType, keyword, group1, group2,
+        service.getAllItems(keyword, group1, group2,
             { _: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "loadItems response : " + jsonResponse.getString("message"))
@@ -78,7 +73,7 @@ open class Repository<T : Item>(
             { code: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "loadItems response : " + jsonResponse.getString("message"))
-                checkTokenResponse(code)
+                AppHelper.checkTokenResponse(code)
             },
             { error: Throwable ->
                 Log.d(TAG, "loadItems error : " + error.localizedMessage)
@@ -86,7 +81,7 @@ open class Repository<T : Item>(
     }
 
     fun addItem(item: T, onResponse: (response: String?) -> Unit = {}) {
-        ItemRetrofitManager.instance.createItem(itemType, item,
+        service.create(item,
             { _: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "addItem response : " + jsonResponse.getString("message"))
@@ -96,7 +91,7 @@ open class Repository<T : Item>(
             { code: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "addItem response : " + jsonResponse.getString("message"))
-                checkTokenResponse(code)
+                AppHelper.checkTokenResponse(code)
             },
             { error: Throwable ->
                 Log.d(TAG, "addItem error : " + error.localizedMessage)
@@ -104,7 +99,7 @@ open class Repository<T : Item>(
     }
 
     fun modifyItem(item: T, onResponse: (response: String?) -> Unit = {}) {
-        ItemRetrofitManager.instance.updateItem(itemType, item.id, item,
+        service.update(item.id, item,
             { _: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "modifyItem response : " + jsonResponse.getString("message"))
@@ -113,7 +108,7 @@ open class Repository<T : Item>(
             { code: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "modifyItem response : " + jsonResponse.getString("message"))
-                checkTokenResponse(code)
+                AppHelper.checkTokenResponse(code)
             },
             { error: Throwable ->
                 Log.d(TAG, "modifyItem error : " + error.localizedMessage)
@@ -121,7 +116,7 @@ open class Repository<T : Item>(
     }
 
     fun modifyItemState(id: Int, state: Byte, onResponse: (response: String?) -> Unit = {}) {
-        ItemRetrofitManager.instance.updateItem(itemType, id, state,
+        service.update(id, state,
             { _: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "modifyItemState response : " + jsonResponse.getString("message"))
@@ -130,7 +125,7 @@ open class Repository<T : Item>(
             { code: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "modifyItemState response : " + jsonResponse.getString("message"))
-                checkTokenResponse(code)
+                AppHelper.checkTokenResponse(code)
             },
             { error: Throwable ->
                 Log.d(TAG, "modifyItemState error : " + error.localizedMessage)
@@ -138,7 +133,7 @@ open class Repository<T : Item>(
     }
 
     fun deleteItem(id: Int, onResponse: (response: String?) -> Unit = {}) {
-        ItemRetrofitManager.instance.deleteItem(itemType, id,
+        service.delete(id,
             { _: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "deleteItem response : " + jsonResponse.getString("message"))
@@ -147,27 +142,10 @@ open class Repository<T : Item>(
             { code: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "deleteItem response : " + jsonResponse.getString("message"))
-                checkTokenResponse(code)
+                AppHelper.checkTokenResponse(code)
             },
             { error: Throwable ->
                 Log.d(TAG, "deleteItem error : " + error.localizedMessage)
             })
-    }
-
-    private fun checkTokenResponse(code: Int) {
-        when (code) {
-            401 -> {
-                Log.d(TAG, "无效的Token！")
-                Toast.makeText(context, "无效的Token！请重新登录！", Toast.LENGTH_SHORT).show()
-                AppHelper.logout(onInvalidToken, onInvalidToken)
-            }
-            419 -> {
-                Log.d(TAG, "该Token已过期！请重新登录！")
-                Toast.makeText(context, "该Token已过期！请重新登录！", Toast.LENGTH_SHORT).show()
-                AppHelper.logout(onInvalidToken, onInvalidToken)
-            }
-            else -> {
-            }
-        }
     }
 }

@@ -1,7 +1,9 @@
-package com.minerdev.faultlocalization.retrofit
+package com.minerdev.faultlocalization.retrofit.service
 
-import com.minerdev.faultlocalization.utils.Constants.BASE_URL
-import com.minerdev.faultlocalization.utils.Constants.TOKEN
+import com.minerdev.faultlocalization.retrofit.RetrofitClient
+import com.minerdev.faultlocalization.retrofit.api.AuthApi
+import com.minerdev.faultlocalization.utils.Constants
+import com.minerdev.faultlocalization.utils.Constants.API_AUTH
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
@@ -9,13 +11,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class AuthRetrofitManager {
-    companion object {
-        val instance = AuthRetrofitManager()
-    }
-
-    private val iRetrofit: IRetrofit? =
-        RetrofitClient.getClient(BASE_URL)?.create(IRetrofit::class.java)
+object AuthService {
+    private val client = RetrofitClient.getClient(API_AUTH)?.create(AuthApi::class.java)
 
     fun login(
         id: String,
@@ -28,7 +25,7 @@ class AuthRetrofitManager {
             put("user_id", id)
             put("user_pw", pw)
         }
-        val call = iRetrofit?.login(user) ?: return
+        val call = client?.login(user) ?: return
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
@@ -58,7 +55,7 @@ class AuthRetrofitManager {
         val user = buildJsonObject {
             put("user_id", id)
         }
-        val call = iRetrofit?.logout(TOKEN, user) ?: return
+        val call = client?.logout(Constants.TOKEN, user) ?: return
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
@@ -96,7 +93,7 @@ class AuthRetrofitManager {
             put("phone", phone)
             put("type_id", typeId)
         }
-        val call = iRetrofit?.register(user) ?: return
+        val call = client?.register(user) ?: return
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {

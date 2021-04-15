@@ -113,9 +113,9 @@
             android:id="@+id/textInput_et_contents"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="test test"
             android:enabled="false"
             android:gravity="start|top"
+            android:text="test test"
             android:textColor="@color/black" />
     </com.google.android.material.textfield.TextInputLayout>
 

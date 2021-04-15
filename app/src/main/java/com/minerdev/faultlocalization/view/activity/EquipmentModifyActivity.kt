@@ -26,9 +26,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
 class EquipmentModifyActivity : AppCompatActivity() {
-    private val viewModel: EquipmentModifyViewModel by viewModels {
-        EquipmentModifyViewModelFactory(this)
-    }
+    private val viewModel: EquipmentModifyViewModel by viewModels { EquipmentModifyViewModelFactory() }
     private val adapter by lazy { SensorModifyListAdapter(SensorModifyListAdapter.DiffCallback()) }
 
     private lateinit var binding: ActivityEquipModifyBinding

@@ -7,7 +7,7 @@ import com.minerdev.faultlocalization.repository.EquipmentRepository
 import com.minerdev.faultlocalization.repository.MessageRepository
 import com.minerdev.faultlocalization.utils.Constants.ID
 
-open class EquipmentViewModel(
+class EquipmentViewModel(
     private val messageRepository: MessageRepository,
     repository: EquipmentRepository
 ) :

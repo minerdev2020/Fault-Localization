@@ -27,7 +27,7 @@ import kotlin.concurrent.timer
 class PersonFragment : Fragment() {
     private val binding by lazy { FragmentPersonBinding.inflate(layoutInflater) }
     private val adapter by lazy { PersonListAdapter(PersonListAdapter.DiffCallback()) }
-    private val viewModel: PersonViewModel by viewModels { PersonViewModelFactory(requireContext()) }
+    private val viewModel: PersonViewModel by viewModels { PersonViewModelFactory() }
 
     private var keyword = ""
     private var group1 = 0
