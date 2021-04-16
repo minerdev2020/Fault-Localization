@@ -48,7 +48,7 @@ open class ItemServiceImpl<T : Item>(apiUrl: String) : ItemService {
         onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
-        val call = client?.getAll(TOKEN, keyword, group1, group2) ?: return
+        val call = client?.getAllItems(TOKEN, keyword, group1, group2) ?: return
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
@@ -75,7 +75,7 @@ open class ItemServiceImpl<T : Item>(apiUrl: String) : ItemService {
         onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
-        val call = client?.get(TOKEN, id) ?: return
+        val call = client?.getItem(TOKEN, id) ?: return
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
@@ -96,13 +96,13 @@ open class ItemServiceImpl<T : Item>(apiUrl: String) : ItemService {
         })
     }
 
-    override fun create(
+    override fun createItem(
         item: Item,
         onAcceptance: (code: Int, response: String) -> Unit,
         onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
-        val call = client?.create(TOKEN, (item as T).toJson()) ?: return
+        val call = client?.createItem(TOKEN, (item as T).toJson()) ?: return
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {
@@ -123,14 +123,14 @@ open class ItemServiceImpl<T : Item>(apiUrl: String) : ItemService {
         })
     }
 
-    override fun update(
+    override fun updateItem(
         id: Int,
         item: Item,
         onAcceptance: (code: Int, response: String) -> Unit,
         onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
-        val call = client?.update(TOKEN, id, (item as T).toJson()) ?: return
+        val call = client?.updateItem(TOKEN, id, (item as T).toJson()) ?: return
         Log.d(Constants.TAG, item.toString())
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
@@ -152,14 +152,14 @@ open class ItemServiceImpl<T : Item>(apiUrl: String) : ItemService {
         })
     }
 
-    override fun update(
+    override fun updateItem(
         id: Int,
         state: Byte,
         onAcceptance: (code: Int, response: String) -> Unit,
         onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
-        val call = client?.update(TOKEN, id, state) ?: return
+        val call = client?.updateItem(TOKEN, id, state) ?: return
         Log.d(Constants.TAG, "state : $state")
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
@@ -181,13 +181,13 @@ open class ItemServiceImpl<T : Item>(apiUrl: String) : ItemService {
         })
     }
 
-    override fun delete(
+    override fun deleteItem(
         id: Int,
         onAcceptance: (code: Int, response: String) -> Unit,
         onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     ) {
-        val call = client?.delete(TOKEN, id) ?: return
+        val call = client?.deleteItem(TOKEN, id) ?: return
         call.enqueue(object : Callback<JsonObject> {
             override fun onResponse(call: Call<JsonObject>, response: Response<JsonObject>) {
                 if (response.isSuccessful) {

@@ -6,8 +6,9 @@
     android:orientation="vertical"
     tools:context=".view.activity.LoginLogActivity">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+    <TextView
+        android:id="@+id/tv_loginLog"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:text="TextView" />
 </LinearLayout>

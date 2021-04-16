@@ -10,7 +10,7 @@ interface ItemApi {
     fun getStatesAndTypes(@Header("authorization") token: String): Call<JsonObject>
 
     @GET(".")
-    fun getAll(
+    fun getAllItems(
         @Header("authorization") token: String,
         @Query("keyword") keyword: String,
         @Query("group1") group1: Int,
@@ -18,33 +18,33 @@ interface ItemApi {
     ): Call<JsonObject>
 
     @GET("{id}")
-    fun get(
+    fun getItem(
         @Header("authorization") token: String,
         @Path("id") id: Int
     ): Call<JsonObject>
 
     @POST(".")
-    fun create(
+    fun createItem(
         @Header("authorization") token: String,
         @Body equipment: JsonElement
     ): Call<JsonObject>
 
     @PUT("{id}")
-    fun update(
+    fun updateItem(
         @Header("authorization") token: String,
         @Path("id") id: Int,
         @Body equipment: JsonElement
     ): Call<JsonObject>
 
     @PATCH("{id}")
-    fun update(
+    fun updateItem(
         @Header("authorization") token: String,
         @Path("id") id: Int,
         @Query("state") state: Byte
     ): Call<JsonObject>
 
     @DELETE("{id}")
-    fun delete(
+    fun deleteItem(
         @Header("authorization") token: String,
         @Path("id") id: Int
     ): Call<JsonObject>

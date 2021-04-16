@@ -40,7 +40,7 @@ open class ItemRepository<T : Item>(
                 AppHelper.checkTokenResponse(code)
             },
             { error: Throwable ->
-                Log.d(TAG, "loadItems error : " + error.localizedMessage)
+                Log.d(TAG, "loadItemStatesAndTypes error : " + error.localizedMessage)
             })
     }
 
@@ -81,7 +81,7 @@ open class ItemRepository<T : Item>(
     }
 
     fun addItem(item: T, onResponse: (response: String?) -> Unit = {}) {
-        service.create(item,
+        service.createItem(item,
             { _: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "addItem response : " + jsonResponse.getString("message"))
@@ -99,7 +99,7 @@ open class ItemRepository<T : Item>(
     }
 
     fun modifyItem(item: T, onResponse: (response: String?) -> Unit = {}) {
-        service.update(item.id, item,
+        service.updateItem(item.id, item,
             { _: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "modifyItem response : " + jsonResponse.getString("message"))
@@ -116,7 +116,7 @@ open class ItemRepository<T : Item>(
     }
 
     fun modifyItemState(id: Int, state: Byte, onResponse: (response: String?) -> Unit = {}) {
-        service.update(id, state,
+        service.updateItem(id, state,
             { _: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "modifyItemState response : " + jsonResponse.getString("message"))
@@ -133,7 +133,7 @@ open class ItemRepository<T : Item>(
     }
 
     fun deleteItem(id: Int, onResponse: (response: String?) -> Unit = {}) {
-        service.delete(id,
+        service.deleteItem(id,
             { _: Int, response: String ->
                 val jsonResponse = JSONObject(response)
                 Log.d(TAG, "deleteItem response : " + jsonResponse.getString("message"))

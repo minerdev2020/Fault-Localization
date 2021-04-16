@@ -25,14 +25,14 @@ interface ItemService {
         onFailure: (error: Throwable) -> Unit
     )
 
-    fun create(
+    fun createItem(
         item: Item,
         onAcceptance: (code: Int, response: String) -> Unit,
         onRejection: (code: Int, response: String) -> Unit,
         onFailure: (error: Throwable) -> Unit
     )
 
-    fun update(
+    fun updateItem(
         id: Int,
         item: Item,
         onAcceptance: (code: Int, response: String) -> Unit,
@@ -40,7 +40,7 @@ interface ItemService {
         onFailure: (error: Throwable) -> Unit
     )
 
-    fun update(
+    fun updateItem(
         id: Int,
         state: Byte,
         onAcceptance: (code: Int, response: String) -> Unit,
@@ -48,7 +48,7 @@ interface ItemService {
         onFailure: (error: Throwable) -> Unit
     )
 
-    fun delete(
+    fun deleteItem(
         id: Int,
         onAcceptance: (code: Int, response: String) -> Unit,
         onRejection: (code: Int, response: String) -> Unit,
