@@ -15,7 +15,6 @@
         <TextView
             android:layout_width="@dimen/dialog_text_width"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="5dp"
             android:text="申请状态："
             android:textSize="20sp" />
 
@@ -25,7 +24,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:paddingHorizontal="5dp"
             android:textSize="20sp" />
     </LinearLayout>
 
@@ -37,7 +35,6 @@
         <TextView
             android:layout_width="@dimen/dialog_text_width"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="5dp"
             android:text="申请人："
             android:textSize="20sp" />
 
@@ -47,7 +44,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:paddingHorizontal="5dp"
             android:textSize="20sp" />
     </LinearLayout>
 
@@ -59,7 +55,6 @@
         <TextView
             android:layout_width="@dimen/dialog_text_width"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="5dp"
             android:text="申请类型："
             android:textSize="20sp" />
 
@@ -69,7 +64,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:paddingHorizontal="5dp"
             android:textSize="20sp" />
     </LinearLayout>
 
@@ -81,7 +75,26 @@
         <TextView
             android:layout_width="@dimen/dialog_text_width"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="5dp"
+            android:text="预期工作时间："
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tv_estimated_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="@dimen/dialog_text_width"
+            android:layout_height="wrap_content"
             android:text="对象设备："
             android:textSize="20sp" />
 
@@ -91,14 +104,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:paddingHorizontal="5dp"
             android:textSize="20sp" />
     </LinearLayout>
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingHorizontal="5dp"
         android:text="申请内容："
         android:textSize="20sp" />
 
@@ -127,7 +138,6 @@
         <TextView
             android:layout_width="@dimen/dialog_text_width"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="5dp"
             android:text="回答人："
             android:textSize="20sp" />
 
@@ -137,7 +147,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:paddingHorizontal="5dp"
             android:textSize="20sp" />
     </LinearLayout>
 

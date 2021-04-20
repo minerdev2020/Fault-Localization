@@ -32,6 +32,10 @@ class MessageDialogFragment(private val message: Message) : DialogFragment() {
         binding.tvState.text = message.state.name
         binding.tvFrom.text = message.from.name
         binding.tvType.text = message.type.name
+
+        val estimatedTime = "${message.estimated_time} 小时"
+        binding.tvEstimatedTime.text = estimatedTime
+
         binding.tvReplyer.text = message.replyer?.name ?: "未被回答"
         binding.tvTarget.text = message.equipment_info.name
 
