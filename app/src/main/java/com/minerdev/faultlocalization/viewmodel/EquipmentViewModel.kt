@@ -19,12 +19,13 @@ class EquipmentViewModel(
         messageRepository.loadItemStatesAndTypes()
     }
 
-    fun addMessage(equipmentId: Int, typeId: Int, contents: String) {
+    fun addMessage(equipmentId: Int, typeId: Int, estimatedTime: Float, contents: String) {
         messageRepository.addItem(
             Message(
                 type_id = typeId,
                 state_id = 1,
                 equipment_id = equipmentId,
+                estimated_time = estimatedTime,
                 contents = contents,
                 from_id = ID.toInt()
             )

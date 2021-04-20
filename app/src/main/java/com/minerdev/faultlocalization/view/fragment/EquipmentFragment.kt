@@ -83,9 +83,10 @@ class EquipmentFragment : Fragment() {
                     })
 
                     dialog.listener = View.OnClickListener {
+                        val estimatedTime = dialog.estimatedTime
                         val contents = dialog.contents
                         val typeId = dialog.spinnerItemPosition
-                        viewModel.addMessage(adapter[position].id, typeId, contents)
+                        viewModel.addMessage(adapter[position].id, typeId, estimatedTime, contents)
                     }
 
                     dialog.show(

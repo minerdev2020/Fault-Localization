@@ -15,11 +15,14 @@ import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.databinding.FragmentSendMessageDialogBinding
 
 class SendMessageDialogFragment(private val state: String) : DialogFragment() {
+    val estimatedTime: Float
+        get() = binding.etEstimatedTime.text.toString().toFloat()
+
     val contents: String
         get() = binding.textInputEtContents.text.toString()
 
     val spinnerItemPosition: Int
-        get() = binding.spn1.selectedItemPosition
+        get() = binding.spnType.selectedItemPosition
 
     val types = MutableLiveData<ArrayList<String>>()
 
@@ -51,7 +54,7 @@ class SendMessageDialogFragment(private val state: String) : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.spn1.adapter = adapter
+        binding.spnType.adapter = adapter
 
         types.observe(viewLifecycleOwner, {
             adapter.clear()
@@ -72,7 +75,7 @@ class SendMessageDialogFragment(private val state: String) : DialogFragment() {
             }
             val alertDialog = builder.create()
 
-            val type = binding.spn1.selectedItem
+            val type = binding.spnType.selectedItem
             when (state) {
                 "运行中" -> {
                     if (type != "启动申请") {

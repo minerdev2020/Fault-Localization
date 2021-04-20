@@ -11,6 +11,7 @@ data class Message(
     override var updatedAt: String = "",
     override var type_id: Int = 0,
     override var state_id: Int = 0,
+    var estimated_time: Float = 0f,
     var contents: String = "",
     var equipment_id: Int = 0,
     var from_id: Int = 0,
@@ -23,6 +24,7 @@ data class Message(
 ) : Item {
     override fun toJson() = buildJsonObject {
         put("id", id)
+        put("estimated_time", estimated_time)
         put("contents", contents)
         put("state_id", state_id)
         put("type_id", type_id)
