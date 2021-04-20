@@ -61,6 +61,7 @@ class SensorDataListAdapter(diffCallback: DiffCallback) :
         fun bind(sensor: Sensor, socket: Socket) {
             binding.tvName.text = sensor.name
             binding.tvState.text = sensor.state.name
+
             setChart(binding.lineChart)
 
             socket.connect()
@@ -89,9 +90,10 @@ class SensorDataListAdapter(diffCallback: DiffCallback) :
             des.textSize = 15f
             des.textColor = Color.WHITE
 
-            chart.setTouchEnabled(false)
+            chart.setTouchEnabled(true)
 
-            chart.isDragEnabled = false
+            chart.isDragEnabled = true
+            chart.isDragDecelerationEnabled = false
             chart.setScaleEnabled(false)
 
             chart.isAutoScaleMinMaxEnabled = true
