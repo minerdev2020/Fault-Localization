@@ -25,7 +25,6 @@
                 android:id="@+id/textInput_et_id"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:ems="10"
                 android:hint="账号"
                 android:inputType="textShortMessage"
                 android:privateImeOptions="defaultInputmode=english" />
@@ -41,7 +40,6 @@
                 android:id="@+id/textInput_et_pw"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:ems="10"
                 android:hint="密码"
                 android:inputType="textPassword"
                 android:privateImeOptions="defaultInputmode=english" />
