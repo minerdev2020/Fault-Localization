@@ -12,7 +12,7 @@ class SensorDataPageAdapter(fa: FragmentActivity) :
     var equipment = Equipment()
 
     override fun getItemCount(): Int {
-        return equipment.sensor_info.size + 1
+        return equipment.sensor_info.size + if (equipment.id == 0) 0 else 1
     }
 
     override fun createFragment(position: Int): Fragment {
