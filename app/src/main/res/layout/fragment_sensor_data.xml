@@ -80,8 +80,8 @@
         </com.google.android.material.button.MaterialButtonToggleGroup>
     </LinearLayout>
 
-    <WebView
-        android:id="@+id/webView"
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/chart"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>
