@@ -13,6 +13,7 @@ data class Equipment(
     override var state_id: Int = 0,
     var name: String = "",
     var model_number: String = "",
+    var booting_count: Int = 0,
     var state: ItemState = ItemState(),
     var type: ItemType = ItemType(),
     var sensor_info: List<Sensor> = ArrayList()

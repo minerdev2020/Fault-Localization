@@ -5,11 +5,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.minerdev.faultlocalization.databinding.FragmentEquipmentInfoDataBinding
+import com.minerdev.faultlocalization.databinding.FragmentEquipmentInfoBinding
 import com.minerdev.faultlocalization.model.Equipment
 
 class EquipmentInfoFragment(private val equipment: Equipment) : Fragment() {
-    private val binding by lazy { FragmentEquipmentInfoDataBinding.inflate(layoutInflater) }
+    private val binding by lazy { FragmentEquipmentInfoBinding.inflate(layoutInflater) }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,5 +23,8 @@ class EquipmentInfoFragment(private val equipment: Equipment) : Fragment() {
 
         binding.tvName.text = equipment.name
         binding.tvState.text = equipment.state.name
+        binding.tvBootingCount.text = equipment.booting_count.toString()
+        binding.tvLastRepairDate.text = "无"
+        binding.tvLastBreakdownCause.text = "无"
     }
 }
