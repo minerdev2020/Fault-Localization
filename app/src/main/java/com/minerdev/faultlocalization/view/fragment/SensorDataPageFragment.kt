@@ -1,6 +1,7 @@
 package com.minerdev.faultlocalization.view.fragment
 
 import android.graphics.Color
+import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -22,6 +23,7 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 import org.json.JSONObject
 import java.net.URISyntaxException
+import java.util.*
 
 class SensorDataPageFragment(private val sensor: Sensor) : Fragment() {
     private val binding by lazy { FragmentSensorDataBinding.inflate(layoutInflater) }
@@ -39,16 +41,22 @@ class SensorDataPageFragment(private val sensor: Sensor) : Fragment() {
 
         binding.tvName.text = sensor.name
         binding.tvState.text = sensor.state.name
-        binding.tvFrom.text = "from"
+        binding.tvFrom.text = "now"
         binding.tvTo.text = "now"
 
         binding.tvFrom.setOnClickListener {
             val dialog = DatePickerDialogFragment()
             dialog.listener = View.OnClickListener {
                 binding.tvFrom.text = dialog.date
-                socket?.emit("onDateChanged", buildJsonObject {
-                    put("from", dialog.date)
-                })
+                if (dialog.date == "now") {
+                    socket?.emit("onDateChanged", buildJsonObject {
+                        put("from", dialog.date)
+                    })
+                } else {
+                    socket?.emit("onDateChanged", buildJsonObject {
+                        put("from", getUnixTime(dialog.date))
+                    })
+                }
             }
             dialog.show(requireActivity().supportFragmentManager, "DatePickerDialogFragment")
         }
@@ -56,15 +64,21 @@ class SensorDataPageFragment(private val sensor: Sensor) : Fragment() {
             val dialog = DatePickerDialogFragment()
             dialog.listener = View.OnClickListener {
                 binding.tvTo.text = dialog.date
-                socket?.emit("onDateChanged", buildJsonObject {
-                    put("to", dialog.date)
-                })
+                if (dialog.date == "now") {
+                    socket?.emit("onDateChanged", buildJsonObject {
+                        put("to", dialog.date)
+                    })
+                } else {
+                    socket?.emit("onDateChanged", buildJsonObject {
+                        put("to", getUnixTime(dialog.date))
+                    })
+                }
             }
             dialog.show(requireActivity().supportFragmentManager, "DatePickerDialogFragment")
         }
 
         binding.btnReset.setOnClickListener {
-            binding.tvFrom.text = "from"
+            binding.tvFrom.text = "now"
             binding.tvTo.text = "now"
             socket?.emit("onDateChanged", buildJsonObject {
                 put("from", binding.tvFrom.text.toString())
@@ -100,6 +114,12 @@ class SensorDataPageFragment(private val sensor: Sensor) : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         socket?.disconnect()
+    }
+
+    private fun getUnixTime(time: String): Int {
+        val format = SimpleDateFormat("yyyy.MM.dd HH:mm:ss", Locale.getDefault())
+        val date = format.parse(time)
+        return (date.time / 1000).toInt()
     }
 
     private fun setChart(chart: LineChart) {
