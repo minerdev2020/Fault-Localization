@@ -1,6 +1,7 @@
 package com.minerdev.faultlocalization.utils
 
 import android.app.Application
+import androidx.lifecycle.MutableLiveData
 
 object Constants {
     lateinit var APPLICATION: Application
@@ -33,4 +34,6 @@ object Constants {
     const val TYPE_HEADER = 0
     const val TYPE_ITEM = 1
     const val TYPE_FOOTER = 2
+
+    var TOKEN_VALID = MutableLiveData(true)
 }

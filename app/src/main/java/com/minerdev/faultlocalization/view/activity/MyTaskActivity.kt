@@ -5,18 +5,18 @@ import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.TaskListAdapter
+import com.minerdev.faultlocalization.base.BaseActivity
 import com.minerdev.faultlocalization.databinding.ActivityMyTaskBinding
 import com.minerdev.faultlocalization.utils.Constants.ID
 import com.minerdev.faultlocalization.viewmodel.TaskViewModel
 import com.minerdev.faultlocalization.viewmodel.factory.TaskViewModelFactory
 import java.util.*
 
-class MyTaskActivity : AppCompatActivity() {
+class MyTaskActivity : BaseActivity() {
     private val binding by lazy { ActivityMyTaskBinding.inflate(layoutInflater) }
     private val adapter by lazy { TaskListAdapter(TaskListAdapter.DiffCallback()) }
     private val viewModel: TaskViewModel by viewModels { TaskViewModelFactory() }

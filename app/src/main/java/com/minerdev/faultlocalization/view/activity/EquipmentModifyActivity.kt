@@ -9,12 +9,12 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.SensorModifyListAdapter
+import com.minerdev.faultlocalization.base.BaseActivity
 import com.minerdev.faultlocalization.databinding.ActivityEquipModifyBinding
 import com.minerdev.faultlocalization.model.Equipment
 import com.minerdev.faultlocalization.utils.Constants
@@ -25,7 +25,7 @@ import com.minerdev.faultlocalization.viewmodel.factory.EquipmentModifyViewModel
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
-class EquipmentModifyActivity : AppCompatActivity() {
+class EquipmentModifyActivity : BaseActivity() {
     private val viewModel: EquipmentModifyViewModel by viewModels { EquipmentModifyViewModelFactory() }
     private val adapter by lazy { SensorModifyListAdapter(SensorModifyListAdapter.DiffCallback()) }
 

@@ -3,13 +3,13 @@ package com.minerdev.faultlocalization.view.activity
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
 import com.minerdev.faultlocalization.adapter.SensorDataPageAdapter
+import com.minerdev.faultlocalization.base.BaseActivity
 import com.minerdev.faultlocalization.databinding.ActivityDataHistoryBinding
 import com.minerdev.faultlocalization.viewmodel.EquipmentViewModel
 import com.minerdev.faultlocalization.viewmodel.factory.EquipmentViewModelFactory
 
-class DataHistoryActivity : AppCompatActivity() {
+class DataHistoryActivity : BaseActivity() {
     private val adapter = SensorDataPageAdapter(this)
     private val binding by lazy { ActivityDataHistoryBinding.inflate(layoutInflater) }
     private val viewModel: EquipmentViewModel by viewModels { EquipmentViewModelFactory() }

@@ -4,15 +4,15 @@ import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.minerdev.faultlocalization.R
+import com.minerdev.faultlocalization.base.BaseActivity
 import com.minerdev.faultlocalization.databinding.ActivityPersonModifyBinding
 import com.minerdev.faultlocalization.model.Person
 import com.minerdev.faultlocalization.viewmodel.PersonViewModel
 import com.minerdev.faultlocalization.viewmodel.factory.PersonViewModelFactory
 
-class PersonModifyActivity : AppCompatActivity() {
+class PersonModifyActivity : BaseActivity() {
     private val viewModel: PersonViewModel by viewModels { PersonViewModelFactory() }
     private lateinit var binding: ActivityPersonModifyBinding
     private lateinit var person: Person

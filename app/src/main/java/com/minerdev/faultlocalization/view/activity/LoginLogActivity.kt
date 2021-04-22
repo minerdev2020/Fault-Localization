@@ -3,12 +3,12 @@ package com.minerdev.faultlocalization.view.activity
 import android.os.Bundle
 import android.view.MenuItem
 import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
+import com.minerdev.faultlocalization.base.BaseActivity
 import com.minerdev.faultlocalization.databinding.ActivityLoginLogBinding
 import com.minerdev.faultlocalization.utils.Constants.ID
 import com.minerdev.faultlocalization.viewmodel.LoginLogViewModel
 
-class LoginLogActivity : AppCompatActivity() {
+class LoginLogActivity : BaseActivity() {
     private val binding by lazy { ActivityLoginLogBinding.inflate(layoutInflater) }
     private val viewModel: LoginLogViewModel by viewModels()
 

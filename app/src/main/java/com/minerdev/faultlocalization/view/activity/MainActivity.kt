@@ -5,12 +5,12 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.SearchView
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
 import androidx.viewpager.widget.ViewPager.OnPageChangeListener
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.SectionPageAdapter
+import com.minerdev.faultlocalization.base.BaseActivity
 import com.minerdev.faultlocalization.databinding.ActivityMainBinding
 import com.minerdev.faultlocalization.utils.Constants.FINISH_INTERVAL_TIME
 import com.minerdev.faultlocalization.view.fragment.EquipmentFragment
@@ -18,7 +18,7 @@ import com.minerdev.faultlocalization.view.fragment.MessageFragment
 import com.minerdev.faultlocalization.view.fragment.PersonFragment
 import com.minerdev.faultlocalization.view.fragment.SettingsFragment
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : BaseActivity() {
     private var backPressedTime: Long = 0
 
     private val adapter = SectionPageAdapter(supportFragmentManager)
