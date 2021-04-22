@@ -18,6 +18,8 @@ import com.minerdev.faultlocalization.utils.Constants.BASE_URL
 import com.minerdev.faultlocalization.utils.Constants.TAG
 import io.socket.client.IO
 import io.socket.client.Socket
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.put
 import org.json.JSONObject
 import java.net.URISyntaxException
 
@@ -37,6 +39,39 @@ class SensorDataPageFragment(private val sensor: Sensor) : Fragment() {
 
         binding.tvName.text = sensor.name
         binding.tvState.text = sensor.state.name
+        binding.tvFrom.text = "from"
+        binding.tvTo.text = "now"
+
+        binding.tvFrom.setOnClickListener {
+            val dialog = DatePickerDialogFragment()
+            dialog.listener = View.OnClickListener {
+                binding.tvFrom.text = dialog.date
+                socket?.emit("onDateChanged", buildJsonObject {
+                    put("from", dialog.date)
+                })
+            }
+            dialog.show(requireActivity().supportFragmentManager, "DatePickerDialogFragment")
+        }
+        binding.tvTo.setOnClickListener {
+            val dialog = DatePickerDialogFragment()
+            dialog.listener = View.OnClickListener {
+                binding.tvTo.text = dialog.date
+                socket?.emit("onDateChanged", buildJsonObject {
+                    put("to", dialog.date)
+                })
+            }
+            dialog.show(requireActivity().supportFragmentManager, "DatePickerDialogFragment")
+        }
+
+        binding.btnReset.setOnClickListener {
+            binding.tvFrom.text = "from"
+            binding.tvTo.text = "now"
+            socket?.emit("onDateChanged", buildJsonObject {
+                put("from", binding.tvFrom.text.toString())
+                put("to", binding.tvTo.text.toString())
+            })
+        }
+
         setChart(binding.chart)
 
         try {
