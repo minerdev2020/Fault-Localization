@@ -28,6 +28,8 @@ import java.util.*
 class SensorDataPageFragment(private val sensor: Sensor) : Fragment() {
     private val binding by lazy { FragmentSensorDataBinding.inflate(layoutInflater) }
     private var socket: Socket? = null
+    private var fromDate = ""
+    private var toDate = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,12 +51,16 @@ class SensorDataPageFragment(private val sensor: Sensor) : Fragment() {
             dialog.listener = View.OnClickListener {
                 binding.tvFrom.text = dialog.date
                 if (dialog.date == "全部") {
+                    fromDate = ""
                     socket?.emit("onDateChanged", buildJsonObject {
-                        put("from", dialog.date)
+                        put("from", fromDate)
+                        put("to", toDate)
                     })
                 } else {
+                    fromDate = getUnixTime(dialog.date).toString()
                     socket?.emit("onDateChanged", buildJsonObject {
-                        put("from", getUnixTime(dialog.date))
+                        put("from", fromDate)
+                        put("to", toDate)
                     })
                 }
             }
@@ -65,12 +71,16 @@ class SensorDataPageFragment(private val sensor: Sensor) : Fragment() {
             dialog.listener = View.OnClickListener {
                 binding.tvTo.text = dialog.date
                 if (dialog.date == "全部") {
+                    toDate = ""
                     socket?.emit("onDateChanged", buildJsonObject {
-                        put("to", dialog.date)
+                        put("from", fromDate)
+                        put("to", toDate)
                     })
                 } else {
+                    toDate = getUnixTime(dialog.date).toString()
                     socket?.emit("onDateChanged", buildJsonObject {
-                        put("to", getUnixTime(dialog.date))
+                        put("from", fromDate)
+                        put("to", toDate)
                     })
                 }
             }
@@ -80,9 +90,11 @@ class SensorDataPageFragment(private val sensor: Sensor) : Fragment() {
         binding.btnReset.setOnClickListener {
             binding.tvFrom.text = "全部"
             binding.tvTo.text = "全部"
+            fromDate = ""
+            toDate = ""
             socket?.emit("onDateChanged", buildJsonObject {
-                put("from", binding.tvFrom.text.toString())
-                put("to", binding.tvTo.text.toString())
+                put("from", fromDate)
+                put("to", toDate)
             })
         }
 
