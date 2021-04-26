@@ -19,7 +19,7 @@ class DatePickerDialogFragment : BaseDialogFragment() {
                         binding.timePicker.hour.toString() + ":" +
                         binding.timePicker.minute.toString() + ":00"
             else
-                "now"
+                "全部"
 
     var listener: View.OnClickListener? = null
     private var isNow = false

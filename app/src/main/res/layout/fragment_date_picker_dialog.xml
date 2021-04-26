@@ -24,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingHorizontal="50dp"
-        android:text="现在时间"
+        android:text="全部"
         android:textSize="20sp" />
 
     <Space

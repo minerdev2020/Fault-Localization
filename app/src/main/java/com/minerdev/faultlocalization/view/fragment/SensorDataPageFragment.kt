@@ -41,14 +41,14 @@ class SensorDataPageFragment(private val sensor: Sensor) : Fragment() {
 
         binding.tvName.text = sensor.name
         binding.tvState.text = sensor.state.name
-        binding.tvFrom.text = "now"
-        binding.tvTo.text = "now"
+        binding.tvFrom.text = "全部"
+        binding.tvTo.text = "全部"
 
         binding.tvFrom.setOnClickListener {
             val dialog = DatePickerDialogFragment()
             dialog.listener = View.OnClickListener {
                 binding.tvFrom.text = dialog.date
-                if (dialog.date == "now") {
+                if (dialog.date == "全部") {
                     socket?.emit("onDateChanged", buildJsonObject {
                         put("from", dialog.date)
                     })
@@ -64,7 +64,7 @@ class SensorDataPageFragment(private val sensor: Sensor) : Fragment() {
             val dialog = DatePickerDialogFragment()
             dialog.listener = View.OnClickListener {
                 binding.tvTo.text = dialog.date
-                if (dialog.date == "now") {
+                if (dialog.date == "全部") {
                     socket?.emit("onDateChanged", buildJsonObject {
                         put("to", dialog.date)
                     })
@@ -78,8 +78,8 @@ class SensorDataPageFragment(private val sensor: Sensor) : Fragment() {
         }
 
         binding.btnReset.setOnClickListener {
-            binding.tvFrom.text = "now"
-            binding.tvTo.text = "now"
+            binding.tvFrom.text = "全部"
+            binding.tvTo.text = "全部"
             socket?.emit("onDateChanged", buildJsonObject {
                 put("from", binding.tvFrom.text.toString())
                 put("to", binding.tvTo.text.toString())
