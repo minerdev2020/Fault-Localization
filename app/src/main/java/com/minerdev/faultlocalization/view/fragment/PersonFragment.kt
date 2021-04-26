@@ -4,6 +4,7 @@ import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
@@ -16,30 +17,56 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.PersonListAdapter
 import com.minerdev.faultlocalization.databinding.FragmentPersonBinding
+import com.minerdev.faultlocalization.utils.Constants
 import com.minerdev.faultlocalization.utils.Constants.TYPE_ID
 import com.minerdev.faultlocalization.view.activity.LoginLogActivity
 import com.minerdev.faultlocalization.view.activity.PersonModifyActivity
 import com.minerdev.faultlocalization.viewmodel.PersonViewModel
 import com.minerdev.faultlocalization.viewmodel.factory.PersonViewModelFactory
+import io.socket.client.IO
+import io.socket.client.Socket
+import java.net.URISyntaxException
 import java.util.*
-import kotlin.concurrent.timer
 
 class PersonFragment : Fragment() {
     private val binding by lazy { FragmentPersonBinding.inflate(layoutInflater) }
     private val adapter by lazy { PersonListAdapter(PersonListAdapter.DiffCallback()) }
     private val viewModel: PersonViewModel by viewModels { PersonViewModelFactory() }
 
+    private var socket: Socket? = null
     private var keyword = ""
     private var group1 = 0
     private var group2 = 0
 
     private lateinit var searchView: SearchView
-    private lateinit var timer: Timer
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        try {
+            socket = IO.socket(Constants.BASE_URL + "/persons")
+
+        } catch (e: URISyntaxException) {
+            Log.e(Constants.TAG, e.reason)
+        }
+
+        socket?.let { s ->
+            s.connect()
+            s.on(Socket.EVENT_CONNECT) {
+                Log.d(Constants.TAG, "Connected!")
+                s.on("create") {
+                    viewModel.loadItems(keyword, group1, group2)
+                }
+                s.on("update") {
+                    viewModel.loadItems(keyword, group1, group2)
+                }
+                s.on("delete") {
+                    viewModel.loadItems(keyword, group1, group2)
+                }
+            }
+        }
+
         viewModel.allItems.observe(viewLifecycleOwner, adapter::submitList)
 
         val manager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
@@ -73,19 +100,14 @@ class PersonFragment : Fragment() {
             }
         }
 
+        viewModel.loadItems(keyword, group1, group2)
+
         return binding.root
     }
 
-    override fun onResume() {
-        super.onResume()
-        timer = timer(period = 1000) {
-            viewModel.loadItems(keyword, group1, group2)
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        timer.cancel()
+    override fun onDestroyView() {
+        super.onDestroyView()
+        socket?.disconnect()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
