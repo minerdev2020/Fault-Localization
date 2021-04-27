@@ -88,6 +88,7 @@ class MainActivity : BaseActivity() {
         adapter.addFragment(SettingsFragment(), "设置")
 
         binding.viewPager.adapter = adapter
+        binding.viewPager.offscreenPageLimit = 1
     }
 
     private fun setupBottomNavigationView() {
