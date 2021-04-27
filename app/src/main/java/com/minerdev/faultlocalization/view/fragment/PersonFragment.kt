@@ -134,6 +134,7 @@ class PersonFragment : BasePageFragment() {
                     requireActivity().currentFocus?.windowToken,
                     InputMethodManager.HIDE_NOT_ALWAYS
                 )
+                viewModel.loadItems(keyword, group1, group2)
                 return true
             }
 
@@ -145,6 +146,7 @@ class PersonFragment : BasePageFragment() {
         searchView.setOnCloseListener {
             searchView.onActionViewCollapsed()
             keyword = ""
+            viewModel.loadItems(keyword, group1, group2)
             true
         }
 
