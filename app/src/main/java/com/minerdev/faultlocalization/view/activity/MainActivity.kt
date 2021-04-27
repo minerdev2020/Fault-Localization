@@ -1,5 +1,6 @@
 package com.minerdev.faultlocalization.view.activity
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -12,6 +13,7 @@ import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.SectionPageAdapter
 import com.minerdev.faultlocalization.base.BaseActivity
 import com.minerdev.faultlocalization.databinding.ActivityMainBinding
+import com.minerdev.faultlocalization.service.NotificationService
 import com.minerdev.faultlocalization.utils.Constants.FINISH_INTERVAL_TIME
 import com.minerdev.faultlocalization.view.fragment.EquipmentFragment
 import com.minerdev.faultlocalization.view.fragment.MessageFragment
@@ -36,6 +38,13 @@ class MainActivity : BaseActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
         supportActionBar?.title = adapter.getPageTitle(0)
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            startForegroundService(Intent(applicationContext, NotificationService::class.java))
+
+        } else {
+            startService(Intent(applicationContext, NotificationService::class.java))
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
