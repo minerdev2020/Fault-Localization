@@ -58,15 +58,15 @@ class EquipmentFragment : BasePageFragment() {
             s.connect()
             s.on(Socket.EVENT_CONNECT) {
                 Log.d(Constants.TAG, "Connected!")
-                s.on("create") {
-                    viewModel.loadItems(keyword, group1, group2)
-                }
-                s.on("update") {
-                    viewModel.loadItems(keyword, group1, group2)
-                }
-                s.on("delete") {
-                    viewModel.loadItems(keyword, group1, group2)
-                }
+            }
+            s.on("create") {
+                viewModel.loadItems(keyword, group1, group2)
+            }
+            s.on("update") {
+                viewModel.loadItems(keyword, group1, group2)
+            }
+            s.on("delete") {
+                viewModel.loadItems(keyword, group1, group2)
             }
         }
 
