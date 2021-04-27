@@ -7,8 +7,7 @@ import com.minerdev.faultlocalization.model.Equipment
 import com.minerdev.faultlocalization.view.fragment.EquipmentInfoFragment
 import com.minerdev.faultlocalization.view.fragment.SensorDataPageFragment
 
-class SensorDataPageAdapter(fa: FragmentActivity) :
-    FragmentStateAdapter(fa) {
+class SensorDataPageAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
     var equipment = Equipment()
 
     override fun getItemCount(): Int {

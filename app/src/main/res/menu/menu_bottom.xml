@@ -9,7 +9,7 @@
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/tab_equip"
+        android:id="@+id/tab_equipment"
         android:enabled="true"
         android:icon="@drawable/ic_round_miscellaneous_services_24"
         android:title="设备"

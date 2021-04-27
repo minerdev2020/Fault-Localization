@@ -94,7 +94,7 @@ class MainActivity : BaseActivity() {
         binding.bottomNav.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.tab_person -> binding.viewPager.currentItem = 0
-                R.id.tab_equip -> binding.viewPager.currentItem = 1
+                R.id.tab_equipment -> binding.viewPager.currentItem = 1
                 R.id.tab_message -> binding.viewPager.currentItem = 2
                 R.id.tab_settings -> binding.viewPager.currentItem = 3
                 else -> {
