@@ -7,7 +7,7 @@ import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityCompat
-import androidx.viewpager.widget.ViewPager.OnPageChangeListener
+import androidx.viewpager2.widget.ViewPager2
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.SectionPageAdapter
 import com.minerdev.faultlocalization.base.BaseActivity
@@ -21,7 +21,7 @@ import com.minerdev.faultlocalization.view.fragment.SettingsFragment
 class MainActivity : BaseActivity() {
     private var backPressedTime: Long = 0
 
-    private val adapter = SectionPageAdapter(supportFragmentManager)
+    private val adapter = SectionPageAdapter(this)
     private val binding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,22 +70,16 @@ class MainActivity : BaseActivity() {
     }
 
     private fun setupViewPager() {
-        binding.viewPager.addOnPageChangeListener(object : OnPageChangeListener {
-            override fun onPageScrolled(
-                position: Int,
-                positionOffset: Float,
-                positionOffsetPixels: Int
-            ) {
-            }
-
+        binding.viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
+                super.onPageSelected(position)
+
                 binding.bottomNav.menu.getItem(position).isChecked = true
                 supportActionBar?.title = adapter.getPageTitle(position)
+                adapter.getItem(position).initializePage()
                 binding.searchView.onActionViewCollapsed()
                 invalidateOptionsMenu()
             }
-
-            override fun onPageScrollStateChanged(state: Int) {}
         })
 
         adapter.addFragment(PersonFragment(), "人员")

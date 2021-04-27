@@ -5,12 +5,12 @@ import android.view.*
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.SearchView
-import androidx.fragment.app.Fragment
 import com.minerdev.faultlocalization.R
+import com.minerdev.faultlocalization.base.BasePageFragment
 import com.minerdev.faultlocalization.databinding.FragmentSettingsBinding
 import com.minerdev.faultlocalization.utils.AppHelper
 
-class SettingsFragment : Fragment() {
+class SettingsFragment : BasePageFragment() {
     private val listMenu = listOf("修改个人信息", "退出账号")
     private val binding by lazy { FragmentSettingsBinding.inflate(layoutInflater) }
 
@@ -18,6 +18,12 @@ class SettingsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         val arrayAdapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, listMenu)
         binding.listView.adapter = arrayAdapter
@@ -30,8 +36,6 @@ class SettingsFragment : Fragment() {
                 }
             }
         }
-
-        return binding.root
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

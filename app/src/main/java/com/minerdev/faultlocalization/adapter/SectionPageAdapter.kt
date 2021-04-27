@@ -1,28 +1,33 @@
 package com.minerdev.faultlocalization.adapter
 
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.fragment.app.FragmentActivity
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import com.minerdev.faultlocalization.base.BasePageFragment
 import java.util.*
 
-class SectionPageAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm) {
-    private val fragmentList = ArrayList<Fragment>()
+class SectionPageAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
+    private val fragmentList = ArrayList<BasePageFragment>()
     private val fragmentTitleList = ArrayList<String>()
 
-    fun addFragment(fragment: Fragment, title: String) {
+    fun addFragment(fragment: BasePageFragment, title: String) {
         fragmentList.add(fragment)
         fragmentTitleList.add(title)
     }
 
-    override fun getPageTitle(position: Int): CharSequence {
+    fun getPageTitle(position: Int): CharSequence {
         return fragmentTitleList[position]
     }
 
-    override fun getItem(position: Int): Fragment {
+    fun getItem(position: Int): BasePageFragment {
         return fragmentList[position]
     }
 
-    override fun getCount(): Int {
+    override fun getItemCount(): Int {
         return fragmentList.size
+    }
+
+    override fun createFragment(position: Int): Fragment {
+        return fragmentList[position]
     }
 }
