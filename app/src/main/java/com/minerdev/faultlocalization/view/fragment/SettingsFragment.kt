@@ -1,17 +1,20 @@
 package com.minerdev.faultlocalization.view.fragment
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.*
 import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.SearchView
+import androidx.core.app.ActivityCompat
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.base.BasePageFragment
 import com.minerdev.faultlocalization.databinding.FragmentSettingsBinding
+import com.minerdev.faultlocalization.service.NotificationService
 import com.minerdev.faultlocalization.utils.AppHelper
 
 class SettingsFragment : BasePageFragment() {
-    private val listMenu = listOf("修改个人信息", "退出账号")
+    private val listMenu = listOf("修改个人信息", "退出账号", "退出程序")
     private val binding by lazy { FragmentSettingsBinding.inflate(layoutInflater) }
 
     override fun onCreateView(
@@ -31,7 +34,22 @@ class SettingsFragment : BasePageFragment() {
             when (i) {
                 0 -> {
                 }
-                1 -> logout()
+                1 -> {
+                    AppHelper.logout(
+                        { requireActivity().finish() },
+                        { requireActivity().finish() })
+                }
+                2 -> {
+                    requireActivity().stopService(
+                        Intent(
+                            requireActivity().applicationContext,
+                            NotificationService::class.java
+                        )
+                    )
+                    AppHelper.logout(
+                        { ActivityCompat.finishAffinity(requireActivity()) },
+                        { ActivityCompat.finishAffinity(requireActivity()) })
+                }
                 else -> {
                 }
             }
