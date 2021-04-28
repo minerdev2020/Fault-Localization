@@ -30,8 +30,8 @@ class SettingsFragment : BasePageFragment() {
         val arrayAdapter =
             ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, listMenu)
         binding.listView.adapter = arrayAdapter
-        binding.listView.onItemClickListener = OnItemClickListener { _, _, i, _ ->
-            when (i) {
+        binding.listView.onItemClickListener = OnItemClickListener { _, _, position, _ ->
+            when (position) {
                 0 -> {
                 }
                 1 -> {
@@ -72,9 +72,5 @@ class SettingsFragment : BasePageFragment() {
         item = menu.findItem(R.id.toolbar_menu_list)
         item.isVisible = false
         super.onCreateOptionsMenu(menu, inflater)
-    }
-
-    private fun logout() {
-        AppHelper.logout({ requireActivity().finish() }, { requireActivity().finish() })
     }
 }

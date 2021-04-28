@@ -13,21 +13,46 @@ import io.socket.client.IO
 import io.socket.client.Socket
 import java.net.URISyntaxException
 
+
 class NotificationService : Service() {
     private val manager: NotificationManager by lazy { getSystemService(NOTIFICATION_SERVICE) as NotificationManager }
     private var socket: Socket? = null
 
     override fun onCreate() {
-        setWarningNotification()
         super.onCreate()
+        setForegroundService()
+
+        val builder = getWarningNotificationBuilder()
+
+        try {
+            socket = IO.socket(Constants.BASE_URL)
+
+        } catch (e: URISyntaxException) {
+            Log.e(Constants.TAG, e.reason)
+        }
+
+        socket?.let { s ->
+            s.connect()
+            s.on(Socket.EVENT_CONNECT) {
+                Log.d(Constants.TAG, "Connected!")
+            }
+            s.on("warning") {
+                Log.d(Constants.TAG, "Warning!")
+                manager.notify((System.currentTimeMillis() / 1000).toInt(), builder.build())
+            }
+        }
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        setForegroundService()
-        return super.onStartCommand(intent, flags, startId) // START_STICKY 또는 START_STICKY_COMPATIBILITY 과 같다
+        socket?.emit("register", Constants.USER_ID)
+        return super.onStartCommand(
+            intent,
+            flags,
+            startId
+        ) // START_STICKY 또는 START_STICKY_COMPATIBILITY 과 같다
     }
 
-    override fun onBind(p0: Intent?): IBinder? {
+    override fun onBind(intent: Intent?): IBinder? {
         return null
     }
 
@@ -36,7 +61,7 @@ class NotificationService : Service() {
         socket?.disconnect()
     }
 
-    private fun setWarningNotification() {
+    private fun getWarningNotificationBuilder(): NotificationCompat.Builder {
         val channelId = "channel1"
         val channelName = "警告"
 
@@ -77,28 +102,12 @@ class NotificationService : Service() {
             setContentIntent(pendingIntent) //알림을 눌렀을때 실행할 인텐트 설정.
         }
 
-        try {
-            socket = IO.socket(Constants.BASE_URL)
-
-        } catch (e: URISyntaxException) {
-            Log.e(Constants.TAG, e.reason)
-        }
-
-        socket?.let { s ->
-            s.connect()
-            s.on(Socket.EVENT_CONNECT) {
-                Log.d(Constants.TAG, "Connected!")
-            }
-            s.on("warning") {
-                Log.d(Constants.TAG, "Warning!")
-                manager.notify((System.currentTimeMillis() / 1000).toInt(), builder.build())
-            }
-        }
+        return builder
     }
 
     private fun setForegroundService() {
         val channelId = "mainChannel"
-        val channelName = "故障预警服务"
+        val channelName = "故障警报服务"
 
         val builder: NotificationCompat.Builder
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -130,7 +139,7 @@ class NotificationService : Service() {
 
         builder.run {
             setSmallIcon(R.drawable.ic_round_settings_24)
-            setContentTitle("故障预警服务")
+            setContentTitle("故障警报服务")
             setContentIntent(pendingIntent) //알림을 눌렀을때 실행할 인텐트 설정.
             setShowWhen(false) // 알림 수신 시간 표시 여부
         }

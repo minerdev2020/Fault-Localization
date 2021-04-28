@@ -10,13 +10,7 @@ import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.databinding.ActivitySplashBinding
-import com.minerdev.faultlocalization.utils.Constants.APPLICATION
-import com.minerdev.faultlocalization.utils.Constants.BASE_URL
-import com.minerdev.faultlocalization.utils.Constants.ID
-import com.minerdev.faultlocalization.utils.Constants.TAG
-import com.minerdev.faultlocalization.utils.Constants.TOKEN
-import com.minerdev.faultlocalization.utils.Constants.TYPE_ID
-import com.minerdev.faultlocalization.utils.Constants.USER_ID
+import com.minerdev.faultlocalization.utils.Constants
 
 class SplashActivity : AppCompatActivity() {
     private val binding by lazy { ActivitySplashBinding.inflate(layoutInflater) }
@@ -25,8 +19,8 @@ class SplashActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        APPLICATION = application
-        BASE_URL = getString(R.string.local_server_dns)
+        Constants.APPLICATION = application
+        Constants.BASE_URL = getString(R.string.local_server_dns)
 
         setupButtons()
 
@@ -53,14 +47,14 @@ class SplashActivity : AppCompatActivity() {
             val typeId = sharedPreferences.getString("type_id", "") ?: ""
             val token = sharedPreferences.getString("token", "") ?: ""
 
-            ID = id
-            USER_ID = userId
-            TYPE_ID = typeId
-            TOKEN = token
+            Constants.ID = id
+            Constants.USER_ID = userId
+            Constants.TYPE_ID = typeId
+            Constants.TOKEN = token
 
-            Log.d(TAG, "login : $userId")
-            Log.d(TAG, "login : $typeId")
-            Log.d(TAG, "login : $token")
+            Log.d(Constants.TAG, "login : $userId")
+            Log.d(Constants.TAG, "login : $typeId")
+            Log.d(Constants.TAG, "login : $token")
 
             Handler().postDelayed({
                 val intent = Intent(this, MainActivity::class.java)

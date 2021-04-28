@@ -61,12 +61,17 @@ class EquipmentModifyActivity : BaseActivity() {
         setupButtons()
 
         binding.spinnerType.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
-                equipment.type_id = p2 + 1
-                Log.d(Constants.TAG, "equipment type : ${p2 + 1}")
+            override fun onItemSelected(
+                parent: AdapterView<*>?,
+                view: View?,
+                position: Int,
+                id: Long
+            ) {
+                equipment.type_id = position + 1
+                Log.d(Constants.TAG, "equipment type : ${position + 1}")
             }
 
-            override fun onNothingSelected(p0: AdapterView<*>?) {
+            override fun onNothingSelected(parent: AdapterView<*>?) {
                 equipment.type_id = 1
             }
         }
