@@ -132,6 +132,7 @@ class NotificationService : Service() {
             setSmallIcon(R.drawable.ic_round_settings_24)
             setContentTitle("故障预警服务")
             setContentIntent(pendingIntent) //알림을 눌렀을때 실행할 인텐트 설정.
+            setShowWhen(false) // 알림 수신 시간 표시 여부
         }
 
         startForeground(1, builder.build())
