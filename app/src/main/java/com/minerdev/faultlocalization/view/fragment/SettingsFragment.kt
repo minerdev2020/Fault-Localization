@@ -35,6 +35,12 @@ class SettingsFragment : BasePageFragment() {
                 0 -> {
                 }
                 1 -> {
+                    requireActivity().stopService(
+                        Intent(
+                            requireActivity().applicationContext,
+                            NotificationService::class.java
+                        )
+                    )
                     AppHelper.logout(
                         { requireActivity().finish() },
                         { requireActivity().finish() })
