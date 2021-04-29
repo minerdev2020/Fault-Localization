@@ -10,6 +10,7 @@ object Constants {
 
     lateinit var BASE_URL: String
     const val API_AUTH = "/api/auth/"
+    const val API_ALERT = "/api/alerts/"
     const val API_PERSON = "/api/persons/"
     const val API_EQUIPMENT = "/api/equipments/"
     const val API_SENSOR = "/api/sensors/"

@@ -9,19 +9,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.MutableLiveData
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.base.BaseDialogFragment
-import com.minerdev.faultlocalization.databinding.FragmentSendMessageDialogBinding
+import com.minerdev.faultlocalization.databinding.FragmentAlertModifyDialogBinding
 
-class SendMessageDialogFragment(private val state: String) : BaseDialogFragment() {
-    val estimatedTime: Float
-        get() = binding.etEstimatedTime.text.toString().toFloat()
-
-    val contents: String
-        get() = binding.textInputEtContents.text.toString()
-
+class AlertModifyDialogFragment(private val state: String) : BaseDialogFragment() {
     val spinnerItemPosition: Int
         get() = binding.spnType.selectedItemPosition
 
-    val types = MutableLiveData<ArrayList<String>>()
+    val states = MutableLiveData<ArrayList<String>>()
 
     private val adapter by lazy {
         ArrayAdapter<String>(
@@ -32,7 +26,7 @@ class SendMessageDialogFragment(private val state: String) : BaseDialogFragment(
 
     var listener: View.OnClickListener? = null
 
-    private val binding by lazy { FragmentSendMessageDialogBinding.inflate(layoutInflater) }
+    private val binding by lazy { FragmentAlertModifyDialogBinding.inflate(layoutInflater) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -53,7 +47,7 @@ class SendMessageDialogFragment(private val state: String) : BaseDialogFragment(
 
         binding.spnType.adapter = adapter
 
-        types.observe(viewLifecycleOwner, {
+        states.observe(viewLifecycleOwner, {
             adapter.clear()
             adapter.addAll(it)
         })
@@ -72,28 +66,10 @@ class SendMessageDialogFragment(private val state: String) : BaseDialogFragment(
             }
             val alertDialog = builder.create()
 
-            val type = binding.spnType.selectedItem
+            val newState = binding.spnType.selectedItem
             when (state) {
-                "运行中" -> {
-                    if (type != "启动申请") {
-                        listener?.onClick(it)
-                        dismiss()
-
-                    } else {
-                        alertDialog.show()
-                    }
-                }
-                "维修中" -> {
-                    if (type != "维修申请") {
-                        listener?.onClick(it)
-                        dismiss()
-
-                    } else {
-                        alertDialog.show()
-                    }
-                }
-                "停用中" -> {
-                    if (type != "停用申请") {
+                "进行中" -> {
+                    if (newState != "已完成") {
                         listener?.onClick(it)
                         dismiss()
 
