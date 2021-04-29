@@ -8,6 +8,8 @@ interface Item {
     var updatedAt: String
     var type_id: Int
     var state_id: Int
+    var state: ItemState
+    var type: ItemType
 
     fun toJson(): JsonObject
 }

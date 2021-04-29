@@ -11,16 +11,16 @@ data class Message(
     override var updatedAt: String = "",
     override var type_id: Int = 0,
     override var state_id: Int = 0,
+    override var state: ItemState = ItemState(),
+    override var type: ItemType = ItemType(),
     var estimated_time: Float = 0f,
     var contents: String = "",
     var equipment_id: Int = 0,
     var from_id: Int = 0,
     var reply_id: Int? = null,
-    var state: ItemState = ItemState(),
-    var type: ItemType = ItemType(),
-    var from: PersonName = PersonName(),
-    var replyer: PersonName? = null,
-    var equipment_info: EquipmentName = EquipmentName()
+    var from: PersonInfo = PersonInfo(),
+    var replyer: PersonInfo? = null,
+    var equipment_info: EquipmentInfo = EquipmentInfo()
 ) : Item {
     override fun toJson() = buildJsonObject {
         put("id", id)

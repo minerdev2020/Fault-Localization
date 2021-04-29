@@ -13,11 +13,11 @@ data class Sensor(
     override var updatedAt: String = "",
     override var type_id: Int = 0,
     override var state_id: Int = 0,
+    override var state: ItemState = ItemState(),
+    override var type: ItemType = ItemType(),
     var name: String = "",
     var model_number: String = "",
     var parent_id: Int = 0,
-    var state: ItemState = ItemState(),
-    var type: ItemType = ItemType(),
     @Transient var editState: Int = UPDATE
 ) : Item {
     override fun toJson() = buildJsonObject {

@@ -11,11 +11,11 @@ data class Person(
     override var updatedAt: String = "",
     override var type_id: Int = 0,
     override var state_id: Int = 0,
+    override var state: ItemState = ItemState(),
+    override var type: ItemType = ItemType(),
     var name: String = "",
     var phone: String = "",
     var user_info: User = User(),
-    var state: ItemState = ItemState(),
-    var type: ItemType = ItemType()
 ) : Item {
     override fun toJson() = buildJsonObject {
         put("id", id)
