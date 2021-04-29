@@ -55,7 +55,16 @@ class SplashActivity : AppCompatActivity() {
             Log.d(Constants.TAG, "login : $typeId")
             Log.d(Constants.TAG, "login : $token")
 
-            startActivity(Intent(this, MainActivity::class.java))
+            val intent = Intent(this, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
+
+            val data = getIntent().getStringExtra("data")
+            if (data != null) {
+                intent.putExtra("data", data)
+            }
+
+            startActivity(intent)
             finish()
 
         } else {

@@ -45,12 +45,13 @@ class MainActivity : BaseActivity() {
             startService(Intent(applicationContext, NotificationService::class.java))
         }
 
-        val intent = intent
         val data = intent.getStringExtra("data")
         if (data != null) {
-            val newIntent = Intent(this, AlertActivity::class.java)
-            newIntent.putExtra("data", data)
-            startActivity(newIntent)
+            val intent = Intent(this, AlertActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                putExtra("data", data)
+            }
+            startActivity(intent)
         }
     }
 

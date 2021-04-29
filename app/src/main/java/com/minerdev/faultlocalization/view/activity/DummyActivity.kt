@@ -21,10 +21,16 @@ class DummyActivity : AppCompatActivity() {
         val data = intent.getStringExtra("data")
 
         val newIntent = if (appStatus == AppLifecycle.AppStatus.DESTROYED) {
-            Intent(this, MainActivity::class.java)
+            Intent(this, SplashActivity::class.java).apply {
+                action = Intent.ACTION_MAIN
+                addCategory(Intent.CATEGORY_LAUNCHER)
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            }
 
         } else {
-            Intent(this, AlertActivity::class.java)
+            Intent(this, AlertActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            }
         }
 
         newIntent.putExtra("data", data)

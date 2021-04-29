@@ -17,8 +17,7 @@ class Dummy2Activity : AppCompatActivity() {
         val appStatus = (application as BaseApplication).appLifecycle.appStatus
         Log.d(Constants.TAG, appStatus.name)
 
-        if (appStatus == AppLifecycle.AppStatus.BACKGROUND || appStatus == AppLifecycle.AppStatus.DESTROYED) {
-            // 중복 실행 방지
+        if (appStatus == AppLifecycle.AppStatus.DESTROYED) {
             val intent = Intent(this, SplashActivity::class.java).apply {
                 action = Intent.ACTION_MAIN
                 addCategory(Intent.CATEGORY_LAUNCHER)
