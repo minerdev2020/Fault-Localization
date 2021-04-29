@@ -17,6 +17,26 @@
         <TextView
             android:layout_width="@dimen/dialog_text_width"
             android:layout_height="wrap_content"
+            android:text="申请编号："
+            android:textSize="20sp" />
+
+        <TextView
+            android:id="@+id/tv_id"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textSize="20sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="@dimen/dialog_text_width"
+            android:layout_height="wrap_content"
             android:text="申请状态："
             android:textSize="20sp" />
 
@@ -37,11 +57,11 @@
         <TextView
             android:layout_width="@dimen/dialog_text_width"
             android:layout_height="wrap_content"
-            android:text="申请人："
+            android:text="申请类型："
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/tv_from"
+            android:id="@+id/tv_type"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -57,11 +77,11 @@
         <TextView
             android:layout_width="@dimen/dialog_text_width"
             android:layout_height="wrap_content"
-            android:text="申请类型："
+            android:text="申请人："
             android:textSize="20sp" />
 
         <TextView
-            android:id="@+id/tv_type"
+            android:id="@+id/tv_from"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"

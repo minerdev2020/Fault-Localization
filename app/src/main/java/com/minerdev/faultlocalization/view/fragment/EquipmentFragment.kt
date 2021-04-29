@@ -239,7 +239,7 @@ class EquipmentFragment : Fragment() {
             startActivity(intent)
 
         } else if (TYPE_ID == "2") {
-            val dialog = SendMessageDialogFragment(adapter[position].state.name)
+            val dialog = MessageSendDialogFragment(adapter[position].state.name)
             viewModel.loadMessageStatesAndTypes()
             viewModel.messageTypes.observe(viewLifecycleOwner, {
                 val names = ArrayList<String>().apply { add("选择") }
@@ -258,7 +258,7 @@ class EquipmentFragment : Fragment() {
 
             dialog.show(
                 requireActivity().supportFragmentManager,
-                "SendMessageDialogFragment"
+                "MessageSendDialogFragment"
             )
         }
     }

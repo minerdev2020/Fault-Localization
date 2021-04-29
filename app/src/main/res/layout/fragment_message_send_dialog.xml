@@ -7,7 +7,7 @@
     android:background="@drawable/layout_background_round"
     android:orientation="vertical"
     android:padding="5dp"
-    tools:context=".view.fragment.SendMessageDialogFragment">
+    tools:context=".view.fragment.MessageSendDialogFragment">
 
     <TextView
         android:layout_width="match_parent"

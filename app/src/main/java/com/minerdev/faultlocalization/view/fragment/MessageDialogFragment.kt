@@ -25,6 +25,7 @@ class MessageDialogFragment(private val message: Message) : BaseDialogFragment()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        binding.tvId.text = message.id.toString()
         binding.tvState.text = message.state.name
         binding.tvFrom.text = message.from.name
         binding.tvType.text = message.type.name
