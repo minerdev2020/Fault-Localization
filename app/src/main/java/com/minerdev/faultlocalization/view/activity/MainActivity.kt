@@ -50,13 +50,7 @@ class MainActivity : BaseActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val menuInflater = menuInflater
         menuInflater.inflate(R.menu.menu_main_toolbar, menu)
-        adapter.getItem(binding.viewPager.currentItem).onCreateOptionsMenu(menu, menuInflater)
         return super.onCreateOptionsMenu(menu)
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        adapter.getItem(binding.viewPager.currentItem).onOptionsItemSelected(item)
-        return super.onOptionsItemSelected(item)
     }
 
     override fun onBackPressed() {
@@ -85,7 +79,6 @@ class MainActivity : BaseActivity() {
 
                 binding.bottomNav.menu.getItem(position).isChecked = true
                 supportActionBar?.title = adapter.getPageTitle(position)
-                adapter.getItem(position).initializePage()
                 binding.searchView.onActionViewCollapsed()
                 invalidateOptionsMenu()
             }
@@ -97,7 +90,6 @@ class MainActivity : BaseActivity() {
         adapter.addFragment(SettingsFragment(), "设置")
 
         binding.viewPager.adapter = adapter
-        binding.viewPager.offscreenPageLimit = 3
     }
 
     private fun setupBottomNavigationView() {

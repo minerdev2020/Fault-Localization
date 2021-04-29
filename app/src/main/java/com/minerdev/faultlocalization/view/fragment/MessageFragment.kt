@@ -7,11 +7,11 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.MessageListAdapter
-import com.minerdev.faultlocalization.base.BasePageFragment
 import com.minerdev.faultlocalization.databinding.FragmentMessageBinding
 import com.minerdev.faultlocalization.utils.Constants
 import com.minerdev.faultlocalization.utils.Constants.TYPE_ID
@@ -22,7 +22,7 @@ import io.socket.client.Socket
 import java.net.URISyntaxException
 import java.util.*
 
-class MessageFragment : BasePageFragment() {
+class MessageFragment : Fragment() {
     private val binding by lazy { FragmentMessageBinding.inflate(layoutInflater) }
     private val adapter by lazy { MessageListAdapter(MessageListAdapter.DiffCallback()) }
     private val viewModel: MessageViewModel by viewModels { MessageViewModelFactory() }
@@ -60,6 +60,8 @@ class MessageFragment : BasePageFragment() {
                 viewModel.loadItems(keyword, group1, group2)
             }
         }
+
+        setHasOptionsMenu(true)
 
         return binding.root
     }
@@ -115,17 +117,23 @@ class MessageFragment : BasePageFragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        Log.d(Constants.TAG, "onResume")
+        viewModel.loadItems(keyword, group1, group2)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(Constants.TAG, "onPause")
+        if (keyword.isEmpty() || group1 == 0 || group2 == 0) {
+            viewModel.loadItems(keyword, group1, group2)
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         socket?.disconnect()
-    }
-
-    override fun initializePage() {
-        keyword = ""
-        group1 = 0
-        group2 = 0
-
-        viewModel.loadItems(keyword, group1, group2)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

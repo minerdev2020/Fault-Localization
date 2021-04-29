@@ -7,13 +7,14 @@ import android.widget.AdapterView.OnItemClickListener
 import android.widget.ArrayAdapter
 import android.widget.SearchView
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 import com.minerdev.faultlocalization.R
-import com.minerdev.faultlocalization.base.BasePageFragment
 import com.minerdev.faultlocalization.databinding.FragmentSettingsBinding
 import com.minerdev.faultlocalization.service.NotificationService
 import com.minerdev.faultlocalization.utils.AppHelper
+import com.minerdev.faultlocalization.view.activity.SplashActivity
 
-class SettingsFragment : BasePageFragment() {
+class SettingsFragment : Fragment() {
     private val listMenu = listOf("修改个人信息", "退出账号", "退出程序")
     private val binding by lazy { FragmentSettingsBinding.inflate(layoutInflater) }
 
@@ -21,6 +22,7 @@ class SettingsFragment : BasePageFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        setHasOptionsMenu(true)
         return binding.root
     }
 
@@ -42,8 +44,16 @@ class SettingsFragment : BasePageFragment() {
                         )
                     )
                     AppHelper.logout(
-                        { requireActivity().finish() },
-                        { requireActivity().finish() })
+                        {
+                            val intent = Intent(context, SplashActivity::class.java)
+                            startActivity(intent)
+                            requireActivity().finish()
+                        },
+                        {
+                            val intent = Intent(context, SplashActivity::class.java)
+                            startActivity(intent)
+                            requireActivity().finish()
+                        })
                 }
                 2 -> {
                     requireActivity().stopService(

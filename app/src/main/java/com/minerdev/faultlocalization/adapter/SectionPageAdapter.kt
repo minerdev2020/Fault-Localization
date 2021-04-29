@@ -3,23 +3,24 @@ package com.minerdev.faultlocalization.adapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
-import com.minerdev.faultlocalization.base.BasePageFragment
 import java.util.*
 
-class SectionPageAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
-    private val fragmentList = ArrayList<BasePageFragment>()
+class SectionPageAdapter(fragmentActivity: FragmentActivity) :
+    FragmentStateAdapter(fragmentActivity) {
+    private val fragmentList = ArrayList<Fragment>()
     private val fragmentTitleList = ArrayList<String>()
 
-    fun addFragment(fragment: BasePageFragment, title: String) {
+    fun addFragment(fragment: Fragment, title: String) {
         fragmentList.add(fragment)
         fragmentTitleList.add(title)
+        notifyItemInserted(fragmentList.size - 1)
     }
 
     fun getPageTitle(position: Int): CharSequence {
         return fragmentTitleList[position]
     }
 
-    fun getItem(position: Int): BasePageFragment {
+    fun getItem(position: Int): Fragment {
         return fragmentList[position]
     }
 

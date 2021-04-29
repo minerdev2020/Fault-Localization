@@ -8,11 +8,11 @@ import android.view.*
 import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
 import androidx.appcompat.app.AlertDialog
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.EquipmentListAdapter
-import com.minerdev.faultlocalization.base.BasePageFragment
 import com.minerdev.faultlocalization.databinding.FragmentEquipmentBinding
 import com.minerdev.faultlocalization.utils.Constants
 import com.minerdev.faultlocalization.utils.Constants.TYPE_ID
@@ -26,7 +26,7 @@ import io.socket.client.Socket
 import java.net.URISyntaxException
 import java.util.*
 
-class EquipmentFragment : BasePageFragment() {
+class EquipmentFragment : Fragment() {
     private val binding by lazy { FragmentEquipmentBinding.inflate(layoutInflater) }
     private val adapter by lazy {
         EquipmentListAdapter(
@@ -70,6 +70,8 @@ class EquipmentFragment : BasePageFragment() {
             }
         }
 
+        setHasOptionsMenu(true)
+
         return binding.root
     }
 
@@ -88,9 +90,7 @@ class EquipmentFragment : BasePageFragment() {
                 view: View?,
                 position: Int
             ) {
-                val intent = Intent(context, DataHistoryActivity::class.java)
-                intent.putExtra("id", adapter[position].id)
-                startActivity(intent)
+                onDetailButtonClick(position)
             }
 
             override fun onModifyButtonClick(
@@ -98,35 +98,7 @@ class EquipmentFragment : BasePageFragment() {
                 view: View?,
                 position: Int
             ) {
-                if (TYPE_ID == "1") {
-                    val intent = Intent(context, EquipmentModifyActivity::class.java)
-                    intent.putExtra("id", adapter[position].id)
-                    intent.putExtra("mode", "modify")
-                    startActivity(intent)
-
-                } else if (TYPE_ID == "2") {
-                    val dialog = SendMessageDialogFragment(adapter[position].state.name)
-                    viewModel.loadMessageStatesAndTypes()
-                    viewModel.messageTypes.observe(viewLifecycleOwner, {
-                        val names = ArrayList<String>().apply { add("选择") }
-                        for (i in it) {
-                            names.add(i.name)
-                        }
-                        dialog.types.postValue(names)
-                    })
-
-                    dialog.listener = View.OnClickListener {
-                        val estimatedTime = dialog.estimatedTime
-                        val contents = dialog.contents
-                        val typeId = dialog.spinnerItemPosition
-                        viewModel.addMessage(adapter[position].id, typeId, estimatedTime, contents)
-                    }
-
-                    dialog.show(
-                        requireActivity().supportFragmentManager,
-                        "SendMessageDialogFragment"
-                    )
-                }
+                onModifyButtonClick(position)
             }
 
             override fun onItemLongClick(
@@ -134,35 +106,28 @@ class EquipmentFragment : BasePageFragment() {
                 view: View?,
                 position: Int
             ) {
-                if (TYPE_ID == "1") {
-                    val builder = AlertDialog.Builder(requireContext())
-                    builder.setTitle("友情提示")
-                    builder.setMessage("您真的要删除吗？")
-                    builder.setIcon(R.drawable.ic_round_warning_24)
-                    builder.setPositiveButton("确认") { _, _ ->
-                        viewModel.deleteItem(adapter[position].id)
-                    }
-                    builder.setNegativeButton("取消") { _, _ ->
-                        return@setNegativeButton
-                    }
-                    val alertDialog = builder.create()
-                    alertDialog.show()
-                }
+                onItemLongClick(position)
             }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(Constants.TAG, "onResume")
+        viewModel.loadItems(keyword, group1, group2)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(Constants.TAG, "onPause")
+        if (keyword.isEmpty() || group1 == 0 || group2 == 0) {
+            viewModel.loadItems(keyword, group1, group2)
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         socket?.disconnect()
-    }
-
-    override fun initializePage() {
-        keyword = ""
-        group1 = 0
-        group2 = 0
-
-        viewModel.loadItems(keyword, group1, group2)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -258,5 +223,60 @@ class EquipmentFragment : BasePageFragment() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun onDetailButtonClick(position: Int) {
+        val intent = Intent(context, DataHistoryActivity::class.java)
+        intent.putExtra("id", adapter[position].id)
+        startActivity(intent)
+    }
+
+    private fun onModifyButtonClick(position: Int) {
+        if (TYPE_ID == "1") {
+            val intent = Intent(context, EquipmentModifyActivity::class.java)
+            intent.putExtra("id", adapter[position].id)
+            intent.putExtra("mode", "modify")
+            startActivity(intent)
+
+        } else if (TYPE_ID == "2") {
+            val dialog = SendMessageDialogFragment(adapter[position].state.name)
+            viewModel.loadMessageStatesAndTypes()
+            viewModel.messageTypes.observe(viewLifecycleOwner, {
+                val names = ArrayList<String>().apply { add("选择") }
+                for (i in it) {
+                    names.add(i.name)
+                }
+                dialog.types.postValue(names)
+            })
+
+            dialog.listener = View.OnClickListener {
+                val estimatedTime = dialog.estimatedTime
+                val contents = dialog.contents
+                val typeId = dialog.spinnerItemPosition
+                viewModel.addMessage(adapter[position].id, typeId, estimatedTime, contents)
+            }
+
+            dialog.show(
+                requireActivity().supportFragmentManager,
+                "SendMessageDialogFragment"
+            )
+        }
+    }
+
+    private fun onItemLongClick(position: Int) {
+        if (TYPE_ID == "1") {
+            val builder = AlertDialog.Builder(requireContext())
+            builder.setTitle("友情提示")
+            builder.setMessage("您真的要删除吗？")
+            builder.setIcon(R.drawable.ic_round_warning_24)
+            builder.setPositiveButton("确认") { _, _ ->
+                viewModel.deleteItem(adapter[position].id)
+            }
+            builder.setNegativeButton("取消") { _, _ ->
+                return@setNegativeButton
+            }
+            val alertDialog = builder.create()
+            alertDialog.show()
+        }
     }
 }

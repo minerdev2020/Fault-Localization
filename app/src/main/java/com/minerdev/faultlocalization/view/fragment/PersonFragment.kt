@@ -11,11 +11,11 @@ import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.PopupMenu
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.adapter.PersonListAdapter
-import com.minerdev.faultlocalization.base.BasePageFragment
 import com.minerdev.faultlocalization.databinding.FragmentPersonBinding
 import com.minerdev.faultlocalization.utils.Constants
 import com.minerdev.faultlocalization.utils.Constants.TYPE_ID
@@ -28,7 +28,7 @@ import io.socket.client.Socket
 import java.net.URISyntaxException
 import java.util.*
 
-class PersonFragment : BasePageFragment() {
+class PersonFragment : Fragment() {
     private val binding by lazy { FragmentPersonBinding.inflate(layoutInflater) }
     private val adapter by lazy { PersonListAdapter(PersonListAdapter.DiffCallback()) }
     private val viewModel: PersonViewModel by viewModels { PersonViewModelFactory() }
@@ -66,6 +66,8 @@ class PersonFragment : BasePageFragment() {
                 viewModel.loadItems(keyword, group1, group2)
             }
         }
+
+        setHasOptionsMenu(true)
 
         return binding.root
     }
@@ -107,17 +109,23 @@ class PersonFragment : BasePageFragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        Log.d(Constants.TAG, "onResume")
+        viewModel.loadItems(keyword, group1, group2)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.d(Constants.TAG, "onPause")
+        if (keyword.isEmpty() || group1 == 0 || group2 == 0) {
+            viewModel.loadItems(keyword, group1, group2)
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         socket?.disconnect()
-    }
-
-    override fun initializePage() {
-        keyword = ""
-        group1 = 0
-        group2 = 0
-
-        viewModel.loadItems(keyword, group1, group2)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
