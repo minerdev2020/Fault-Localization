@@ -8,7 +8,8 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.utils.Constants
-import com.minerdev.faultlocalization.view.activity.SplashActivity
+import com.minerdev.faultlocalization.view.activity.Dummy2Activity
+import com.minerdev.faultlocalization.view.activity.DummyActivity
 import io.socket.client.IO
 import io.socket.client.Socket
 import java.net.URISyntaxException
@@ -36,7 +37,16 @@ class NotificationService : Service() {
                 Log.d(Constants.TAG, "Connected!")
             }
             s.on("warning") {
-                Log.d(Constants.TAG, "Warning!")
+                Log.d(Constants.TAG, "Warning! " + it[0].toString())
+                val intent = Intent(this, DummyActivity::class.java).apply {
+                    flags =
+                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+                    putExtra("data", it[0].toString())
+                }
+                val pendingIntent =
+                    PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+
+                builder.setContentIntent(pendingIntent) //알림을 눌렀을때 실행할 인텐트 설정.
                 manager.notify((System.currentTimeMillis() / 1000).toInt(), builder.build())
             }
         }
@@ -83,22 +93,12 @@ class NotificationService : Service() {
                 .setPriority(Notification.PRIORITY_HIGH)
         }
 
-        // Create an explicit intent for an Activity in your app
-        val intent = Intent(this, SplashActivity::class.java).apply {
-            action = Intent.ACTION_MAIN
-            addCategory(Intent.CATEGORY_LAUNCHER)
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        }
-        val pendingIntent =
-            PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
-
         builder.run {
             setSmallIcon(R.drawable.ic_round_warning_24)
             setContentTitle("警告")
             setContentText("发生故障")
             setAutoCancel(true) //선택시 자동으로 삭제되도록 설정.
             setDefaults(Notification.DEFAULT_SOUND or Notification.DEFAULT_VIBRATE)
-            setContentIntent(pendingIntent) //알림을 눌렀을때 실행할 인텐트 설정.
         }
 
         return builder
@@ -127,11 +127,9 @@ class NotificationService : Service() {
                 .setPriority(Notification.PRIORITY_LOW)
         }
 
-        // Create an explicit intent for an Activity in your app
-        val intent = Intent(this, SplashActivity::class.java).apply {
-            action = Intent.ACTION_MAIN
-            addCategory(Intent.CATEGORY_LAUNCHER)
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        val intent = Intent(this, Dummy2Activity::class.java).apply {
+            flags =
+                Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
         val pendingIntent =
             PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
@@ -141,6 +139,7 @@ class NotificationService : Service() {
             setContentTitle("故障警报服务")
             setContentIntent(pendingIntent) //알림을 눌렀을때 실행할 인텐트 설정.
             setShowWhen(false) // 알림 수신 시간 표시 여부
+            setDefaults(Notification.DEFAULT_VIBRATE) // 무음 알림 설정
         }
 
         startForeground(1, builder.build())

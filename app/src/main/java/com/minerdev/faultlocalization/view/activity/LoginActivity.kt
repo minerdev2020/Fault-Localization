@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import com.minerdev.faultlocalization.databinding.ActivityLoginBinding
 import com.minerdev.faultlocalization.utils.AppHelper
 import java.util.regex.Pattern
@@ -42,9 +43,9 @@ class LoginActivity : AppCompatActivity() {
             AppHelper.login(
                 userId, userPw,
                 {
-                    val intent = Intent(this@LoginActivity, MainActivity::class.java)
+                    val intent = Intent(this, MainActivity::class.java)
                     startActivity(intent)
-                    finish()
+                    ActivityCompat.finishAffinity(this)
                 },
                 {
                     binding.textInputEtPw.setText("")

@@ -3,7 +3,6 @@ package com.minerdev.faultlocalization.view.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
-import android.view.MenuItem
 import android.widget.SearchView
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
@@ -44,6 +43,14 @@ class MainActivity : BaseActivity() {
 
         } else {
             startService(Intent(applicationContext, NotificationService::class.java))
+        }
+
+        val intent = intent
+        val data = intent.getStringExtra("data")
+        if (data != null) {
+            val newIntent = Intent(this, AlertActivity::class.java)
+            newIntent.putExtra("data", data)
+            startActivity(newIntent)
         }
     }
 

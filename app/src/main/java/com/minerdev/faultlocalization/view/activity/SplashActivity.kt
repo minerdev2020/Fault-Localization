@@ -4,7 +4,6 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -56,10 +55,8 @@ class SplashActivity : AppCompatActivity() {
             Log.d(Constants.TAG, "login : $typeId")
             Log.d(Constants.TAG, "login : $token")
 
-            Handler().postDelayed({
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-            }, 1000)
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
 
         } else {
             binding.btnLogin.visibility = View.VISIBLE
