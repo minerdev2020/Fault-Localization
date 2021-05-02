@@ -5,7 +5,6 @@ import android.view.MenuItem
 import androidx.activity.viewModels
 import com.minerdev.faultlocalization.base.BaseActivity
 import com.minerdev.faultlocalization.databinding.ActivityLoginLogBinding
-import com.minerdev.faultlocalization.utils.Constants.ID
 import com.minerdev.faultlocalization.viewmodel.LoginLogViewModel
 
 class LoginLogActivity : BaseActivity() {
@@ -21,7 +20,8 @@ class LoginLogActivity : BaseActivity() {
         viewModel.logs.observe(this, {
             binding.tvLoginLog.text = it
         })
-        viewModel.loadLoginLogs(ID.toInt())
+
+        viewModel.loadLoginLogs(intent.getIntExtra("id", 0))
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {

@@ -3,6 +3,8 @@ package com.minerdev.faultlocalization.base
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import com.minerdev.faultlocalization.service.NotificationService
 import com.minerdev.faultlocalization.utils.AppHelper
 import com.minerdev.faultlocalization.utils.Constants.TOKEN_VALID
 import com.minerdev.faultlocalization.view.activity.SplashActivity
@@ -19,11 +21,16 @@ open class BaseActivity : AppCompatActivity() {
         if (!isValid) {
             val onInvalidToken = {
                 val intent = Intent(this, SplashActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 this.startActivity(intent)
+                ActivityCompat.finishAffinity(this)
             }
 
+            stopService(
+                Intent(
+                    applicationContext,
+                    NotificationService::class.java
+                )
+            )
             AppHelper.logout(onInvalidToken, onInvalidToken)
         }
     }

@@ -25,6 +25,7 @@ class SplashActivity : AppCompatActivity() {
 
         binding.btnLogin.visibility = View.GONE
         binding.btnRegister.visibility = View.GONE
+        Constants.TOKEN_VALID.value = true
     }
 
     override fun onResume() {
@@ -55,10 +56,7 @@ class SplashActivity : AppCompatActivity() {
             Log.d(Constants.TAG, "login : $typeId")
             Log.d(Constants.TAG, "login : $token")
 
-            val intent = Intent(this, MainActivity::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            }
-
+            val intent = Intent(this, MainActivity::class.java)
             val data = getIntent().getStringExtra("data")
             if (data != null) {
                 intent.putExtra("data", data)
