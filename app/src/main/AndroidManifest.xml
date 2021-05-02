@@ -21,7 +21,9 @@
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".view.activity.AlertActivity" />
+        <activity
+            android:name=".view.activity.AlertActivity"
+            android:theme="@style/Theme.MaterialComponents.DayNight.Dialog" />
         <activity android:name=".view.activity.ServiceDummyActivity" />
         <activity android:name=".view.activity.AlertDummyActivity" />
         <activity
