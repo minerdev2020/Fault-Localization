@@ -32,8 +32,4 @@
         <!-- Customize your theme here. -->
         <item name="actionBarTheme">@style/MyActionBarTheme</item>
     </style>
-
-    <style name="Theme.FaultLocalization.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-    <style name="Theme.FaultLocalization.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

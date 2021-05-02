@@ -8,8 +8,8 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.utils.Constants
-import com.minerdev.faultlocalization.view.activity.Dummy2Activity
-import com.minerdev.faultlocalization.view.activity.DummyActivity
+import com.minerdev.faultlocalization.view.activity.AlertDummyActivity
+import com.minerdev.faultlocalization.view.activity.ServiceDummyActivity
 import io.socket.client.IO
 import io.socket.client.Socket
 import java.net.URISyntaxException
@@ -38,7 +38,7 @@ class NotificationService : Service() {
             }
             s.on("warning") {
                 Log.d(Constants.TAG, "Warning! " + it[0].toString())
-                val intent = Intent(this, DummyActivity::class.java).apply {
+                val intent = Intent(this, AlertDummyActivity::class.java).apply {
                     flags =
                         Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
                     putExtra("data", it[0].toString())
@@ -127,7 +127,7 @@ class NotificationService : Service() {
                 .setPriority(Notification.PRIORITY_LOW)
         }
 
-        val intent = Intent(this, Dummy2Activity::class.java).apply {
+        val intent = Intent(this, ServiceDummyActivity::class.java).apply {
             flags =
                 Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
         }
