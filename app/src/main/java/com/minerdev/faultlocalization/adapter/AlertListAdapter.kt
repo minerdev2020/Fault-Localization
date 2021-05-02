@@ -52,7 +52,8 @@ class AlertListAdapter(diffCallback: DiffCallback) :
         }
 
         fun bind(alert: Alert) {
-            binding.tvId.text = alert.id.toString()
+            val issueId = "#" + alert.id
+            binding.tvId.text = issueId
             binding.tvState.text = alert.state.name
             binding.tvType.text = alert.type.name
             binding.tvTarget.text = alert.breakdown_info.name
