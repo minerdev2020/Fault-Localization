@@ -27,7 +27,7 @@ class AlertActivity : Activity() {
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         val data = intent.getStringExtra("data") ?: ""
-        if (data.isEmpty()) {
+        if (data.isNotEmpty()) {
             val alert = Json.decodeFromString<Alert>(data)
             binding.tvId.text = alert.id.toString()
             binding.tvCreatedAt.text = Time.getShortDate(alert.createdAt)
