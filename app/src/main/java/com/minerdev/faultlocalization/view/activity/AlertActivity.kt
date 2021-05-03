@@ -9,6 +9,7 @@ import android.util.Log
 import com.minerdev.faultlocalization.databinding.ActivityAlertBinding
 import com.minerdev.faultlocalization.model.Alert
 import com.minerdev.faultlocalization.utils.Constants
+import com.minerdev.faultlocalization.utils.Time
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 
@@ -29,6 +30,8 @@ class AlertActivity : Activity() {
         if (data.isEmpty()) {
             val alert = Json.decodeFromString<Alert>(data)
             binding.tvId.text = alert.id.toString()
+            binding.tvCreatedAt.text = Time.getShortDate(alert.createdAt)
+            binding.tvUpdatedAt.text = Time.getShortDate(alert.updatedAt)
             binding.tvState.text = alert.state.name
             binding.tvType.text = alert.type.name
             binding.tvTarget.text = alert.breakdown_info.name

@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import com.minerdev.faultlocalization.base.BaseDialogFragment
 import com.minerdev.faultlocalization.databinding.FragmentMessageDialogBinding
 import com.minerdev.faultlocalization.model.Message
+import com.minerdev.faultlocalization.utils.Time
 
 class MessageDialogFragment(private val message: Message) : BaseDialogFragment() {
     private val binding by lazy { FragmentMessageDialogBinding.inflate(layoutInflater) }
@@ -26,6 +27,8 @@ class MessageDialogFragment(private val message: Message) : BaseDialogFragment()
         super.onViewCreated(view, savedInstanceState)
 
         binding.tvId.text = message.id.toString()
+        binding.tvCreatedAt.text = Time.getDate(message.createdAt)
+        binding.tvUpdatedAt.text = Time.getDate(message.updatedAt)
         binding.tvState.text = message.state.name
         binding.tvFrom.text = message.from.name
         binding.tvType.text = message.type.name

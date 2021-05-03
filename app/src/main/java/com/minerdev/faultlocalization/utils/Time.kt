@@ -4,9 +4,9 @@ import android.icu.text.SimpleDateFormat
 import java.util.*
 
 object Time {
-    fun getDiffTimeMsg(since: String): String {
-        val sinceTime = getTime(since)
-        var diffTime = System.currentTimeMillis() / 1000 - sinceTime
+    fun getDiffTimeMsg(issuedTime: String): String {
+        val sinceTime = convertStringtoUnixTime(issuedTime)
+        var diffTime = System.currentTimeMillis() - sinceTime
 
         val msg: String
         when {
@@ -21,18 +21,47 @@ object Time {
         return msg
     }
 
-    fun getDate(time: String): Date {
-        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
-        return format.parse(time.replace('T', ' ').substring(0, time.length - 5))
+    fun getShortDate(issuedTime: String): String {
+        val sinceTime = convertStringtoUnixTime(issuedTime)
+        var diffTime = System.currentTimeMillis() - sinceTime
+
+        val msg: String
+        when {
+            diffTime < 60 -> msg = getHMS(issuedTime)
+            60.let { diffTime /= it; diffTime } < 60 -> msg = getHMS(issuedTime)
+            60.let { diffTime /= it; diffTime } < 24 -> msg = getHMS(issuedTime)
+            24.let { diffTime /= it; diffTime } < 30 -> msg = getYMD(issuedTime)
+            30.let { diffTime /= it; diffTime } < 12 -> msg = getYMD(issuedTime)
+            else -> msg = getYMD(issuedTime)
+        }
+
+        return msg
+    }
+
+    fun getDate(time: String): String {
+        val date = convertStringtoDate(time)
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(date)
+        return format.toString()
     }
 
     fun getHMS(time: String): String {
-        val date = getDate(time)
+        val date = convertStringtoDate(time)
         val format = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(date)
         return format.toString()
     }
 
-    fun getTime(time: String): Long {
+    fun getYMD(time: String): String {
+        val date = convertStringtoDate(time)
+        val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date)
+        return format.toString()
+    }
+
+    fun convertStringtoDate(time: String): Date {
+        val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        return format.parse(time.replace('T', ' ').substring(0, time.length - 5))
+    }
+
+    fun convertStringtoUnixTime(time: String): Long {
         val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val date = format.parse(time.replace('T', ' ').substring(0, time.length - 5))
         return date.time

@@ -58,7 +58,7 @@ class AlertListAdapter(diffCallback: DiffCallback) :
             binding.tvType.text = alert.type.name
             binding.tvTarget.text = alert.breakdown_info.name
             binding.tvBreakdownCause.text = alert.breakdown_cause
-            binding.tvUpdatedAt.text = Time.getHMS(alert.updatedAt)
+            binding.tvUpdatedAt.text = Time.getShortDate(alert.updatedAt)
         }
     }
 

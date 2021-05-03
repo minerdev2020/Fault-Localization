@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import com.minerdev.faultlocalization.base.BaseDialogFragment
 import com.minerdev.faultlocalization.databinding.FragmentAlertDialogBinding
 import com.minerdev.faultlocalization.model.Alert
+import com.minerdev.faultlocalization.utils.Time
 
 class AlertDialogFragment(private val alert: Alert) : BaseDialogFragment() {
     private val binding by lazy { FragmentAlertDialogBinding.inflate(layoutInflater) }
@@ -26,6 +27,8 @@ class AlertDialogFragment(private val alert: Alert) : BaseDialogFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.tvId.text = alert.id.toString()
+        binding.tvCreatedAt.text = Time.getDate(alert.createdAt)
+        binding.tvUpdatedAt.text = Time.getDate(alert.updatedAt)
         binding.tvState.text = alert.state.name
         binding.tvType.text = alert.type.name
         binding.tvTarget.text = alert.breakdown_info.name

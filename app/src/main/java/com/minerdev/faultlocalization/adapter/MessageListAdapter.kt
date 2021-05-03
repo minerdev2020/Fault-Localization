@@ -59,7 +59,7 @@ class MessageListAdapter(diffCallback: DiffCallback) :
             binding.tvState.text = message.state.name
             binding.tvType.text = message.type.name
             binding.tvFrom.text = message.from.name
-            binding.tvUpdatedAt.text = Time.getHMS(message.updatedAt)
+            binding.tvUpdatedAt.text = Time.getShortDate(message.updatedAt)
 
             val contents = message.equipment_info.name + " : " + message.contents
             binding.tvContents.text = contents
