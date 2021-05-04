@@ -5,7 +5,7 @@ import java.util.*
 
 object Time {
     fun getDiffTimeMsg(issuedTime: String): String {
-        val sinceTime = convertStringtoUnixTime(issuedTime)
+        val sinceTime = convertStringToUnixTime(issuedTime)
         var diffTime = System.currentTimeMillis() - sinceTime
 
         val msg: String
@@ -22,7 +22,7 @@ object Time {
     }
 
     fun getShortDate(issuedTime: String): String {
-        val sinceTime = convertStringtoUnixTime(issuedTime)
+        val sinceTime = convertStringToUnixTime(issuedTime)
         var diffTime = System.currentTimeMillis() - sinceTime
 
         val msg: String
@@ -39,29 +39,29 @@ object Time {
     }
 
     fun getDate(time: String): String {
-        val date = convertStringtoDate(time)
+        val date = convertStringToDate(time)
         val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(date)
         return format.toString()
     }
 
     fun getHMS(time: String): String {
-        val date = convertStringtoDate(time)
+        val date = convertStringToDate(time)
         val format = SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(date)
         return format.toString()
     }
 
     fun getYMD(time: String): String {
-        val date = convertStringtoDate(time)
+        val date = convertStringToDate(time)
         val format = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(date)
         return format.toString()
     }
 
-    fun convertStringtoDate(time: String): Date {
+    fun convertStringToDate(time: String): Date {
         val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         return format.parse(time.replace('T', ' ').substring(0, time.length - 5))
     }
 
-    fun convertStringtoUnixTime(time: String): Long {
+    fun convertStringToUnixTime(time: String): Long {
         val format = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
         val date = format.parse(time.replace('T', ' ').substring(0, time.length - 5))
         return date.time
