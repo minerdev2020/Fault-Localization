@@ -25,6 +25,7 @@ android {
         }
         resValue "string", "web_server_dns", (secureProps.getProperty("WEB_SERVER_DNS") ?: "")
         resValue "string", "local_server_dns", (secureProps.getProperty("LOCAL_SERVER_DNS") ?: "")
+        resValue "string", "local_db_server_dns", (secureProps.getProperty("LOCAL_DB_SERVER_DNS") ?: "")
     }
 
     buildTypes {

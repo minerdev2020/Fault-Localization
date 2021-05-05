@@ -8,6 +8,7 @@ object Constants {
 
     const val TAG = "DEBUG_TAG"
 
+    lateinit var DB_URL: String
     lateinit var BASE_URL: String
     const val API_AUTH = "/api/auth/"
     const val API_ALERT = "/api/alerts/"

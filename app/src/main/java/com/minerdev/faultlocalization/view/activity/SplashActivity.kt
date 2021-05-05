@@ -19,6 +19,7 @@ class SplashActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         Constants.APPLICATION = application
+        Constants.DB_URL = getString(R.string.local_db_server_dns)
         Constants.BASE_URL = getString(R.string.local_server_dns)
 
         setupButtons()
