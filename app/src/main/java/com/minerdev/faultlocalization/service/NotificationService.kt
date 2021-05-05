@@ -93,15 +93,13 @@ class NotificationService : Service() {
                 .setPriority(Notification.PRIORITY_HIGH)
         }
 
-        builder.run {
+        return builder.run {
             setSmallIcon(R.drawable.ic_round_warning_24)
             setContentTitle("警告")
             setContentText("发生故障")
             setAutoCancel(true) //선택시 자동으로 삭제되도록 설정.
             setDefaults(Notification.DEFAULT_SOUND or Notification.DEFAULT_VIBRATE)
         }
-
-        return builder
     }
 
     private fun setForegroundService() {
@@ -134,7 +132,7 @@ class NotificationService : Service() {
         val pendingIntent =
             PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-        builder.run {
+        with(builder) {
             setSmallIcon(R.drawable.ic_round_settings_24)
             setContentTitle("故障警报服务")
             setContentIntent(pendingIntent) //알림을 눌렀을때 실행할 인텐트 설정.
