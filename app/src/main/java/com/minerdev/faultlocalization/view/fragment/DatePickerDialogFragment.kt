@@ -14,7 +14,7 @@ class DatePickerDialogFragment : BaseDialogFragment() {
         get() =
             if (!isNow)
                 binding.datePicker.year.toString() + "." +
-                        binding.datePicker.month.toString() + "." +
+                        (binding.datePicker.month + 1).toString() + "." +
                         binding.datePicker.dayOfMonth.toString() + " " +
                         binding.timePicker.hour.toString() + ":" +
                         binding.timePicker.minute.toString() + ":00"
