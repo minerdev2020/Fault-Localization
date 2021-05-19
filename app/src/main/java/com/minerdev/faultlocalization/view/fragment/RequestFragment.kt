@@ -11,21 +11,21 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.minerdev.faultlocalization.R
-import com.minerdev.faultlocalization.adapter.MessageListAdapter
-import com.minerdev.faultlocalization.databinding.FragmentMessageBinding
+import com.minerdev.faultlocalization.adapter.RequestListAdapter
+import com.minerdev.faultlocalization.databinding.FragmentRequestBinding
 import com.minerdev.faultlocalization.utils.Constants
 import com.minerdev.faultlocalization.utils.Constants.TYPE_ID
-import com.minerdev.faultlocalization.viewmodel.MessageViewModel
-import com.minerdev.faultlocalization.viewmodel.factory.MessageViewModelFactory
+import com.minerdev.faultlocalization.viewmodel.RequestViewModel
+import com.minerdev.faultlocalization.viewmodel.factory.RequestViewModelFactory
 import io.socket.client.IO
 import io.socket.client.Socket
 import java.net.URISyntaxException
 import java.util.*
 
-class MessageFragment : Fragment() {
-    private val binding by lazy { FragmentMessageBinding.inflate(layoutInflater) }
-    private val adapter by lazy { MessageListAdapter(MessageListAdapter.DiffCallback()) }
-    private val viewModel: MessageViewModel by viewModels { MessageViewModelFactory() }
+class RequestFragment : Fragment() {
+    private val binding by lazy { FragmentRequestBinding.inflate(layoutInflater) }
+    private val adapter by lazy { RequestListAdapter(RequestListAdapter.DiffCallback()) }
+    private val viewModel: RequestViewModel by viewModels { RequestViewModelFactory() }
 
     private var socket: Socket? = null
     private var keyword = ""
@@ -39,7 +39,7 @@ class MessageFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         try {
-            socket = IO.socket(Constants.BASE_URL + "/messages")
+            socket = IO.socket(Constants.BASE_URL + "/requests")
 
         } catch (e: URISyntaxException) {
             Log.e(Constants.TAG, e.reason)
@@ -75,18 +75,18 @@ class MessageFragment : Fragment() {
         binding.recyclerView.layoutManager = manager
         binding.recyclerView.adapter = adapter
 
-        adapter.clickListener = object : MessageListAdapter.OnItemClickListener {
+        adapter.clickListener = object : RequestListAdapter.OnItemClickListener {
             override fun onItemClick(
-                viewHolder: MessageListAdapter.ViewHolder,
+                viewHolder: RequestListAdapter.ViewHolder,
                 view: View,
                 position: Int
             ) {
-                val dialog = MessageDialogFragment(adapter[position])
-                dialog.show(requireActivity().supportFragmentManager, "MessageDialogFragment")
+                val dialog = RequestDialogFragment(adapter[position])
+                dialog.show(requireActivity().supportFragmentManager, "RequestDialogFragment")
             }
 
             override fun onButtonClick(
-                viewHolder: MessageListAdapter.ViewHolder,
+                viewHolder: RequestListAdapter.ViewHolder,
                 view: View,
                 position: Int
             ) {

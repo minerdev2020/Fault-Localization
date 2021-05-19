@@ -9,9 +9,9 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.MutableLiveData
 import com.minerdev.faultlocalization.R
 import com.minerdev.faultlocalization.base.BaseDialogFragment
-import com.minerdev.faultlocalization.databinding.FragmentMessageSendDialogBinding
+import com.minerdev.faultlocalization.databinding.FragmentRequestSendDialogBinding
 
-class MessageSendDialogFragment(private val state: String) : BaseDialogFragment() {
+class RequestSendDialogFragment(private val state: String) : BaseDialogFragment() {
     val estimatedTime: Float
         get() = binding.etEstimatedTime.text.toString().toFloat()
 
@@ -32,7 +32,7 @@ class MessageSendDialogFragment(private val state: String) : BaseDialogFragment(
 
     var listener: View.OnClickListener? = null
 
-    private val binding by lazy { FragmentMessageSendDialogBinding.inflate(layoutInflater) }
+    private val binding by lazy { FragmentRequestSendDialogBinding.inflate(layoutInflater) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

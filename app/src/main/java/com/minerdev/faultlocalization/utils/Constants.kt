@@ -15,7 +15,7 @@ object Constants {
     const val API_PERSON = "/api/persons/"
     const val API_EQUIPMENT = "/api/equipments/"
     const val API_SENSOR = "/api/sensors/"
-    const val API_MESSAGE = "/api/messages/"
+    const val API_REQUEST = "/api/requests/"
     const val API_TASK = "/api/tasks/"
     const val API_LOGIN_LOG = "/api/logs/login/"
     const val API_DATA = "/api/data/"

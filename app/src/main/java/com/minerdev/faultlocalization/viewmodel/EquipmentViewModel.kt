@@ -2,26 +2,26 @@ package com.minerdev.faultlocalization.viewmodel
 
 import com.minerdev.faultlocalization.base.ItemViewModel
 import com.minerdev.faultlocalization.model.Equipment
-import com.minerdev.faultlocalization.model.Message
+import com.minerdev.faultlocalization.model.Request
 import com.minerdev.faultlocalization.repository.EquipmentRepository
-import com.minerdev.faultlocalization.repository.MessageRepository
+import com.minerdev.faultlocalization.repository.RequestRepository
 import com.minerdev.faultlocalization.utils.Constants.ID
 
 class EquipmentViewModel(
-    private val messageRepository: MessageRepository,
+    private val requestRepository: RequestRepository,
     repository: EquipmentRepository
 ) :
     ItemViewModel<Equipment>(repository) {
-    val messageStates = messageRepository.itemStates
-    val messageTypes = messageRepository.itemTypes
+    val messageStates = requestRepository.itemStates
+    val messageTypes = requestRepository.itemTypes
 
     fun loadMessageStatesAndTypes() {
-        messageRepository.loadItemStatesAndTypes()
+        requestRepository.loadItemStatesAndTypes()
     }
 
     fun addMessage(equipmentId: Int, typeId: Int, estimatedTime: Float, contents: String) {
-        messageRepository.addItem(
-            Message(
+        requestRepository.addItem(
+            Request(
                 type_id = typeId,
                 state_id = 1,
                 equipment_id = equipmentId,

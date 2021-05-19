@@ -90,7 +90,7 @@ class MainActivity : BaseActivity() {
         adapter.addFragment(AlertFragment(), "警报")
         adapter.addFragment(PersonFragment(), "人员")
         adapter.addFragment(EquipmentFragment(), "设备")
-        adapter.addFragment(MessageFragment(), "申请")
+        adapter.addFragment(RequestFragment(), "申请")
         adapter.addFragment(SettingsFragment(), "设置")
 
         binding.viewPager.adapter = adapter

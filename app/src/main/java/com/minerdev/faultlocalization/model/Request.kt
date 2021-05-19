@@ -5,7 +5,7 @@ import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.put
 
 @Serializable
-data class Message(
+data class Request(
     override var id: Int = 0,
     override var createdAt: String = "",
     override var updatedAt: String = "",

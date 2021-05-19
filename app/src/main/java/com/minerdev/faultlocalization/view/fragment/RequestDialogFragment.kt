@@ -7,12 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.minerdev.faultlocalization.base.BaseDialogFragment
-import com.minerdev.faultlocalization.databinding.FragmentMessageDialogBinding
-import com.minerdev.faultlocalization.model.Message
+import com.minerdev.faultlocalization.databinding.FragmentRequestDialogBinding
+import com.minerdev.faultlocalization.model.Request
 import com.minerdev.faultlocalization.utils.Time
 
-class MessageDialogFragment(private val message: Message) : BaseDialogFragment() {
-    private val binding by lazy { FragmentMessageDialogBinding.inflate(layoutInflater) }
+class RequestDialogFragment(private val request: Request) : BaseDialogFragment() {
+    private val binding by lazy { FragmentRequestDialogBinding.inflate(layoutInflater) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -26,20 +26,20 @@ class MessageDialogFragment(private val message: Message) : BaseDialogFragment()
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.tvId.text = message.id.toString()
-        binding.tvCreatedAt.text = Time.getDate(message.createdAt)
-        binding.tvUpdatedAt.text = Time.getDate(message.updatedAt)
-        binding.tvState.text = message.state.name
-        binding.tvFrom.text = message.from.name
-        binding.tvType.text = message.type.name
+        binding.tvId.text = request.id.toString()
+        binding.tvCreatedAt.text = Time.getDate(request.createdAt)
+        binding.tvUpdatedAt.text = Time.getDate(request.updatedAt)
+        binding.tvState.text = request.state.name
+        binding.tvFrom.text = request.from.name
+        binding.tvType.text = request.type.name
 
-        val estimatedTime = "${message.estimated_time} 小时"
+        val estimatedTime = "${request.estimated_time} 小时"
         binding.tvEstimatedTime.text = estimatedTime
 
-        binding.tvReplyer.text = message.replyer?.name ?: "未被回答"
-        binding.tvTarget.text = message.equipment_info.name
+        binding.tvReplyer.text = request.replyer?.name ?: "未被回答"
+        binding.tvTarget.text = request.equipment_info.name
 
-        binding.textInputEtContents.setText(message.contents)
+        binding.textInputEtContents.setText(request.contents)
 
         binding.btnBack.setOnClickListener {
             dismiss()

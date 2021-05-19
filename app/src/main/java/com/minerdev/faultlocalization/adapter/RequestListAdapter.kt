@@ -6,17 +6,17 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.minerdev.faultlocalization.databinding.ItemMessageBinding
-import com.minerdev.faultlocalization.model.Message
+import com.minerdev.faultlocalization.databinding.ItemRequestBinding
+import com.minerdev.faultlocalization.model.Request
 import com.minerdev.faultlocalization.utils.Time
 import java.util.*
 
-class MessageListAdapter(diffCallback: DiffCallback) :
-    ListAdapter<Message, MessageListAdapter.ViewHolder>(diffCallback) {
+class RequestListAdapter(diffCallback: DiffCallback) :
+    ListAdapter<Request, RequestListAdapter.ViewHolder>(diffCallback) {
     lateinit var clickListener: OnItemClickListener
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = ItemMessageBinding.inflate(
+        val binding = ItemRequestBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -30,7 +30,7 @@ class MessageListAdapter(diffCallback: DiffCallback) :
         holder.bind(item)
     }
 
-    operator fun get(position: Int): Message {
+    operator fun get(position: Int): Request {
         return getItem(position)
     }
 
@@ -40,7 +40,7 @@ class MessageListAdapter(diffCallback: DiffCallback) :
     }
 
     class ViewHolder(
-        val binding: ItemMessageBinding,
+        val binding: ItemRequestBinding,
         listener: OnItemClickListener
     ) :
         RecyclerView.ViewHolder(binding.root) {
@@ -55,26 +55,26 @@ class MessageListAdapter(diffCallback: DiffCallback) :
             }
         }
 
-        fun bind(message: Message) {
-            binding.tvState.text = message.state.name
-            binding.tvType.text = message.type.name
-            binding.tvFrom.text = message.from.name
-            binding.tvUpdatedAt.text = Time.getShortDate(message.updatedAt)
+        fun bind(request: Request) {
+            binding.tvState.text = request.state.name
+            binding.tvType.text = request.type.name
+            binding.tvFrom.text = request.from.name
+            binding.tvUpdatedAt.text = Time.getShortDate(request.updatedAt)
 
-            val contents = message.equipment_info.name + " : " + message.contents
+            val contents = request.equipment_info.name + " : " + request.contents
             binding.tvContents.text = contents
 
-            val reply = message.replyer?.let { "${it.name}回答" } ?: "未被回答"
+            val reply = request.replyer?.let { "${it.name}回答" } ?: "未被回答"
             binding.tvReplyer.text = reply
         }
     }
 
-    class DiffCallback : DiffUtil.ItemCallback<Message>() {
-        override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean {
+    class DiffCallback : DiffUtil.ItemCallback<Request>() {
+        override fun areItemsTheSame(oldItem: Request, newItem: Request): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean {
+        override fun areContentsTheSame(oldItem: Request, newItem: Request): Boolean {
             return oldItem == newItem
         }
     }
