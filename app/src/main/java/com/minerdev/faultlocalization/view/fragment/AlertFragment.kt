@@ -88,8 +88,8 @@ class AlertFragment : Fragment() {
                 view: View,
                 position: Int
             ) {
-                if (Constants.TYPE_ID == "1") {
-                    if (adapter[position].state.name == "等待中") {
+                if (Constants.TYPE_ID == "2") {
+                    if (adapter[position].state.name == "进行中") {
                         val dialog = AlertModifyDialogFragment(adapter[position].state.name)
                         viewModel.loadItemsStatesAndTypes()
                         viewModel.itemStates.observe(viewLifecycleOwner, {
@@ -196,6 +196,7 @@ class AlertFragment : Fragment() {
                 dialog.listener = View.OnClickListener {
                     group1 = dialog.spinner1ItemPosition
                     group2 = dialog.spinner2ItemPosition
+                    viewModel.loadItems(keyword, group1, group2)
                 }
                 dialog.show(requireActivity().supportFragmentManager, "SampleDialog")
             }

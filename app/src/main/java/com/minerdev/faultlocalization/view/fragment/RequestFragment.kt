@@ -198,6 +198,7 @@ class RequestFragment : Fragment() {
                 dialog.listener = View.OnClickListener {
                     group1 = dialog.spinner1ItemPosition
                     group2 = dialog.spinner2ItemPosition
+                    viewModel.loadItems(keyword, group1, group2)
                 }
                 dialog.show(requireActivity().supportFragmentManager, "SampleDialog")
             }

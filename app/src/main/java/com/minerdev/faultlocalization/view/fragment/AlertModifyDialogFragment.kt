@@ -69,7 +69,7 @@ class AlertModifyDialogFragment(private val state: String) : BaseDialogFragment(
             val newState = binding.spnType.selectedItem
             when (state) {
                 "进行中" -> {
-                    if (newState != "已完成") {
+                    if (newState == "已完成") {
                         listener?.onClick(it)
                         dismiss()
 

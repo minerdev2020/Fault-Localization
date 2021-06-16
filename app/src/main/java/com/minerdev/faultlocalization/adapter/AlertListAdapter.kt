@@ -49,6 +49,10 @@ class AlertListAdapter(diffCallback: DiffCallback) :
             binding.alertItemLayout.setOnClickListener {
                 listener.onItemClick(this@ViewHolder, itemView, bindingAdapterPosition)
             }
+
+            binding.imageBtn.setOnClickListener {
+                listener.onButtonClick(this@ViewHolder, itemView, bindingAdapterPosition)
+            }
         }
 
         fun bind(alert: Alert) {
